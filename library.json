@@ -6,22 +6,25 @@
   "runnable": 0,
   "author": "Amendor AS",
   "machineName": "H5PEditor.DragQuestion",
+  "preloadedJs": [
+    {
+      "path": "H5PEditor.DragQuestion.js"
+    }
+  ],
   "preloadedCss": [
     {
       "path": "H5PEditor.DragQuestion.css"
     }
   ],
-  "preloadedDependencies": [
+  "preloadedDependencies": [    {
+      "machineName": "H5P.DragNBar",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
     {
       "machineName": "jQuery.ui",
       "majorVersion": 1,
-      "minorVersion": 10,
-      "defaultStyles": true
-    }
-  ],
-  "preloadedJs": [
-    {
-      "path": "H5PEditor.DragQuestion.js"
+      "minorVersion": 10
     }
   ]
 }

@@ -66,7 +66,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 })(H5P.jQuery);
 
 // Default english translations
-H5PEditor.language['H5PEditor.InteractiveVideo'] = {
+H5PEditor.language['H5PEditor.DragQuestion'] = {
   libraryStrings: {
     cheese: 'Cheese'
   }
