@@ -7,6 +7,16 @@ var H5PEditor = H5PEditor || {};
  */
 H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
+   * Helps create new H5P instances. (Probably belongs in core or something...)
+   *
+   * @param {type} library
+   * @returns {@exp;H5P@pro;classFromName@call;@call;}
+   */
+  function I(library) {
+    return new (H5P.classFromName(library.library.split(' ')[0]))(library.params, H5P.getContentPath(H5PEditor.contentId));
+  }
+
+  /**
    * Initialize interactive video editor.
    *
    * @param {Object} parent
@@ -40,7 +50,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.parent = parent;
     this.field = field;
-    this.children = [];
 
     this.passReadies = true;
     parent.ready(function () {
@@ -55,11 +64,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.appendTo = function ($wrapper) {
+    var that = this;
+
     this.$item = $(this.createHtml()).appendTo($wrapper);
     this.$editor = this.$item.children('.h5peditor-dragquestion');
     this.$dnbWrapper = this.$item.children('.h5peditor-dragnbar');
-    this.$dialog = this.$item.children('.h5peditor-dialog-overlay');
+    this.$dialog = this.$item.children('.h5peditor-fluid-dialog');
+    this.$dialogInner = this.$dialog.children('.h5peditor-fd-inner');
     this.$errors = this.$item.children('.errors');
+
+    this.$dialog.find('.h5peditor-done').click(function () {
+      if (that.doneCallback() !== false) {
+        that.hideDialog();
+      }
+      return false;
+    }).end().find('.h5peditor-remove').click(function () {
+      that.removeCallback();
+      that.hideDialog();
+      return false;
+    });
 
     this.fontSize = parseInt(this.$editor.css('fontSize'));
   };
@@ -70,7 +93,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {@exp;H5PEditor@call;createItem}
    */
   C.prototype.createHtml = function () {
-    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span><div class="h5peditor-dragquestion-wrapper"><div class="h5peditor-dragnbar"></div><div class="h5peditor-dragquestion">Please specify task size first.</div><div class="h5peditor-dialog-overlay"><div class="h5peditor-dialog"><div class="h5peditor-dialog-inner"></div><div class="h5peditor-dialog-buttons"><a href="#" class="h5peditor-dialog-button h5peditor-done">' + C.t('done') + '</a><a href="#" class="h5peditor-dialog-button h5peditor-remove">' + C.t('remove') + '</a></div></div></div></div>');
+    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span><div class="h5peditor-dragnbar"></div><div class="h5peditor-dragquestion">Please specify task size first.</div><div class="h5peditor-fluid-dialog"><div class="h5peditor-fd-inner"></div><div class="h5peditor-fd-buttons"><a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a><a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a></div></div>');
   };
 
   /**
@@ -138,19 +161,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnb.dnd.releaseCallback = function () {
       // Edit element when it is dropped.
       if (that.dnb.newElement) {
-        that.dnb.dnd.$element.dblclick();
+        setTimeout(function () {
+          that.dnb.dnd.$element.dblclick();
+        }, 1);
       }
     };
     this.dnb.attach(this.$dnbWrapper);
 
     // Add Elements
-    this.elementForms = [];
+    this.elements = [];
     for (var i = 0; i < this.params.elements.length; i++) {
-      this.generateElementForm(i);
       this.insertElement(i);
     }
 
     // Add Drop Zones
+    this.dropZones = [];
     for (var i = 0; i < this.params.dropZones.length; i++) {
       this.insertDropZone(i);
     }
@@ -158,23 +183,22 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
   /**
    *
-   * @param {type} index
-   * @returns {undefined}
+   * @param {type} semantics
+   * @param {type} params
+   * @returns {_L8.C.prototype.generateElementForm.Anonym$2}
    */
-  C.prototype.generateElementForm = function (index) {
-    if (this.children[index] === undefined) {
-      this.children[index] = [];
+  C.prototype.generateForm = function (semantics, params) {
+    var $form = $('<div></div>');
+    H5PEditor.processSemanticsChunk(semantics, params, $form, this);
+    var $lib = $form.children('.library:first');
+    if ($lib.length !== 0) {
+      $lib.children('label, select').hide().end().children('.libwrap').css('margin-top', '0');
     }
-    var tmpChildren = this.children;
 
-    var $form = H5P.jQuery('<div></div>');
-    H5PEditor.processSemanticsChunk(this.field.fields[0].field.fields, this.params.elements[index], $form, this);
-    $form.children('.library:first').children('label, select').hide().end().children('.libwrap').css('margin-top', '0');
-
-    tmpChildren[index] = this.children;
-    this.children = tmpChildren;
-
-    this.elementForms[index] = $form;
+    return {
+      $form: $form,
+      children: this.children
+    };
   };
 
   /**
@@ -198,8 +222,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.params.dropZones.push({
           x: 0,
           y: 0,
-          width: 15,
-          height: 10,
+          width: 5,
+          height: 2.5,
           correctElements: []
         });
 
@@ -230,8 +254,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           },
           x: 0,
           y: 0,
-          width: 15,
-          height: 10,
+          width: 5,
+          height: 2.5,
           dropZones: []
         });
 
@@ -248,28 +272,80 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.insertElement = function (index) {
     var that = this;
-    var element = this.params.elements[index];
+    var elementParams = this.params.elements[index];
+    var element = this.generateForm(this.field.fields[0].field.fields, elementParams);
 
-    var $element = $('<div class="h5p-dq-element" style="width:' + element.width + '%;height:' + element.height + '%;top:' + element.y + '%;left:' + element.x + '%">' + index + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
-      that.dnb.dnd.press($element, event.pageX, event.pageY);
+    element.instance = new I(elementParams.type);
+
+    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+      that.dnb.dnd.press(element.$element, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
-      // Edit
-      //this.elementForms[index]
-      console.log('Editing', index);
+      that.editElement(element);
     });
 
-    var instance = new (H5P.classFromName(element.type.library.split(' ')[0]))(element.type.params);
-    instance.attach($element);
+    element.instance.attach(element.$element);
+    this.elements[index] = element;
 
-    return $element;
+    return element.$element;
   };
 
+  /**
+   *
+   * @param {type} element
+   * @returns {undefined}
+   */
+  C.prototype.editElement = function (element) {
+    var that = this;
+    var id = element.$element.data('id');
+
+    this.doneCallback = function () {
+      // Validate form
+      var valid = true;
+      for (var i = 0; i < element.children.length; i++) {
+        if (element.children[i].validate() === false) {
+          valid = false;
+          break;
+        }
+      }
+      if (!valid) {
+        return false;
+      }
+
+      element.instance = new I(that.params.elements[id].type);
+      element.instance.attach(element.$element);
+    };
+
+    this.removeCallback = function () {
+      // Remove element form
+      H5PEditor.removeChildren(element.children);
+
+      // Remove element
+      element.$element.remove();
+      that.elements.splice(id, 1);
+      that.params.elements.splice(id, 1);
+
+      // Reindex all elements
+      for (var i = 0; i < that.elements.length; i++) {
+        that.elements[i].$element.data('id', i);
+      }
+    };
+
+    this.showDialog(element.$form);
+  };
+
+  /**
+   *
+   * @param {type} index
+   * @returns {unresolved}
+   */
   C.prototype.insertDropZone = function (index) {
     var that = this;
     var dropZone = this.params.dropZones[index];
 
-    var $dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZone.width + '%;height:' + dropZone.height + '%;top:' + dropZone.y + '%;left:' + dropZone.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+    //this.dropZoneForms[i] = this.generateElementForm(this.field.fields[1].field.fields, this.params.dropZones[i]);
+
+    var $dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZone.width + 'em;height:' + dropZone.height + 'em;top:' + dropZone.y + '%;left:' + dropZone.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
       that.dnb.dnd.press($dropZone, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
@@ -278,6 +354,32 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     });
 
     return $dropZone;
+  };
+
+  /**
+   *
+   * @param {type} $form
+   * @returns {undefined}
+   */
+  C.prototype.showDialog = function ($form) {
+    this.$currentForm = $form;
+    $form.appendTo(this.$dialogInner);
+    this.$dialog.show();
+    this.$editor.add(this.$dnbWrapper).hide();
+    if (this.dnb !== undefined && this.dnb.dnd.$coordinates !== undefined) {
+      this.dnb.dnd.$coordinates.remove();
+      delete this.dnb.dnd.$coordinates;
+    }
+  };
+
+  /**
+   *
+   * @returns {undefined}
+   */
+  C.prototype.hideDialog = function () {
+    this.$currentForm.detach();
+    this.$dialog.hide();
+    this.$editor.add(this.$dnbWrapper).show();
   };
 
   /**

@@ -73,11 +73,25 @@
   font-size: 0.75em;
 }
 
-.h5peditor-dialog-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
+.h5peditor-fluid-dialog {
+  display: none;
+  background: #e5fff2;
+  border-radius: 0.25em;
+}
+.h5peditor-fd-inner {
+  padding: 0.5em;
+}
+.h5peditor-fd-buttons {
+  overflow: hidden;
+}
+a.h5peditor-fd-button {
+  float: right;
+  background: #156f3d;
+  color:  #fff;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  margin: 0.5em;
+}
+a.h5peditor-fd-button:hover {
+  text-decoration: none;
 }
