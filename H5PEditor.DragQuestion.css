@@ -1,3 +1,6 @@
+.h5peditor-dragquestion-wrapper {
+  position: relative;
+}
 .h5peditor-dragnbar {
   font-size: 1em;
   overflow: hidden;
@@ -14,27 +17,34 @@
   background: transparent;
 }
 .h5peditor-dragnbar .h5p-dragnbar-a {
+  width: 1em;
+  line-height: 1.5em;
+  text-align: center;
   border: 0.0625em solid #b881e7;
   margin: 0.25em;
   border-radius: 0.5em;
   display: block;
   padding: 0.25em 0.75em;
   background: #d8c6e7;
+  color: #000;
 }
 .h5peditor-dragnbar .h5p-dragnbar-a:before {
+  font-family: "H5PFontAwesome";
   content: "?";
 }
 .h5peditor-dragnbar .h5p-dragnbar-a:hover {
   text-decoration: none;
 }
 .h5peditor-dragnbar .h5p-dragnbar-text-button:before {
+  font-size: 1.125em;
+  font-weight: bold;
   content: "T";
 }
 .h5peditor-dragnbar .h5p-dragnbar-image-button:before {
-  content: "I";
+  content: "\f03e";
 }
 .h5peditor-dragnbar .h5p-dragnbar-dropzone-button:before {
-  content: "DZ";
+  content: "\f140";
 }
 
 .h5peditor-dragquestion {
@@ -50,4 +60,24 @@
 }
 .h5p-dq-element {
   position: absolute;
+}
+.h5p-dq-dz {
+  position: absolute;
+  border: 0.0625em dashed #393939;
+  background: #fefefe;
+  border-radius: 0.25em;
+}
+.h5p-dq-label {
+  position: absolute;
+  bottom: 100%;
+  font-size: 0.75em;
+}
+
+.h5peditor-dialog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
 }

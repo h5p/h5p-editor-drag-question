@@ -40,6 +40,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.parent = parent;
     this.field = field;
+    this.children = [];
 
     this.passReadies = true;
     parent.ready(function () {
@@ -57,6 +58,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$item = $(this.createHtml()).appendTo($wrapper);
     this.$editor = this.$item.children('.h5peditor-dragquestion');
     this.$dnbWrapper = this.$item.children('.h5peditor-dragnbar');
+    this.$dialog = this.$item.children('.h5peditor-dialog-overlay');
     this.$errors = this.$item.children('.errors');
 
     this.fontSize = parseInt(this.$editor.css('fontSize'));
@@ -68,7 +70,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {@exp;H5PEditor@call;createItem}
    */
   C.prototype.createHtml = function () {
-    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span><div class="h5peditor-dragnbar"></div><div class="h5peditor-dragquestion">Please specify task size first.</div>');
+    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span><div class="h5peditor-dragquestion-wrapper"><div class="h5peditor-dragnbar"></div><div class="h5peditor-dragquestion">Please specify task size first.</div><div class="h5peditor-dialog-overlay"><div class="h5peditor-dialog"><div class="h5peditor-dialog-inner"></div><div class="h5peditor-dialog-buttons"><a href="#" class="h5peditor-dialog-button h5peditor-done">' + C.t('done') + '</a><a href="#" class="h5peditor-dialog-button h5peditor-remove">' + C.t('remove') + '</a></div></div></div></div>');
   };
 
   /**
@@ -127,7 +129,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.dnb.stopMovingCallback = function (x, y) {
       // Update params when the element is dropped.
-      var params = that.params.elements[that.dnb.dnd.$element.data('id')];
+      var id = that.dnb.dnd.$element.data('id');
+      var params = that.dnb.dnd.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
       params.x = x;
       params.y = y;
     };
@@ -140,13 +143,38 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
     this.dnb.attach(this.$dnbWrapper);
 
-
     // Add Elements
+    this.elementForms = [];
     for (var i = 0; i < this.params.elements.length; i++) {
+      this.generateElementForm(i);
       this.insertElement(i);
     }
 
     // Add Drop Zones
+    for (var i = 0; i < this.params.dropZones.length; i++) {
+      this.insertDropZone(i);
+    }
+  };
+
+  /**
+   *
+   * @param {type} index
+   * @returns {undefined}
+   */
+  C.prototype.generateElementForm = function (index) {
+    if (this.children[index] === undefined) {
+      this.children[index] = [];
+    }
+    var tmpChildren = this.children;
+
+    var $form = H5P.jQuery('<div></div>');
+    H5PEditor.processSemanticsChunk(this.field.fields[0].field.fields, this.params.elements[index], $form, this);
+    $form.children('.library:first').children('label, select').hide().end().children('.libwrap').css('margin-top', '0');
+
+    tmpChildren[index] = this.children;
+    this.children = tmpChildren;
+
+    this.elementForms[index] = $form;
   };
 
   /**
@@ -155,12 +183,29 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {Array} Buttons
    */
   C.prototype.getButtons = function () {
+    var that = this;
     var options = this.field.fields[0].field.fields[0].options;
 
     var buttons = [];
     for (var i = 0; i < options.length; i++) {
       buttons.push(this.getButton(options[i]));
     }
+
+    buttons.push({
+      id: 'dropzone',
+      title: 'Drop Zone',
+      createElement: function () {
+        that.params.dropZones.push({
+          x: 0,
+          y: 0,
+          width: 15,
+          height: 10,
+          correctElements: []
+        });
+
+        return that.insertDropZone(that.params.dropZones.length - 1);
+      }
+    });
 
     return buttons;
   };
@@ -210,13 +255,29 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       return false;
     }).dblclick(function () {
       // Edit
-      console.log('Editing', element);
+      //this.elementForms[index]
+      console.log('Editing', index);
     });
 
     var instance = new (H5P.classFromName(element.type.library.split(' ')[0]))(element.type.params);
     instance.attach($element);
 
     return $element;
+  };
+
+  C.prototype.insertDropZone = function (index) {
+    var that = this;
+    var dropZone = this.params.dropZones[index];
+
+    var $dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZone.width + '%;height:' + dropZone.height + '%;top:' + dropZone.y + '%;left:' + dropZone.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+      that.dnb.dnd.press($dropZone, event.pageX, event.pageY);
+      return false;
+    }).dblclick(function () {
+      // Edit
+      console.log('Editing', dropZone);
+    });
+
+    return $dropZone;
   };
 
   /**
@@ -226,6 +287,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.validate = function () {
     return true;
+  };
+
+  /**
+   * Collect functions to execute once the tree is complete.
+   *
+   * @param {function} ready
+   * @returns {undefined}
+   */
+  C.prototype.ready = function (ready) {
+    if (this.passReadies) {
+      this.parent.ready(ready);
+    }
+    else {
+      this.readies.push(ready);
+    }
   };
 
   /**
@@ -245,6 +321,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 // Default english translations
 H5PEditor.language['H5PEditor.DragQuestion'] = {
   libraryStrings: {
-    insertElement: 'Insert :type'
+    insertElement: 'Insert :type',
+    done: 'FÆRDI',
+    remove: 'FJÆRN'
   }
 };
