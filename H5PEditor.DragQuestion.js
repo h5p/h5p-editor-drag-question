@@ -168,6 +168,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
     this.dnb.attach(this.$dnbWrapper);
 
+    // Init resize
+    this.dnr = new H5P.DragNResize(this.$editor);
+    this.dnr.resizeCallback = function (newWidth, newHeight) {
+      var id = that.dnr.$element.data('id');
+      var params = that.dnr.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
+      params.width = newWidth;
+      params.height = newHeight;
+    };
+
+
     // Add Elements
     this.elements = [];
     for (var i = 0; i < this.params.elements.length; i++) {
@@ -287,6 +297,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     element.instance.attach(element.$element);
     this.elements[index] = element;
 
+    // Make resize possible
+    this.dnr.add(element.$element);
+
     return element.$element;
   };
 
@@ -314,6 +327,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       element.instance = new I(that.params.elements[id].type);
       element.instance.attach(element.$element);
+
+      // Make resize possible
+      that.dnr.add(element.$element);
     };
 
     this.removeCallback = function () {
@@ -341,19 +357,67 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.insertDropZone = function (index) {
     var that = this;
-    var dropZone = this.params.dropZones[index];
+    var dropZoneParams = this.params.dropZones[index];
+    var dropZone = this.generateForm(this.field.fields[1].field.fields, dropZoneParams);
 
-    //this.dropZoneForms[i] = this.generateElementForm(this.field.fields[1].field.fields, this.params.dropZones[i]);
-
-    var $dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZone.width + 'em;height:' + dropZone.height + 'em;top:' + dropZone.y + '%;left:' + dropZone.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
-      that.dnb.dnd.press($dropZone, event.pageX, event.pageY);
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+      that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
       // Edit
-      console.log('Editing', dropZone);
+      that.editDropZone(dropZone);
     });
 
-    return $dropZone;
+    this.dropZones[index] = dropZone;
+
+    // Make resize possible
+    this.dnr.add(dropZone.$dropZone);
+
+
+    return dropZone.$dropZone;
+  };
+
+  /**
+   *
+   * @param {type} element
+   * @returns {undefined}
+   */
+  C.prototype.editDropZone = function (dropZone) {
+    var that = this;
+    var id = dropZone.$dropZone.data('id');
+
+    this.doneCallback = function () {
+      // Validate form
+      var valid = true;
+      for (var i = 0; i < dropZone.children.length; i++) {
+        if (dropZone.children[i].validate() === false) {
+          valid = false;
+          break;
+        }
+      }
+      if (!valid) {
+        return false;
+      }
+
+      // TODO: Fix label?
+    };
+
+    this.removeCallback = function () {
+      // Remove element form
+      H5PEditor.removeChildren(dropZone.children);
+
+      // Remove element
+      dropZone.$dropZone.remove();
+      that.dropZones.splice(id, 1);
+      that.params.dropZones.splice(id, 1);
+
+      // Reindex all elements
+      for (var i = 0; i < that.dropZones.length; i++) {
+        that.dropZones[i].$dropZone.data('id', i);
+      }
+    };
+
+    this.showDialog(dropZone.$form);
   };
 
   /**
