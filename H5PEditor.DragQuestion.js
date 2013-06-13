@@ -360,7 +360,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var dropZoneParams = this.params.dropZones[index];
     var dropZone = this.generateForm(this.field.fields[1].field.fields, dropZoneParams);
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%">' + (dropZone.title !== undefined ? '<div class=="h5p-dq-label">' + dropZone.title + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%">' + (dropZoneParams.label !== undefined ? '<div class="h5p-dq-dz-label">' + dropZoneParams.label + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
       that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
@@ -399,7 +399,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         return false;
       }
 
-      // TODO: Fix label?
+      // Remove old label and add new.
+      dropZone.$dropZone.children('.h5p-dq-dz-label').remove();
+      $('<div class="h5p-dq-dz-label">' + that.params.dropZones[id].label + '</div>').appendTo(dropZone.$dropZone);
     };
 
     this.removeCallback = function () {

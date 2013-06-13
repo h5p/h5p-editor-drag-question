@@ -63,6 +63,7 @@
   border: 1px dashed #898989;
   overflow: hidden;
 }
+
 .h5p-dq-dz {
   position: absolute;
   border: 0.0625em dashed #393939;
@@ -97,4 +98,12 @@ a.h5peditor-fd-button {
 }
 a.h5peditor-fd-button:hover {
   text-decoration: none;
+}
+.h5p-dq-dz-label {
+  position: absolute;
+  background: #efe2c9;
+  font-size: 0.5em;
+  top: -1.75em;
+  left: -0.0625em;
+  padding: 0 0.25em;
 }
