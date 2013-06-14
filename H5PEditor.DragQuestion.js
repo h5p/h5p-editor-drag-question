@@ -365,7 +365,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnr.add(element.$element);
 
     var type = params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image';
-    var label = type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt;
+    var label = type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '';
 
     // Update correct element options
     this.elementOptions[id] = {
