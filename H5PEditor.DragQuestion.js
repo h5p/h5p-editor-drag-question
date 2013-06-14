@@ -49,6 +49,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     });
 
     this.parent = parent;
+
+    field.fields[0].field.fields[5].options = [];
+    field.fields[1].field.fields[6].options = [];
     this.field = field;
 
     this.passReadies = true;
@@ -285,8 +288,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var elementParams = this.params.elements[index];
     var element = this.generateForm(this.field.fields[0].field.fields, elementParams);
 
-    element.instance = new I(elementParams.type);
-
     element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
       that.dnb.dnd.press(element.$element, event.pageX, event.pageY);
       return false;
@@ -294,12 +295,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.editElement(element);
     });
 
-    element.instance.attach(element.$element);
+    // Update element
+    that.updateElement(element, index);
+
     this.elements[index] = element;
-
-    // Make resize possible
-    this.dnr.add(element.$element);
-
     return element.$element;
   };
 
@@ -325,11 +324,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         return false;
       }
 
-      element.instance = new I(that.params.elements[id].type);
-      element.instance.attach(element.$element);
-
-      // Make resize possible
-      that.dnr.add(element.$element);
+      // Update element
+      that.updateElement(element, id);
     };
 
     this.removeCallback = function () {
@@ -347,7 +343,35 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     };
 
+    element.children[5].setActive();
     this.showDialog(element.$form);
+  };
+
+  /**
+   *
+   *
+   * @param {Object} dropZone
+   * @param {int} id
+   * @returns {undefined}
+   */
+  C.prototype.updateElement = function (element, id) {
+    var params = this.params.elements[id];
+
+    // Create and add new instance
+    element.instance = new I(params.type);
+    element.instance.attach(element.$element);
+
+    // Make resize possible
+    this.dnr.add(element.$element);
+
+    var type = params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image';
+    var label = type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt;
+
+    // Update correct element options
+    this.field.fields[1].field.fields[6].options[id] = {
+      value: '' + id,
+      label: C.t(type) + ': ' + (label.length > 32 ? label.substr(0, 32) + '...' : label)
+    };
   };
 
   /**
@@ -360,7 +384,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var dropZoneParams = this.params.dropZones[index];
     var dropZone = this.generateForm(this.field.fields[1].field.fields, dropZoneParams);
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%">' + (dropZoneParams.label !== undefined ? '<div class="h5p-dq-dz-label">' + dropZoneParams.label + '</div>' : '') + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
       that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
@@ -368,12 +392,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.editDropZone(dropZone);
     });
 
-    this.dropZones[index] = dropZone;
-
     // Make resize possible
     this.dnr.add(dropZone.$dropZone);
 
+    // Add label
+    that.updateDropZone(dropZone, index);
 
+    this.dropZones[index] = dropZone;
     return dropZone.$dropZone;
   };
 
@@ -399,9 +424,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         return false;
       }
 
-      // Remove old label and add new.
-      dropZone.$dropZone.children('.h5p-dq-dz-label').remove();
-      $('<div class="h5p-dq-dz-label">' + that.params.dropZones[id].label + '</div>').appendTo(dropZone.$dropZone);
+      that.updateDropZone(dropZone, id);
     };
 
     this.removeCallback = function () {
@@ -419,7 +442,30 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     };
 
+    dropZone.children[6].setActive();
     this.showDialog(dropZone.$form);
+  };
+
+  /**
+   * Remove old label and add new.
+   *
+   * @param {Object} dropZone
+   * @param {int} id
+   * @returns {undefined}
+   */
+  C.prototype.updateDropZone = function (dropZone, id) {
+    var params = this.params.dropZones[id];
+
+    // Remove old label and add new.
+    dropZone.$dropZone.children('.h5p-dq-dz-label').remove();
+    if (params.showLabel === true) {
+      $('<div class="h5p-dq-dz-label">' + params.label + '</div>').appendTo(dropZone.$dropZone);
+    }
+
+    this.field.fields[0].field.fields[5].options[id] = {
+      value: '' + id,
+      label: params.label
+    };
   };
 
   /**
@@ -490,7 +536,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 H5PEditor.language['H5PEditor.DragQuestion'] = {
   libraryStrings: {
     insertElement: 'Insert :type',
-    done: 'FÆRDI',
-    remove: 'FJÆRN'
+    done: 'Done',
+    remove: 'Remove',
+    image: 'Image',
+    text: 'Text'
   }
 };

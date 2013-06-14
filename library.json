@@ -9,7 +9,10 @@
   "preloadedJs": [
     {
       "path": "H5PEditor.DragQuestion.js"
-    }
+    },
+    {
+      "path": "H5PEditor.DynamicCheckboxes.js"
+    },
   ],
   "preloadedCss": [
     {
