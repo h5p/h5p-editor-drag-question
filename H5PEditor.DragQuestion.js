@@ -48,10 +48,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.setSize(params);
     });
 
-    this.parent = parent;
-
     field.fields[0].field.fields[5].options = [];
-    field.fields[1].field.fields[6].options = [];
+    this.elementOptions = [];
+
+    this.parent = parent;
     this.field = field;
 
     this.passReadies = true;
@@ -368,7 +368,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var label = type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt;
 
     // Update correct element options
-    this.field.fields[1].field.fields[6].options[id] = {
+    this.elementOptions[id] = {
       value: '' + id,
       label: C.t(type) + ': ' + (label.length > 32 ? label.substr(0, 32) + '...' : label)
     };
@@ -441,6 +441,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.dropZones[i].$dropZone.data('id', i);
       }
     };
+
+    // Add only available options
+    var options = this.field.fields[1].field.fields[6].options = [];
+    for (var i = 0; i < this.elementOptions.length; i++) {
+      var dropZones = this.params.elements[i].dropZones;
+      for (var j = 0; j < dropZones.length; j++) {
+        if (dropZones[j] === (id + '')) {
+          options.push(this.elementOptions[i]);
+          break;
+        }
+      }
+    }
 
     dropZone.children[6].setActive();
     this.showDialog(dropZone.$form);
