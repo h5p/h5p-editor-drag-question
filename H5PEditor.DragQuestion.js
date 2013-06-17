@@ -306,7 +306,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var elementParams = this.params.elements[index];
     var element = this.generateForm(this.field.fields[0].field.fields, elementParams);
 
-    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>')
+    .appendTo(this.$editor)
+    .data('id', index)
+    .mousedown(function (event) {
       that.dnb.dnd.press(element.$element, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
