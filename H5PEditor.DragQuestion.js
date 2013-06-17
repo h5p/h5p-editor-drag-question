@@ -96,7 +96,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {@exp;H5PEditor@call;createItem}
    */
   C.prototype.createHtml = function () {
-    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span><div class="h5peditor-dragnbar"></div><div class="h5peditor-dragquestion">Please specify task size first.</div><div class="h5peditor-fluid-dialog"><div class="h5peditor-fd-inner"></div><div class="h5peditor-fd-buttons"><a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a><a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a></div></div>');
+    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span>'
+      + '<div class="h5peditor-dragnbar"></div>'
+      + '<div class="h5peditor-dragquestion">Please specify task size first.</div>'
+      + '<div class="h5peditor-fluid-dialog">'
+      + '  <div class="h5peditor-fd-inner"></div>'
+      + '  <div class="h5peditor-fd-buttons">'
+      + '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>'
+      + '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>'
+      + '  </div>'
+      + '</div>');
   };
 
   /**
