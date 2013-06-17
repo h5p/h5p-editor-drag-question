@@ -41,10 +41,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
 
     // Get updates for fields
-    H5PEditor.followField(parent, 'background', function (params) {
+    H5PEditor.followField(parent, 'settings/background', function (params) {
       that.setBackground(params);
     });
-    H5PEditor.followField(parent, 'size', function (params) {
+    H5PEditor.followField(parent, 'settings/size', function (params) {
       that.setSize(params);
     });
 
@@ -123,14 +123,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.setSize = function (params) {
-    if (params === undefined) {
+    this.size = params;
+  };
+
+  /**
+   * Apply new size to task editor once visible.
+   *
+   * @returns {unresolved}
+   */
+  C.prototype.setActive = function () {
+    if (this.size === undefined) {
       return;
     }
 
     var width = this.$editor.width();
     this.$editor.css({
-      height: width * (params.height / params.width),
-      fontSize: this.fontSize * (width / params.width)
+      height: width * (this.size.height / this.size.width),
+      fontSize: this.fontSize * (width / this.size.width)
     });
 
     // TODO: Should we care about resize events? Will only be an issue for responsive designs.

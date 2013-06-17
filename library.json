@@ -21,6 +21,11 @@
   ],
   "preloadedDependencies": [
     {
+      "machineName": "H5PEditor.Wizard",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
       "machineName": "FontAwesome",
       "majorVersion": 3,
       "minorVersion": 1
