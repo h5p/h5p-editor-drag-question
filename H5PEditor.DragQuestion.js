@@ -154,18 +154,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     // TODO: Should we care about resize events? Will only be an issue for responsive designs.
 
     if (this.dnb === undefined) {
-      this.initializeEditor();
+      this.activateEditor();
     }
 
     // TODO: Move elements that is outside inside.
   };
 
   /**
-   * Initialize DragNBar and add elements.
+   * Activate DragNBar and add elements.
    *
    * @returns {undefined}
    */
-  C.prototype.initializeEditor = function () {
+  C.prototype.activateEditor = function () {
     var that = this;
     this.$editor.html('').addClass('h5p-ready');
 
