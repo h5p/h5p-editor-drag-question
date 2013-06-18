@@ -53,6 +53,7 @@
 .h5peditor-dragquestion.h5p-ready {
   padding: 0;
   background-size: 100% 100%;
+  background-color: #FFFFFF;
   position: relative;
   border: 1px solid #73b897;
   border-radius: 0.25em;
