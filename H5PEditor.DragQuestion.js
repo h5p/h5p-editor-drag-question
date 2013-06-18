@@ -52,8 +52,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.elementFields = field.fields[0].field.fields;
     this.dropZoneFields = field.fields[1].field.fields;
     this.elementLibraryOptions = this.elementFields[0].options;
-    this.elementDropZoneOptions = this.elementFields[5].options = [];
-    this.dropZoneElementOptions = this.dropZoneFields[6].options;
+    this.elementDropZoneFieldWeight = 5;
+    this.elementFields[this.elementDropZoneFieldWeight].options = [];
+    this.dropZoneElementFieldWeight = 6;
     this.elementOptions = [];
 
     this.parent = parent;
@@ -374,7 +375,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     };
 
-    element.children[5].setActive();
+    element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
   };
 
@@ -476,18 +477,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     // Add only available options
-    this.dropZoneElementOptions = [];
+    var options = this.dropZoneFields[this.dropZoneElementFieldWeight].options = [];
     for (var i = 0; i < this.elementOptions.length; i++) {
       var dropZones = this.params.elements[i].dropZones;
       for (var j = 0; j < dropZones.length; j++) {
         if (dropZones[j] === (id + '')) {
-          this.dropZoneElementOptions.push(this.elementOptions[i]);
+          options.push(this.elementOptions[i]);
           break;
         }
       }
     }
 
-    dropZone.children[6].setActive();
+    dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
   };
 
@@ -507,7 +508,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       $('<div class="h5p-dq-dz-label">' + params.label + '</div>').appendTo(dropZone.$dropZone);
     }
 
-    this.elementDropZoneOptions[id] = {
+    this.elementFields[this.elementDropZoneFieldWeight].options[id] = {
       value: '' + id,
       label: params.label
     };
