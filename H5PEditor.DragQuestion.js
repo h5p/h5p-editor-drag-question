@@ -150,10 +150,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.setActive = function () {
-    if (this.size === undefined) {
+    if (this.size === undefined || this.size.width === undefined) {
       return;
     }
-
     var maxWidth = this.$item.width();
     if (this.size.width < maxWidth) {
       this.$editor.css({
