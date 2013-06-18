@@ -9,7 +9,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
    * Helps create new H5P instances. (Probably belongs in core or something...)
    *
-   * @param {type} library
+   * @param {String} library
    * @returns {@exp;H5P@pro;classFromName@call;@call;}
    */
   function I(library) {
@@ -48,7 +48,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.setSize(params);
     });
 
-    field.fields[0].field.fields[5].options = [];
+    // Get options from semantics
+    this.elementFields = field.fields[0].field.fields;
+    this.dropZoneFields = field.fields[1].field.fields;
+    this.elementLibraryOptions = this.elementFields[0].options;
+    this.elementDropZoneOptions = this.elementFields[5].options = [];
+    this.dropZoneElementOptions = this.dropZoneFields[6].options;
     this.elementOptions = [];
 
     this.parent = parent;
@@ -63,7 +68,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
    * Append field to wrapper.
    *
-   * @param {type} $wrapper
+   * @param {jQuery} $wrapper
    * @returns {undefined}
    */
   C.prototype.appendTo = function ($wrapper) {
@@ -76,6 +81,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$dialogInner = this.$dialog.children('.h5peditor-fd-inner');
     this.$errors = this.$item.children('.errors');
 
+    // Handle click events for dialog buttons.
     this.$dialog.find('.h5peditor-done').click(function () {
       if (that.doneCallback() !== false) {
         that.hideDialog();
@@ -87,6 +93,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       return false;
     });
 
+    // Get editor default font size.
     this.fontSize = parseInt(this.$editor.css('fontSize'));
   };
 
@@ -139,7 +146,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
    * Apply new size to task editor once visible.
    *
-   * @returns {unresolved}
+   * @returns {undefined}
    */
   C.prototype.setActive = function () {
     if (this.size === undefined) {
@@ -170,8 +177,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var that = this;
     this.$editor.html('').addClass('h5p-ready');
 
+    // Create new bar
     this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor);
 
+    // Add event handling
     this.dnb.stopMovingCallback = function (x, y) {
       // Update params when the element is dropped.
       var id = that.dnb.dnd.$element.data('id');
@@ -179,7 +188,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       params.x = x;
       params.y = y;
     };
-
     this.dnb.dnd.releaseCallback = function () {
       // Edit element when it is dropped.
       if (that.dnb.newElement) {
@@ -199,7 +207,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       params.height = newHeight;
     };
 
-
     // Add Elements
     this.elements = [];
     for (var i = 0; i < this.params.elements.length; i++) {
@@ -214,9 +221,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Generate sub forms that's ready to use in the dialog.
    *
-   * @param {type} semantics
-   * @param {type} params
+   * @param {Object} semantics
+   * @param {Object} params
    * @returns {_L8.C.prototype.generateElementForm.Anonym$2}
    */
   C.prototype.generateForm = function (semantics, params) {
@@ -240,11 +248,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.getButtons = function () {
     var that = this;
-    var options = this.field.fields[0].field.fields[0].options;
 
     var buttons = [];
-    for (var i = 0; i < options.length; i++) {
-      buttons.push(this.getButton(options[i]));
+    for (var i = 0; i < this.elementLibraryOptions.length; i++) {
+      buttons.push(this.getButton(this.elementLibraryOptions[i]));
     }
 
     buttons.push({
@@ -267,9 +274,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Generate a single element button for the DnB.
    *
-   * @param {type} library
-   * @returns {undefined}
+   * @param {String} library Library name + version
+   * @returns {Object} DnB button semantics
    */
   C.prototype.getButton = function (library) {
     var that = this;
@@ -300,12 +308,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * Insert element at given params index.
    *
    * @param {int} index
-   * @returns {undefined}
+   * @returns {jQuery} The element's DOM
    */
   C.prototype.insertElement = function (index) {
     var that = this;
     var elementParams = this.params.elements[index];
-    var element = this.generateForm(this.field.fields[0].field.fields, elementParams);
+    var element = this.generateForm(this.elementFields, elementParams);
 
     element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>')
     .appendTo(this.$editor)
@@ -325,8 +333,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Set callbacks and open dialog with the form for the given element.
    *
-   * @param {type} element
+   * @param {Object} element
    * @returns {undefined}
    */
   C.prototype.editElement = function (element) {
@@ -370,9 +379,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Update the element with new data.
    *
-   *
-   * @param {Object} dropZone
+   * @param {Object} element
    * @param {int} id
    * @returns {undefined}
    */
@@ -397,14 +406,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Insert the drop zone at the given index.
    *
-   * @param {type} index
+   * @param {int} index
    * @returns {unresolved}
    */
   C.prototype.insertDropZone = function (index) {
     var that = this;
     var dropZoneParams = this.params.dropZones[index];
-    var dropZone = this.generateForm(this.field.fields[1].field.fields, dropZoneParams);
+    var dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
       that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
@@ -425,8 +435,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Set callbacks and open dialog with the form for the given drop zone.
    *
-   * @param {type} element
+   * @param {Object} dropZone
    * @returns {undefined}
    */
   C.prototype.editDropZone = function (dropZone) {
@@ -465,12 +476,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     // Add only available options
-    var options = this.field.fields[1].field.fields[6].options = [];
+    this.dropZoneElementOptions = [];
     for (var i = 0; i < this.elementOptions.length; i++) {
       var dropZones = this.params.elements[i].dropZones;
       for (var j = 0; j < dropZones.length; j++) {
         if (dropZones[j] === (id + '')) {
-          options.push(this.elementOptions[i]);
+          this.dropZoneElementOptions.push(this.elementOptions[i]);
           break;
         }
       }
@@ -496,15 +507,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       $('<div class="h5p-dq-dz-label">' + params.label + '</div>').appendTo(dropZone.$dropZone);
     }
 
-    this.field.fields[0].field.fields[5].options[id] = {
+    this.elementDropZoneOptions[id] = {
       value: '' + id,
       label: params.label
     };
   };
 
   /**
+   * Attach form to dialog and show.
    *
-   * @param {type} $form
+   * @param {jQuery} $form
    * @returns {undefined}
    */
   C.prototype.showDialog = function ($form) {
@@ -519,6 +531,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Hide dialog and detach form.
    *
    * @returns {undefined}
    */
