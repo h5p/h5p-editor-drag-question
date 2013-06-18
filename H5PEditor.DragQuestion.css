@@ -20,12 +20,12 @@
   width: 1em;
   line-height: 1.5em;
   text-align: center;
-  border: 0.0625em solid #b881e7;
+  border: 0.0625em solid #027AC6;
   margin: 0.25em;
   border-radius: 0.5em;
   display: block;
   padding: 0.25em 0.75em;
-  background: #d8c6e7;
+  background: #CEE5FF;
   color: #000;
 }
 .h5peditor-dragnbar .h5p-dragnbar-a:before {
