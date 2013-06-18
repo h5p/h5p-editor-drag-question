@@ -98,7 +98,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.createHtml = function () {
     return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span>'
       + '<div class="h5peditor-dragnbar"></div>'
-      + '<div class="h5peditor-dragquestion">Please specify task size first.</div>'
+      + '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>'
       + '<div class="h5peditor-fluid-dialog">'
       + '  <div class="h5peditor-fd-inner"></div>'
       + '  <div class="h5peditor-fd-buttons">'
@@ -117,11 +117,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.setBackground = function (params) {
     var path = params === undefined ? '' : params.path;
     if (path !== '') {
-      path = H5PEditor.filesPath + (params.tmp !== undefined && params.tmp ? '/h5peditor/' : '/h5p/content/' + H5PEditor.contentId + '/') + path;
+      // Add correct base path
+      path = 'url(' + H5PEditor.filesPath + (params.tmp !== undefined && params.tmp ? '/h5peditor/' : '/h5p/content/' + H5PEditor.contentId + '/') + path + ')';
     }
 
     this.$editor.css({
-      backgroundImage: 'url(' + path + ')'
+      backgroundImage: path
     });
   };
 
@@ -572,6 +573,7 @@ H5PEditor.language['H5PEditor.DragQuestion'] = {
     done: 'Done',
     remove: 'Remove',
     image: 'Image',
-    text: 'Text'
+    text: 'Text',
+    noTaskSize: 'Please specify task size first.'
   }
 };
