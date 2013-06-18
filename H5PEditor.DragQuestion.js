@@ -154,11 +154,28 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       return;
     }
 
-    var width = this.$editor.width();
-    this.$editor.css({
-      height: width * (this.size.height / this.size.width),
-      fontSize: this.fontSize * (width / this.size.width)
-    });
+    var maxWidth = this.$item.width();
+    if (this.size.width < maxWidth) {
+      this.$editor.css({
+        width: this.size.width,
+        height: this.size.height,
+        fontSize: this.fontSize
+      });
+      this.$dnbWrapper.css({
+        width: this.size.width
+      });
+    }
+    else {
+      this.$editor.css({
+        width: '100%',
+        height: maxWidth * (this.size.height / this.size.width),
+        fontSize: this.fontSize * (maxWidth / this.size.width)
+      });
+      this.$dnbWrapper.css({
+        width: '100%'
+      });
+    }
+    
 
     // TODO: Should we care about resize events? Will only be an issue for responsive designs.
 
