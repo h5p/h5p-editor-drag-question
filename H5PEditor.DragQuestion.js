@@ -104,8 +104,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {@exp;H5PEditor@call;createItem}
    */
   C.prototype.createHtml = function () {
-    return H5PEditor.createItem(this.field.widget, '<span class="h5peditor-label">' + this.field.label + '</span>'
-      + '<div class="h5peditor-dragnbar"></div>'
+    var html = '';
+    if (this.field.label !== 0) {
+      html += '<span class="h5peditor-label">' + this.field.label + '</span>';
+    }
+
+    html += '<div class="h5peditor-dragnbar"></div>'
       + '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>'
       + '<div class="h5peditor-fluid-dialog">'
       + '  <div class="h5peditor-fd-inner"></div>'
@@ -113,7 +117,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       + '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>'
       + '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>'
       + '  </div>'
-      + '</div>');
+      + '</div>';
+
+    if (this.field.description !== undefined) {
+      html += '<div class="h5peditor-field-description">' + this.field.description + '</div>';
+    }
+
+    return H5PEditor.createItem(this.field.widget, html);
   };
 
   /**
@@ -174,7 +184,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         width: '100%'
       });
     }
-    
+
 
     // TODO: Should we care about resize events? Will only be an issue for responsive designs.
 
@@ -385,6 +395,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.elements.splice(id, 1);
       that.params.elements.splice(id, 1);
 
+      // Remove from options
+      this.elementOptions.splice(id, 1);
+
       // Reindex all elements
       for (var i = 0; i < that.elements.length; i++) {
         that.elements[i].$element.data('id', i);
@@ -485,6 +498,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       dropZone.$dropZone.remove();
       that.dropZones.splice(id, 1);
       that.params.dropZones.splice(id, 1);
+
+      // Remove from elements
+      this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
 
       // Reindex all elements
       for (var i = 0; i < that.dropZones.length; i++) {
