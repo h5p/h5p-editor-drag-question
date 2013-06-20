@@ -341,6 +341,31 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var elementParams = this.params.elements[index];
     var element = this.generateForm(this.elementFields, elementParams);
 
+    var library = this.children[0];
+
+    // Get image aspect ratio
+    var libraryChange = function () {
+      if (library.children[0].field.type === 'image') {
+        library.children[0].changes.push(function (params) {
+          if (params === undefined) {
+            return;
+          }
+
+          if (params.width !== undefined && params.height !== undefined) {
+            elementParams.height = elementParams.width * (params.height / params.width);
+            element.$element.css('height', elementParams.height + 'em');
+          }
+        });
+      }
+    };
+
+    if (library.children === undefined) {
+      library.changes.push(libraryChange);
+    }
+    else {
+      libraryChange();
+    }
+
     element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>')
     .appendTo(this.$editor)
     .data('id', index)
