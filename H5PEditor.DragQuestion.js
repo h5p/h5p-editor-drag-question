@@ -276,12 +276,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.getButtons = function () {
     var that = this;
 
-    var buttons = [];
-    for (var i = 0; i < this.elementLibraryOptions.length; i++) {
-      buttons.push(this.getButton(this.elementLibraryOptions[i]));
-    }
-
-    buttons.push({
+    var buttons = [{
       id: 'dropzone',
       title: 'Drop Zone',
       createElement: function () {
@@ -295,7 +290,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
         return that.insertDropZone(that.params.dropZones.length - 1);
       }
-    });
+    }];
+
+    for (var i = 0; i < this.elementLibraryOptions.length; i++) {
+      buttons.push(this.getButton(this.elementLibraryOptions[i]));
+    }
 
     return buttons;
   };
