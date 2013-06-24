@@ -13,7 +13,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {@exp;H5P@pro;classFromName@call;@call;}
    */
   function I(library) {
-    return new (H5P.classFromName(library.library.split(' ')[0]))(library.params, H5P.getContentPath(H5PEditor.contentId));
+    return new (H5P.classFromName(library.library.split(' ')[0]))(library.params, H5PEditor.contentId);
   }
 
   /**
@@ -136,7 +136,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var path = params === undefined ? '' : params.path;
     if (path !== '') {
       // Add correct base path
-      path = 'url(' + H5PEditor.filesPath + (params.tmp !== undefined && params.tmp ? '/h5peditor/' : '/h5p/content/' + H5PEditor.contentId + '/') + path + ')';
+      path = 'url(' + H5P.getContentPath(H5PEditor.contentId) + path + ')';
     }
 
     this.$editor.css({
@@ -605,6 +605,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.validate = function () {
     return true;
+  };
+
+  /**
+   * Remove the field from DOM.
+   *
+   * @returns {undefined}
+   */
+  C.prototype.remove = function () {
+    this.$item.remove();
   };
 
   /**
