@@ -1,22 +1,22 @@
 .h5peditor-dragquestion-wrapper {
   position: relative;
 }
-.h5peditor-dragnbar {
+.dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
   overflow: hidden;
 }
-.h5peditor-dragnbar .h5p-dragnbar-ul {
+.dragQuestion .h5p-dragnbar-ul {
   float: right;
   margin: 0;
   list-style: none;
 }
-.h5peditor-dragnbar .h5p-dragnbar-li {
+.dragQuestion .h5p-dragnbar-li {
   float: left;
   margin: 0;
   padding: 0;
   background: transparent;
 }
-.h5peditor-dragnbar .h5p-dragnbar-a {
+.dragQuestion .h5p-dragnbar-a {
   width: 1em;
   line-height: 1.5em;
   text-align: center;
@@ -28,22 +28,25 @@
   background: #CEE5FF;
   color: #000;
 }
-.h5peditor-dragnbar .h5p-dragnbar-a:before {
+.dragQuestion .h5p-dragnbar-a:link, .dragQuestion .h5p-dragnbar-a:visited  {
+  color: #000;
+}
+.dragQuestion .h5p-dragnbar-a:before {
   font-family: "H5PFontAwesome";
   content: "?";
 }
-.h5peditor-dragnbar .h5p-dragnbar-a:hover {
+.dragQuestion .h5p-dragnbar-a:hover {
   text-decoration: none;
 }
-.h5peditor-dragnbar .h5p-dragnbar-text-button:before {
+.dragQuestion .h5p-dragnbar-text-button:before {
   font-size: 1.125em;
   font-weight: bold;
   content: "T";
 }
-.h5peditor-dragnbar .h5p-dragnbar-image-button:before {
+.dragQuestion .h5p-dragnbar-image-button:before {
   content: "\f03e";
 }
-.h5peditor-dragnbar .h5p-dragnbar-dropzone-button:before {
+.dragQuestion .h5p-dragnbar-dropzone-button:before {
   content: "\f140";
 }
 
