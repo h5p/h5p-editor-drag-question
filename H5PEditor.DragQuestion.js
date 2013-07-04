@@ -433,7 +433,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var params = this.params.elements[id];
 
     // Create and add new instance
-    element.instance = new H5P.instance(params.type);
+    element.instance = H5P.newInstance(params.type);
     element.instance.attach(element.$element);
 
     // Make resize possible
