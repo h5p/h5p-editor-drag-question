@@ -7,16 +7,6 @@ var H5PEditor = H5PEditor || {};
  */
 H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
-   * Helps create new H5P instances. (Probably belongs in core or something...)
-   *
-   * @param {String} library
-   * @returns {@exp;H5P@pro;classFromName@call;@call;}
-   */
-  function I(library) {
-    return new (H5P.classFromName(library.library.split(' ')[0]))(library.params, H5PEditor.contentId);
-  }
-
-  /**
    * Initialize interactive video editor.
    *
    * @param {Object} parent
@@ -443,7 +433,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var params = this.params.elements[id];
 
     // Create and add new instance
-    element.instance = new I(params.type);
+    element.instance = new H5P.instance(params.type);
     element.instance.attach(element.$element);
 
     // Make resize possible
