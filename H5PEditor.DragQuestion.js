@@ -71,9 +71,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       that.setSize(params);
     });
 
-    // Get options from semantics
-    this.elementFields = field.fields[0].field.fields;
-    this.dropZoneFields = field.fields[1].field.fields;
+    // Get options from semantics, clone since we'll be changing values.
+    this.elementFields = H5P.cloneObject(field.fields[0].field.fields, true);
+    this.dropZoneFields = H5P.cloneObject(field.fields[1].field.fields, true);
     this.elementLibraryOptions = this.elementFields[0].options;
     this.elementDropZoneFieldWeight = 5;
     this.elementFields[this.elementDropZoneFieldWeight].options = [];
