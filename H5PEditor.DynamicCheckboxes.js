@@ -3,8 +3,9 @@ var H5PEditor = H5PEditor || {};
 /**
  * Editor widget module for dynamic value checkboxes.
  *
- * Displays a list of checkboxes, and the list is regenerated each time the field is set as active
- * unlike H5PEditor.select where the options are generated when the field is initialized, and afther that stays the same.
+ * Displays a list of checkboxes, and the list is regenerated each time the
+ * field is set as active unlike H5PEditor.select where the options are
+ * generated when the field is initialized, and after that stays the same.
  *
  * Other fields may change the options in dynamicCheckboxes
  */
@@ -32,7 +33,7 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
   };
 
   /**
-   * Append widget to from.
+   * Append widget to form.
    *
    * @param {jQuery} $wrapper
    * @returns {undefined}

@@ -493,7 +493,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var dropZoneParams = this.params.dropZones[index];
     var dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>').appendTo(this.$editor).data('id', index).mousedown(function (event) {
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+    .appendTo(this.$editor)
+    .data('id', index)
+    .mousedown(function (event) {
       that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
       return false;
     }).dblclick(function () {
