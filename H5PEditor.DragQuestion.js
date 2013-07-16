@@ -33,6 +33,8 @@ if (H5P.newInstance === undefined) {
   };
 }
 
+// TODO: Rewrite to use H5P.DragQuestion for previewing!
+
 /**
  * Interactive Video editor widget module
  *
@@ -331,7 +333,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.getButton = function (library) {
     var that = this;
     var id = library.split(' ')[0].split('.')[1].toLowerCase();
-
+    var h = id == 'text' ? 1.25 : 5;
     return {
       id: id,
       title: C.t('insertElement', {':type': id}),
@@ -344,7 +346,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           x: 0,
           y: 0,
           width: 5,
-          height: 2.5,
+          height: h,
           dropZones: []
         });
 
@@ -480,6 +482,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       value: '' + id,
       label: C.t(type) + ': ' + (label.length > 32 ? label.substr(0, 32) + '...' : label)
     };
+
+    if (params.dropZones !== undefined && params.dropZones.length) {
+      element.$element.addClass('h5p-draggable');
+    }
+    else {
+      element.$element.removeClass('h5p-draggable');
+    }
   };
 
   /**

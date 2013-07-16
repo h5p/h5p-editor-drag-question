@@ -70,12 +70,19 @@
   border: 0.0625em solid #dcdcdc;
   cursor: pointer;
   text-align: center;
-  padding: 0.125em;
+  padding: 0.5em 0.125em;
+}
+.h5p-draggable {
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0.4em 0.4em 0.5em rgba(0,0,0,0.5);
 }
 .h5p-dq-element:hover {
   border: 0.0625em solid #aaaaaa;
 }
-
+.h5p-dq-element p {
+  margin: 0;
+  padding: 0;
+}
 .h5p-dq-dz {
   position: absolute;
   border: 0.125em solid #f5f5f5;
@@ -116,11 +123,11 @@ a.h5peditor-fd-button:hover {
   text-decoration: none;
 }
 .h5p-dq-dz-label {
-  position: absolute;
-  background: #efe2c9;
-  font-size: 0.5em;
+  background-color: rgba(255, 255, 255, 0.92);
+  font-size: 0.8em;
+  left: 0;
   line-height: 1.25em;
-  top: -1.375em;
-  left: -0.125em;
-  padding: 0 0.25em;
+  padding: 0.1em 0.25em 0.7em;
+  position: absolute;
+  top: -1.5em;
 }
