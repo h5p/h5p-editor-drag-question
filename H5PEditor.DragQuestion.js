@@ -308,7 +308,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           y: 0,
           width: 5,
           height: 2.5,
-          correctElements: []
+          correctElements: ''
         });
 
         return that.insertDropZone(that.params.dropZones.length - 1);
@@ -489,9 +489,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {unresolved}
    */
   C.prototype.insertDropZone = function (index) {
-    var that = this;
-    var dropZoneParams = this.params.dropZones[index];
-    var dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
+    var that = this,
+      dropZoneParams = this.params.dropZones[index],
+      dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
     .appendTo(this.$editor)
@@ -508,7 +508,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnr.add(dropZone.$dropZone);
 
     // Add label
-    that.updateDropZone(dropZone, index);
+    this.updateDropZone(dropZone, index);
 
     this.dropZones[index] = dropZone;
     return dropZone.$dropZone;
@@ -521,8 +521,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.editDropZone = function (dropZone) {
-    var that = this;
-    var id = dropZone.$dropZone.data('id');
+    var that = this,
+      id = dropZone.$dropZone.data('id');
 
     this.doneCallback = function () {
       // Validate form

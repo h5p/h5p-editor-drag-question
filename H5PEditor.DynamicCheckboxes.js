@@ -22,15 +22,21 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
   function C(parent, field, params, setValue) {
     this.parent = parent;
     this.field = field;
+    this.setValue = setValue;
 
     if (params === undefined) {
-      this.params = [];
+      if (this.field.multiple) {
+        this.params = [];
+      }
+      else {
+        this.params = '';
+      }
       setValue(field, this.params);
     }
     else {
       this.params = params;
     }
-  };
+  }
 
   /**
    * Append widget to form.
@@ -50,22 +56,31 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
    * @returns {undefined}
    */
   C.prototype.setActive = function () {
-    var that = this;
-    var html = '';
+    var that = this,
+      html = '',
+      i, j, option, selected;
 
-    for (var i = 0; i < this.field.options.length; i++) {
-      var option = this.field.options[i];
-      var selected = false;
+    for (i = 0; i < this.field.options.length; i++) {
+      option = this.field.options[i];
+      selected = false;
 
-      // Check if selected
-      for (var j = 0; j < this.params.length; j++) {
-        if (this.params[j] === option.value) {
-          selected = true;
-          break;
+      if (this.field.multiple) {
+        // Check if selected
+        for (j = 0; j < this.params.length; j++) {
+          if (this.params[j] === option.value) {
+            selected = true;
+            break;
+          }
         }
+        html += '<li><label class="h5p-editor-label"><input type="checkbox" value="' + option.value + '"' + (selected ? ' checked="checked"' : '') + '/>' + option.label + '</label></li>';
       }
-
-      html += '<li><label class="h5p-editor-label"><input type="checkbox" value="' + option.value + '"' + (selected ? ' checked="checked"' : '') + '/>' + option.label + '</label></li>';
+      else {
+        // Check if selected
+        if (this.params === option.value) {
+          selected = true;
+        }
+        html += '<li><label class="h5p-editor-label"><input type="radio" name="dynboxradio1" value="' + option.value + '"' + (selected ? ' checked="checked"' : '') + '/>' + option.label + '</label></li>';
+      }
     }
 
     this.$item.html(html ? '<div class="h5peditor-label">' + this.field.label + '</div><ul class="h5peditor-dynamiccheckboxes-select">' + html + '</ul>' : '');
@@ -81,16 +96,25 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
    * @param {type} $checkbox
    * @returns {undefined}
    */
-  C.prototype.change = function ($checkbox) {
-    var value = $checkbox.val();
-    if ($checkbox.is(':checked')) {
-      this.params.push(value);
+  C.prototype.change = function ($input) {
+    var i, value = $input.val();
+
+    if (this.field.multiple) {
+      if ($input.is(':checked')) {
+        this.params.push(value);
+      }
+      else {
+        for (i = 0; i < this.params.length; i++) {
+          if (this.params[i] === value) {
+            this.params.splice(i, 1);
+          }
+        }
+      }
     }
     else {
-      for (var i = 0; i < this.params.length; i++) {
-        if (this.params[i] === value) {
-          this.params.splice(i, 1);
-        }
+      if ($input.is(':checked')) {
+        this.params = value;
+        this.setValue(this.field, value);
       }
     }
   };
