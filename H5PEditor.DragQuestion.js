@@ -436,6 +436,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     this.removeCallback = function () {
+      var i, j, oldid;
+
       // Remove element form
       H5PEditor.removeChildren(element.children);
 
@@ -447,9 +449,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       // Remove from options
       this.elementOptions.splice(id, 1);
 
+      // If element was the answer for a dropZone, remove it from answer.
+      for (i = 0; i < that.dropZones.length; i++) {
+        if (that.dropZones[i].correctElements === '' + id) {
+          that.dropZones[i].correctElements = '';
+        }
+      }
+
       // Reindex all elements
-      for (var i = 0; i < that.elements.length; i++) {
+      for (i = 0; i < that.elements.length; i++) {
+        // If index changes, and element is answer for dropZone, change in dropZone too.
+        oldid = that.elements[i].$element.data('id');
         that.elements[i].$element.data('id', i);
+        for (j = 0; i < that.dropZones.length; i++) {
+          if (that.dropZones[j].correctElements === '' + oldid) {
+            that.dropZones[j].correctElements = '' + i;
+          }
+        }
       }
     };
 
@@ -550,6 +566,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     this.removeCallback = function () {
+      var i, j;
       // Remove element form
       H5PEditor.removeChildren(dropZone.children);
 
@@ -561,17 +578,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       // Remove from elements
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
 
-      // Reindex all elements
-      for (var i = 0; i < that.dropZones.length; i++) {
+      // Remove dropZone from element params properly
+      for (i = 0; i < that.elements.length; i++) {
+        that.params.elements[i].dropZones.splice(id, 1);
+      }
+
+      // Reindex all dropzones
+      for (i = 0; i < that.dropZones.length; i++) {
         that.dropZones[i].$dropZone.data('id', i);
       }
     };
 
     // Add only available options
     var options = this.dropZoneFields[this.dropZoneElementFieldWeight].options = [];
-    for (var i = 0; i < this.elementOptions.length; i++) {
-      var dropZones = this.params.elements[i].dropZones;
-      for (var j = 0; j < dropZones.length; j++) {
+    var dropZones;
+    for (i = 0; i < this.elementOptions.length; i++) {
+      dropZones = this.params.elements[i].dropZones;
+      for (j = 0; j < dropZones.length; j++) {
         if (dropZones[j] === (id + '')) {
           options.push(this.elementOptions[i]);
           break;
