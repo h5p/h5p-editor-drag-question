@@ -579,8 +579,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
 
       // Remove dropZone from element params properly
-      for (i = 0; i < that.elements.length; i++) {
-        that.params.elements[i].dropZones.splice(id, 1);
+      for (i = 0; i < that.params.elements.length; i++) {
+        pos = ns.$.inArray(id, that.params.elements[i].dropZones)
+        if (pos !== -1) {
+          that.params.elements[i].dropZones.splice(pos, 1);
+          i--;
+        }
       }
 
       // Reindex all dropzones
