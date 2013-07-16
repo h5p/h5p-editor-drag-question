@@ -461,7 +461,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         // If index changes, and element is answer for dropZone, change in dropZone too.
         oldid = that.elements[i].$element.data('id');
         that.elements[i].$element.data('id', i);
-        for (j = 0; i < that.params.dropZones.length; i++) {
+
+        for (j = 0; j < that.params.dropZones.length; j++) {
           if (that.params.dropZones[j].correctElements === '' + oldid) {
             that.params.dropZones[j].correctElements = '' + i;
           }
@@ -482,7 +483,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.updateElement = function (element, id) {
     var params = this.params.elements[id];
-
     // Create and add new instance
     element.instance = H5P.newInstance(params.type);
     element.instance.attach(element.$element);
