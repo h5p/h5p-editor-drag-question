@@ -284,7 +284,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     H5PEditor.processSemanticsChunk(semantics, params, $form, this);
     var $lib = $form.children('.library:first');
     if ($lib.length !== 0) {
-      $lib.children('label, select').hide().end().children('.libwrap').css('margin-top', '0');
+      $lib.children('label, select, .h5peditor-field-description').hide().end().children('.libwrap').css('margin-top', '0');
     }
 
     return {
