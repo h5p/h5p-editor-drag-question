@@ -105,7 +105,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$dnbWrapper = this.$item.children('.h5peditor-dragnbar');
     this.$dialog = this.$item.children('.h5peditor-fluid-dialog');
     this.$dialogInner = this.$dialog.children('.h5peditor-fd-inner');
-    this.$errors = this.$item.children('.errors');
+    this.$errors = this.$item.children('.h5p-errors');
 
     // Handle click events for dialog buttons.
     this.$dialog.find('.h5peditor-done').click(function () {
