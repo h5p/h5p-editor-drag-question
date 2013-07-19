@@ -246,6 +246,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         setTimeout(function () {
           that.dnb.dnd.$element.dblclick();
         }, 1);
+        that.dnb.newElement = false;
       }
     };
     this.dnb.attach(this.$dnbWrapper);
