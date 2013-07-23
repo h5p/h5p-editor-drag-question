@@ -656,9 +656,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.hideDialog = function () {
-    this.$currentForm.detach();
-    this.$dialog.hide();
-    this.$editor.add(this.$dnbWrapper).show();
+    // Timeout is to give CKEditor blur handler a slight chance of being run
+    // before the ground is ripped from beneath its feet.
+    var self = this;
+    setTimeout(function () {
+      self.$currentForm.detach();
+      self.$dialog.hide();
+      self.$editor.add(self.$dnbWrapper).show();
+    }, 200);
   };
 
   /**
