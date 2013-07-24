@@ -657,9 +657,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.hideDialog = function () {
     // Attempt to find and close CKEditor instances before detaching.
-    if (H5PEditor.Html && H5PEditor.Html.current && H5PEditor.Html.current.ckeditor) {
-      H5PEditor.Html.current.ckeditor.destroy();
-      H5PEditor.Html.current = undefined;
+    if (H5PEditor.Html) {
+      H5PEditor.Html.removeWysiwyg();
     }
 
     this.$currentForm.detach();
