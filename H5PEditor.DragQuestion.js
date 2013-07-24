@@ -161,7 +161,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var path = params === undefined ? '' : params.path;
     if (path !== '') {
       // Add correct base path
-      path = 'url(' + H5P.getPath(path, H5PEditor.contentId) + ')';
+      path = 'url("' + H5P.getPath(path, H5PEditor.contentId) + '")';
     }
 
     this.$editor.css({
