@@ -131,3 +131,15 @@ a.h5peditor-fd-button:hover {
   position: absolute;
   top: -1.5em;
 }
+.h5peditor-dynamiccheckboxes-select, .h5peditor-dynamiccheckboxes-select > li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: transparent;
+}
+.h5peditor-dynamiccheckboxes-select > li {
+  margin: 0.1em 1em;
+}
+.h5peditor-dynamiccheckboxes-select > li > .h5p-editor-label {
+  font-weight: normal;
+}
