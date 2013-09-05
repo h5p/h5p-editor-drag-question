@@ -547,8 +547,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.editDropZone = function (dropZone) {
-    var that = this,
-      id = dropZone.$dropZone.data('id');
+    var that = this;
+    var i, j, id = dropZone.$dropZone.data('id');
 
     this.doneCallback = function () {
       // Validate form
@@ -567,7 +567,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     this.removeCallback = function () {
-      var i, j;
       // Remove element form
       H5PEditor.removeChildren(dropZone.children);
 
@@ -581,10 +580,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Remove dropZone from element params properly
       for (i = 0; i < that.params.elements.length; i++) {
-        pos = ns.$.inArray(id, that.params.elements[i].dropZones)
-        if (pos !== -1) {
-          that.params.elements[i].dropZones.splice(pos, 1);
-          i--;
+        var dropZones = that.params.elements[i].dropZones;
+        for (j = 0; j < dropZones.length; j++) {
+          if (parseInt(dropZones[j]) === id) {
+            dropZones.splice(j, 1);
+            if (!dropZones.length) {
+              that.elements[i].$element.removeClass('h5p-draggable');
+            }
+            break;
+          }
         }
       }
 

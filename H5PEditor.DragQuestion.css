@@ -66,15 +66,15 @@
   position: absolute;
   overflow: hidden;
   line-height: 1.25em;
-  border-radius: 0.5em;
   border: 0.0625em solid #dcdcdc;
   cursor: pointer;
   text-align: center;
-  padding: 0.5em 0.125em;
 }
 .h5p-draggable {
   background-color: rgba(255, 255, 255, 0.92);
   box-shadow: 0.4em 0.4em 0.5em rgba(0,0,0,0.5);
+  padding: 0.5em 0.125em;
+  border-radius: 0.5em;
 }
 .h5p-dq-element:hover {
   border: 0.0625em solid #aaaaaa;
