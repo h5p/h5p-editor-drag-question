@@ -259,6 +259,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       params.width = newWidth;
       params.height = newHeight;
     };
+    this.dnr.snap = 10;
+
+    H5P.$body.keydown(function (event) {
+      if (event.keyCode === 17 && that.dnr.snap !== undefined) {
+        delete that.dnr.snap;
+      }
+    }).keyup(function (event) {
+      if (event.keyCode === 17) {
+        that.dnr.snap = 10;
+      }
+    });
 
     // Add Elements
     this.elements = [];
@@ -506,6 +517,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     else {
       element.$element.removeClass('h5p-draggable');
     }
+
+    if (params.backgroundOpacity === undefined) {
+      params.backgroundOpacity = 100;
+    }
+    element.$element.css('backgroundColor', 'rgba(255,255,255,' + (params.backgroundOpacity / 100) + ')');
   };
 
   /**
@@ -629,12 +645,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     dropZone.$dropZone.children('.h5p-dq-dz-label').remove();
     if (params.showLabel === true) {
       $('<div class="h5p-dq-dz-label">' + params.label + '</div>').appendTo(dropZone.$dropZone);
+      dropZone.$dropZone.addClass('h5p-has-label');
+    }
+    else {
+      dropZone.$dropZone.removeClass('h5p-has-label');
     }
 
     this.elementFields[this.elementDropZoneFieldWeight].options[id] = {
       value: '' + id,
       label: params.label
     };
+
+    if (params.backgroundOpacity === undefined) {
+      params.backgroundOpacity = 100;
+    }
+    dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')).css('backgroundColor', 'rgba(255,255,255,' + (params.backgroundOpacity / 100) + ')');
   };
 
   /**
