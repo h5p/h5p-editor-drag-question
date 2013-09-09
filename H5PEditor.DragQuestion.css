@@ -164,3 +164,6 @@ a.h5peditor-fd-button:hover {
 .h5peditor-dynamiccheckboxes-select > li > .h5p-editor-label {
   font-weight: normal;
 }
+.field.dynamicCheckboxes .h5p-selectall {
+  font-size: 0.75em;
+}

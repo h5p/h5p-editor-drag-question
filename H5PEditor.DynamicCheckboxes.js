@@ -83,17 +83,53 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
       }
     }
 
-    this.$item.html(html ? '<div class="h5peditor-label">' + this.field.label + '</div><ul class="h5peditor-dynamiccheckboxes-select">' + html + '</ul>' : '');
+    this.$item.html(html ? '<div class="h5peditor-label">' + this.field.label + '</div>' + (this.field.multiple ? '<a href="#" class="h5p-selectall">' + H5PEditor.t('H5PEditor.DynamicCheckboxes', 'selectAll') + '</a>' : '') + '<ul class="h5peditor-dynamiccheckboxes-select">' + html + '</ul>' : '');
 
-    this.$item.find('input').change(function () {
+    var updateSelectall, $a, $checkboxes = this.$item.find('input').change(function () {
       that.change($(this));
+
+      // If all is checked change select all button.
+      updateSelectAll();
     });
+
+    $a = this.$item.find('.h5p-selectall').click(function () {
+      if ($a.hasClass('h5p-deselectall')) {
+        $checkboxes.each(function () {
+          var $this = $(this);
+          if ($this.is(':checked')) {
+            $this.prop('checked', false).change();
+          }
+        });
+      }
+      else {
+        $checkboxes.each(function () {
+          var $this = $(this);
+          if (!$this.is(':checked')) {
+            $this.prop('checked', true).change();
+          }
+        });
+      }
+
+      return false;
+    });
+
+    updateSelectAll = function () {
+      if ($checkboxes.length) {
+        if ($checkboxes.length === $checkboxes.filter(':checked').length) {
+         $a.addClass('h5p-deselectall').text(H5PEditor.t('H5PEditor.DynamicCheckboxes', 'deselectAll'));
+        }
+        else {
+          $a.removeClass('h5p-deselectall').text(H5PEditor.t('H5PEditor.DynamicCheckboxes', 'selectAll'));
+        }
+      }
+    };
+    updateSelectAll();
   };
 
   /**
    * Update params with changes to checkbox.
    *
-   * @param {type} $checkbox
+   * @param {jQuery} $input
    * @returns {undefined}
    */
   C.prototype.change = function ($input) {
@@ -138,3 +174,11 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
 
   return C;
 })(H5P.jQuery);
+
+// Add translations
+H5PEditor.language["H5PEditor.DynamicCheckboxes"] = {
+  "libraryStrings": {
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all"
+  }
+};
