@@ -66,7 +66,6 @@
   position: absolute;
   overflow: hidden;
   line-height: 1.25em;
-  cursor: pointer;
   z-index: 1;
 }
 .h5p-dq-element.h5p-text {
@@ -80,6 +79,7 @@
   z-index: 3;
   text-align: center;
   border: 1px solid #dcdcdc;
+  cursor: pointer;
 }
 .h5p-draggable > ul {
   text-align: left;

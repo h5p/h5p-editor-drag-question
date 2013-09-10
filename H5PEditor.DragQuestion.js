@@ -345,7 +345,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.getButton = function (library) {
     var that = this;
     var id = library.split(' ')[0].split('.')[1].toLowerCase();
-    var h = id == 'text' ? 1.25 : 5;
+    var h = id === 'text' ? 1.25 : 5;
     return {
       id: id,
       title: C.t('insertElement', {':type': id}),
@@ -445,6 +445,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Update element
       that.updateElement(element, id);
+
+      // TODO: Resize element if it's to small
+//      var params = that.params.elements[id];
+//      if (params.type.library.split(' ')[0] === 'H5P.Text' && (params.dropZones === undefined || params.dropZones.length === 0)) {
+//        console.log('Are you too small sir?', params.type.params.text);
+//      }
     };
 
     this.removeCallback = function () {
@@ -495,6 +501,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.updateElement = function (element, id) {
     var params = this.params.elements[id];
+
     // Create and add new instance
     element.instance = H5P.newInstance(params.type);
     element.instance.attach(element.$element);
