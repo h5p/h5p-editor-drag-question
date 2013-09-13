@@ -322,7 +322,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           y: 0,
           width: 5,
           height: 2.5,
-          correctElements: ''
+          correctElements: []
         });
 
         return that.insertDropZone(that.params.dropZones.length - 1);
