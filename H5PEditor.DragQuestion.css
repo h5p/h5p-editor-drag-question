@@ -101,7 +101,7 @@
 }
 .h5p-dq-dz {
   position: absolute;
-  padding: 2px;
+  border: 2px dashed #666666;
   background-color: #ffffff;
   border-radius: 0.5em;
   z-index: 2;
@@ -144,7 +144,8 @@ a.h5peditor-fd-button:hover {
 }
 .h5p-dq-dz-label {
   background: none repeat scroll 0 0 rgb(255, 255, 255);
-  left: 0;
+  left: -2px;
+  margin-bottom: 2px;
   line-height: 1.25em;
   padding: 0.25em 0.5em;
   position: absolute;
