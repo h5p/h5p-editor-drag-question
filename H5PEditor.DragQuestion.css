@@ -139,6 +139,7 @@
   border: 0.1em dashed #999;
   border-radius: 0.5em;
   z-index: 2;
+  box-sizing: border-box;
 }
 .h5p-dq-dz.h5p-has-label {
   border-radius: 0 0 0.5em 0.5em;
