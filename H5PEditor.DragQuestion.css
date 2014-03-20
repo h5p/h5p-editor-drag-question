@@ -1,21 +1,25 @@
 .h5peditor-dragquestion-wrapper {
   position: relative;
 }
+
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
   overflow: hidden;
 }
+
 .dragQuestion .h5p-dragnbar-ul {
   float: right;
   margin: 0;
   list-style: none;
 }
+
 .dragQuestion .h5p-dragnbar-li {
   float: left;
   margin: 0;
   padding: 0;
   background: transparent;
 }
+
 .dragQuestion .h5p-dragnbar-a {
   width: 1em;
   line-height: 1.5em;
@@ -28,6 +32,7 @@
   background: #CEE5FF;
   color: #000;
 }
+
 .dragQuestion .h5p-dragnbar-a:link, .dragQuestion .h5p-dragnbar-a:visited  {
   color: #000;
 }
@@ -72,42 +77,72 @@
   padding: 0.25em 0.5em;
 }
 .h5p-dq-element.h5p-draggable {
-  background: #fff;
-  box-shadow: 0.2em 0.2em 0.2em rgba(0,0,0,0.5);
-  padding: 0.5em 0.125em;
   border-radius: 0.5em;
-  z-index: 3;
-  text-align: center;
-  border: 1px solid #dcdcdc;
+  border: 0.1em solid #c6c6c6;
+  overflow: hidden;
   cursor: pointer;
+  position: absolute;
+  text-align: center;
+  padding: 0.3em 0.3em;
+  line-height: 1.25em;
+
+  background: #ececec; /* Old browsers */
+  background: -moz-linear-gradient(top,  #ececec 1%, #e0e0e0 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#ececec), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #ececec 1%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #ececec 1%,#e0e0e0 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #ececec 1%,#e0e0e0 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #ececec 1%,#e0e0e0 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ececec', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+
+
+  box-shadow: 0em 0em 0.4em rgba(0,0,0,0.5);
+  z-index: 3;
+  -webkit-user-select: none;
+  -moz-user-select: none; 
+  -ms-user-select: none; 
 }
+
 .h5p-draggable > ul {
   text-align: left;
   margin: 0.5em 0.5em 0.5em 2.25em;
   padding: 0;
 }
+
 .h5p-draggable > ul > li {
   background: transparent;
   list-style: disc outside none;
   padding: 0;
   margin: 0;
 }
+
 .h5p-dq-element.h5p-draggable:hover {
-  border: 1px solid #aaaaaa;
+  border: 0.1em solid #ceb8d2;
+  color: #663366;
+  
+  background: rgb(234,224,236); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(234,224,236,1) 0%, rgba(212,190,216,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(234,224,236,1)), color-stop(100%,rgba(212,190,216,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(234,224,236,1) 0%,rgba(212,190,216,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(234,224,236,1) 0%,rgba(212,190,216,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(234,224,236,1) 0%,rgba(212,190,216,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(234,224,236,1) 0%,rgba(212,190,216,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eae0ec', endColorstr='#d4bed8',GradientType=0 ); /* IE6-9 */
 }
+
 .h5p-dq-element p {
   margin: 0;
   padding: 0;
 }
 .h5p-dq-dz {
   position: absolute;
-  border: 2px dashed #666666;
-  background-color: #ffffff;
+  border: 0.1em dashed #999;
   border-radius: 0.5em;
   z-index: 2;
+  box-sizing: border-box;
 }
 .h5p-dq-dz.h5p-has-label {
-  border-radius: 0 0.5em 0.5em 0.5em;
+  border-radius: 0 0 0.5em 0.5em;
 }
 
 .h5peditor-dragquestion .h5p-moving {
@@ -144,12 +179,13 @@ a.h5peditor-fd-button:hover {
 }
 .h5p-dq-dz-label {
   background: none repeat scroll 0 0 rgb(255, 255, 255);
-  left: -2px;
-  margin-bottom: 2px;
+  margin-bottom: 0.1em;
   line-height: 1.25em;
-  padding: 0.25em 0.5em;
+  padding-left: 0.5em;
   position: absolute;
   bottom: 100%;
+  left: -0.1em;
+  right: -0.1em;
   white-space: nowrap;
   border-radius: 0.5em 0.5em 0 0;
 }
