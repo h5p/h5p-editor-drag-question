@@ -411,6 +411,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       return false;
     }).dblclick(function () {
       that.editElement(element);
+    }).hover(function () {
+      C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
+    }, function () {
+      C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
     });
 
     // Update element
@@ -524,11 +528,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     else {
       element.$element.removeClass('h5p-draggable');
     }
-
-    if (params.backgroundOpacity === undefined) {
-      params.backgroundOpacity = 100;
-    }
-    element.$element.css('backgroundColor', 'rgba(255,255,255,' + (params.backgroundOpacity / 100) + ')');
+    
+    C.setElementOpacity(element.$element, params.backgroundOpacity);
   };
 
   /**
@@ -663,10 +664,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: params.label
     };
 
-    if (params.backgroundOpacity === undefined) {
-      params.backgroundOpacity = 100;
-    }
-    dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')).css('backgroundColor', 'rgba(255,255,255,' + (params.backgroundOpacity / 100) + ')');
+    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', params.backgroundOpacity);
   };
 
   /**
@@ -700,6 +698,63 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$currentForm.detach();
     this.$dialog.hide();
     this.$editor.add(this.$dnbWrapper).show();
+  };
+
+  /**
+   * Update transparency for background, shadow and border.
+   *
+   * @param {jQuery} $element
+   * @param {Number} opacity
+   */
+  C.setElementOpacity = function ($element, opacity) {
+    C.setOpacity($element, 'background', opacity);
+    C.setOpacity($element, 'boxShadow', opacity);
+    C.setOpacity($element, 'borderColor', opacity);
+  };
+
+  /**
+   * Updates alpha channel for colors in the given style.
+   *   
+   * @param {String} style
+   * @param {String} prefix
+   * @param {Number} alpha
+   */
+  C.setAlphas = function (style, prefix, alpha) {
+    var colorStart = style.indexOf(prefix);
+    
+    while (colorStart !== -1) {
+      var colorEnd = style.indexOf(')', colorStart);
+      var channels = style.substring(colorStart + prefix.length, colorEnd).split(',');
+      
+      // Set alpha channel
+      channels[3] = (channels[3] !== undefined ? parseFloat(channels[3]) * alpha : alpha);
+      
+      style = style.substring(0, colorStart) + 'rgba(' + channels.join(',') + style.substring(colorEnd, style.length);
+            
+      // Look for more colors
+      colorStart = style.indexOf(prefix, colorEnd);
+    }
+    
+    return style;
+  };
+  
+  /**
+   * Makes element background, border and shadow transparent.
+   *
+   * @param {jQuery} $element
+   * @param {String} property
+   * @param {Number} opacity
+   */
+  C.setOpacity = function ($element, property, opacity) {
+    opacity = (opacity === undefined ? 1 : opacity / 100);
+    
+    // Make sure we are using CSS and not inline values.
+    $element.css(property, '');
+    var style = $element.css(property);
+    style = C.setAlphas(style, 'rgba(', opacity); // Update rgba
+    style = C.setAlphas(style, 'rgb(', opacity); // Convert rgb
+    
+    $element.css(property, style);
   };
 
   /**
