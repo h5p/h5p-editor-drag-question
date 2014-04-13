@@ -553,7 +553,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       // Edit
       that.editDropZone(dropZone);
     });
-
+    
+    // Add tip if any
+    if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
+      dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
+    }
+    
     // Make resize possible
     this.dnr.add(dropZone.$dropZone);
 
@@ -657,6 +662,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     else {
       dropZone.$dropZone.removeClass('h5p-has-label');
+    }
+    
+    // Update Tip:
+    dropZone.$dropZone.children('.joubel-tip-container').remove();
+    if (params.tip !== undefined && params.tip.trim().length > 0) {
+      dropZone.$dropZone.append(H5P.JoubelUI.createTip(params.tip, {showSpeechBubble: false}));
     }
 
     this.elementFields[this.elementDropZoneFieldWeight].options[id] = {
