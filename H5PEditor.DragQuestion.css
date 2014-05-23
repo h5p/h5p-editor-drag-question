@@ -37,7 +37,7 @@
   color: #000;
 }
 .dragQuestion .h5p-dragnbar-a:before {
-  font-family: "H5PFontAwesome";
+  font-family: 'H5PFontAwesome4';
   content: "?";
 }
 .dragQuestion .h5p-dragnbar-a:hover {

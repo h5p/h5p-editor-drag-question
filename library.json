@@ -2,7 +2,7 @@
   "title": "Drag Question Editor",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 16,
+  "patchVersion": 17,
   "runnable": 0,
   "author": "Amendor AS",
   "machineName": "H5PEditor.DragQuestion",
@@ -32,7 +32,7 @@
     },
     {
       "machineName": "FontAwesome",
-      "majorVersion": 3,
+      "majorVersion": 4,
       "minorVersion": 1
     },
     {
