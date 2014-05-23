@@ -37,7 +37,7 @@
   color: #000;
 }
 .dragQuestion .h5p-dragnbar-a:before {
-  font-family: H5PFontAwesome4;
+  font-family: 'H5PFontAwesome4';
   content: "?";
 }
 .dragQuestion .h5p-dragnbar-a:hover {
@@ -135,6 +135,16 @@
 }
 .h5p-dq-dz.h5p-has-label {
   border-radius: 0 0 0.5em 0.5em;
+}
+.h5p-dq-dz .joubel-tip-container {
+  position: absolute;
+  right: .2em;
+  bottom: .2em;
+}
+.h5p-dq-dz .joubel-tip-container .joubel-tip-icon {
+  line-height: inherit;
+  width: auto;
+  height: auto;
 }
 
 .h5peditor-dragquestion .h5p-moving {

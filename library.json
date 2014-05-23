@@ -2,7 +2,7 @@
   "title": "Drag Question Editor",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 15,
+  "patchVersion": 18,
   "runnable": 0,
   "author": "Amendor AS",
   "coreApi": {
@@ -30,6 +30,11 @@
       "minorVersion": 0
     },
     {
+      "machineName": "FontAwesome",
+      "majorVersion": 4,
+      "minorVersion": 1
+    },
+    {
       "machineName": "H5P.DragNBar",
       "majorVersion": 1,
       "minorVersion": 0
@@ -53,6 +58,11 @@
       "machineName": "jQuery.ui",
       "majorVersion": 1,
       "minorVersion": 10
+    },
+    {
+      "machineName": "H5P.JoubelUI",
+      "majorVersion": 1,
+      "minorVersion": 0
     }
   ]
 }
