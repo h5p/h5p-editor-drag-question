@@ -424,7 +424,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     this.removeCallback = function () {
-      var i, j, oldid;
+      var i, j, ce;
 
       // Remove element form
       H5PEditor.removeChildren(element.children);
@@ -437,24 +437,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       // Remove from options
       this.elementOptions.splice(id, 1);
 
-      // If element was the answer for a dropZone, remove it from answer.
+      // Update drop zone params
       for (i = 0; i < that.params.dropZones.length; i++) {
-        if (that.params.dropZones[i].correctElements === '' + id) {
-          that.params.dropZones[i].correctElements = '';
+        ce = that.params.dropZones[i].correctElements;
+        for (j = 0; j < ce.length; j++) {
+          if (ce[j] === '' + id) {
+            // Remove from correct answers
+            ce.splice(j, 1);
+          }
+          else if (ce[j] > id) {
+            // Adjust index for others
+            ce[j] = '' + (ce[j] - 1);
+          }
         }
       }
 
-      // Reindex all elements
-      for (i = 0; i < that.elements.length; i++) {
-        // If index changes, and element is answer for dropZone, change in dropZone too.
-        oldid = that.elements[i].$element.data('id');
+       // Change data index for "all" elements
+      for (i = id; i < that.elements.length; i++) {
         that.elements[i].$element.data('id', i);
-
-        for (j = 0; j < that.params.dropZones.length; j++) {
-          if (that.params.dropZones[j].correctElements === '' + oldid) {
-            that.params.dropZones[j].correctElements = '' + i;
-          }
-        }
       }
     };
 
@@ -571,23 +571,27 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Remove from elements
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
-
+      
       // Remove dropZone from element params properly
       for (i = 0; i < that.params.elements.length; i++) {
         var dropZones = that.params.elements[i].dropZones;
         for (j = 0; j < dropZones.length; j++) {
           if (parseInt(dropZones[j]) === id) {
+            // Remove from element drop zones
             dropZones.splice(j, 1);
             if (!dropZones.length) {
               that.elements[i].$element.removeClass('h5p-draggable');
             }
-            break;
+          }
+          else if (dropZones[j] > id) {
+            // Re index other drop zones
+            dropZones[j] = '' + (dropZones[j] - 1);
           }
         }
       }
 
       // Reindex all dropzones
-      for (i = 0; i < that.dropZones.length; i++) {
+      for (i = id; i < that.dropZones.length; i++) {
         that.dropZones[i].$dropZone.data('id', i);
       }
     };
