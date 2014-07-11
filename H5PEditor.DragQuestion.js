@@ -452,9 +452,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }
       }
 
-       // Change data index for "all" elements
+      // Change data index for "all" elements
       for (i = id; i < that.elements.length; i++) {
         that.elements[i].$element.data('id', i);
+        that.elementOptions[i].value = '' + i;
       }
     };
 
@@ -483,7 +484,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
         }
       });
-      
+
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
       element.children[0].children[0].ckeditor.setData(params.type.params.text);
@@ -498,7 +499,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     // Make resize possible
     this.dnr.add(element.$element);
-    
+
     // Find label text without html
     var label = (type === 'text' ? $('<div>' + element.instance.text + '</div>').text() : params.type.params.alt + '');
 
@@ -541,7 +542,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           });
           delete self.hideDialogCallback;
         };
-      }
+    }
     }
     
     C.setElementOpacity(element.$element, params.backgroundOpacity);
@@ -631,7 +632,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Remove from elements
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
-
+      
       // Remove dropZone from element params properly
       for (i = 0; i < that.params.elements.length; i++) {
         var dropZones = that.params.elements[i].dropZones;
@@ -646,13 +647,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           else if (dropZones[j] > id) {
             // Re index other drop zones
             dropZones[j] = '' + (dropZones[j] - 1);
+          }
         }
-      }
       }
 
       // Reindex all dropzones
       for (i = id; i < that.dropZones.length; i++) {
         that.dropZones[i].$dropZone.data('id', i);
+        this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
       }
     };
 
