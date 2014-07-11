@@ -470,21 +470,42 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.updateElement = function (element, id) {
+    var self = this;
     var params = this.params.elements[id];
 
-    // Create and add new instance
-    element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$element);
+    var type = (params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image');
+    var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
+    if (type === 'text' && hasCk) {
+      // Create new text instance. Replace asterisk with spans
+      element.instance = H5P.newInstance({
+        library: params.type.library,
+        params: {
+          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
+        }
+      });
+      
+      // Remove asterisk from params and input field
+      params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
+      element.children[0].children[0].ckeditor.setData(params.type.params.text);
+    }
+    else {
+      // Create new instance
+      element.instance = H5P.newInstance(params.type);
+    }
+
+    // Attach instance to element
+    element.instance.attach(element.$element);
 
     // Make resize possible
     this.dnr.add(element.$element);
-
-    var type = params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image';
-    var label = type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '';
+    
+    // Find label text without html
+    var label = (type === 'text' ? $('<div>' + element.instance.text + '</div>').text() : params.type.params.alt + '');
 
     // Update correct element options
     this.elementOptions[id] = {
       value: '' + id,
-      label: C.t(type) + ': ' + (label.length > 32 ? label.substr(0, 32) + '...' : label)
+      label: C.t(type) + ': ' + C.getLabel(label)
     };
 
     if (params.dropZones !== undefined && params.dropZones.length) {
@@ -492,9 +513,48 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     else {
       element.$element.removeClass('h5p-draggable');
+      
+      if (type === 'text' && hasCk) {
+        // When dialog closes, replace spans with drop zones
+        this.hideDialogCallback = function () {
+          var pWidth = self.$editor.width() / 100;
+          var pHeight = self.$editor.height() / 100;
+          element.$element.find('span').each(function () {
+            var $span = $(this);
+            var pos = $span.position();
+
+            // Add new drop zone
+            self.params.dropZones.push({
+              x: params.x + ((pos.left - 3) / pWidth),
+              y: params.y + ((pos.top - 2) / pHeight),
+              width: ($span.width() / self.fontSize) + 0.5,
+              height: ($span.height() / self.fontSize) + 0.3,
+              backgroundOpacity: 0,
+              correctElements: [],
+              label: C.getLabel($span.text()),
+              showLabel: false
+            });
+            self.insertDropZone(self.params.dropZones.length - 1);
+
+            // Remove span
+            $span.contents().unwrap();
+          });
+          delete self.hideDialogCallback;
+        };
+      }
     }
     
     C.setElementOpacity(element.$element, params.backgroundOpacity);
+  };
+
+  /**
+   * Clips text at 32 chars
+   * 
+   * @param {String} text
+   * @returns {String}
+   */
+  C.getLabel = function (text) {
+    return (text.length > 32 ? text.substr(0, 32) + '...' : text);
   };
 
   /**
@@ -571,7 +631,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Remove from elements
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
-      
+
       // Remove dropZone from element params properly
       for (i = 0; i < that.params.elements.length; i++) {
         var dropZones = that.params.elements[i].dropZones;
@@ -586,8 +646,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           else if (dropZones[j] > id) {
             // Re index other drop zones
             dropZones[j] = '' + (dropZones[j] - 1);
-          }
         }
+      }
       }
 
       // Reindex all dropzones
@@ -678,6 +738,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$currentForm.detach();
     this.$dialog.hide();
     this.$editor.add(this.$dnbWrapper).show();
+    
+    if (this.hideDialogCallback !== undefined) {
+      this.hideDialogCallback();
+    }
   };
 
   /**
