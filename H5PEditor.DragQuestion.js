@@ -478,12 +478,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
-      element.instance = H5P.newInstance({
+      element.instance = H5P.newRunnable({
         library: params.type.library,
         params: {
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
         }
-      });
+      }, H5PEditor.contentId, element.$element);
 
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
@@ -491,11 +491,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     else {
       // Create new instance
-      element.instance = H5P.newInstance(params.type);
+      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$element);
     }
-
-    // Attach instance to element
-    element.instance.attach(element.$element);
 
     // Make resize possible
     this.dnr.add(element.$element);
