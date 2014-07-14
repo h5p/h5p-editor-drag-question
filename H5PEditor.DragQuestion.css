@@ -203,6 +203,11 @@ a.h5peditor-fd-button:hover {
 .h5peditor-dynamiccheckboxes-select > li > .h5p-editor-label {
   font-weight: normal;
 }
+.h5peditor-dynamiccheckboxes-select > li > .h5p-editor-label > input,
+.h5peditor-dynamiccheckboxes-select .h5p-label-text {
+  vertical-align: middle;
+  display: inline-block;
+}
 .field.dynamicCheckboxes .h5p-selectall {
   font-size: 0.75em;
 }
