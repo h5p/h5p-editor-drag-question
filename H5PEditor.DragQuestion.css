@@ -74,6 +74,9 @@
   z-index: 1;
   background: #fff;
 }
+.h5p-dq-element:focus {
+  outline: none;
+}
 .h5p-dq-element.h5p-text {
   padding: 0.25em 0.5em;
   border-radius: 0.25em;
@@ -132,6 +135,9 @@
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   background: #fff;
+}
+.h5p-dq-dz:focus {
+  outline: none;
 }
 .h5p-dq-dz.h5p-has-label {
   border-radius: 0 0 0.5em 0.5em;

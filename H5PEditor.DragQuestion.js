@@ -369,19 +369,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       libraryChange();
     }
 
-    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%">' + index + '</div>')
-    .appendTo(this.$editor)
-    .data('id', index)
-    .mousedown(function (event) {
-      that.dnb.dnd.press(element.$element, event.pageX, event.pageY);
-      return false;
-    }).dblclick(function () {
-      that.editElement(element);
-    }).hover(function () {
-      C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
-    }, function () {
-      C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
-    });
+    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%"></div>')
+      .appendTo(this.$editor)
+      .data('id', index)
+      .dblclick(function () {
+        that.editElement(element);
+      }).hover(function () {
+        C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
+      }, function () {
+        C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
+      });
+    
+    this.dnb.add(element.$element);
 
     // Update element
     that.updateElement(element, index);
@@ -567,15 +566,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
-    .appendTo(this.$editor)
-    .data('id', index)
-    .mousedown(function (event) {
-      that.dnb.dnd.press(dropZone.$dropZone, event.pageX, event.pageY);
-      return false;
-    }).dblclick(function () {
-      // Edit
-      that.editDropZone(dropZone);
-    });
+      .appendTo(this.$editor)
+      .data('id', index)
+      .dblclick(function () {
+        // Edit
+        that.editDropZone(dropZone);
+      });
+    
+    this.dnb.add(dropZone.$dropZone);
     
     // Add tip if any
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
@@ -713,14 +711,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.showDialog = function ($form) {
+    this.dnb.blur();
     this.$currentForm = $form;
     $form.appendTo(this.$dialogInner);
     this.$dialog.show();
     this.$editor.add(this.$dnbWrapper).hide();
-    if (this.dnb !== undefined && this.dnb.dnd.$coordinates !== undefined) {
-      this.dnb.dnd.$coordinates.remove();
-      delete this.dnb.dnd.$coordinates;
-    }
   };
 
   /**
