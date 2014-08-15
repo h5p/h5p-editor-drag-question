@@ -77,19 +77,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$dialog.find('.h5peditor-done').click(function () {
       if (that.doneCallback() !== false) {
         that.hideDialog();
-        
-        setTimeout(function () {
-        for (var i = 0; i < that.dropZones.length; i++) {
-          if (!that.dropZones[i].$dropZone.is(':visible')) {
-            // Remove him!
-            that.removeDropZone(i);
-            i--;
-          }
-        }
-        }, 1);
-        
-
-        // TODO: What to do when DZ are removed through dialog?
       }
       return false;
     }).end().find('.h5peditor-remove').click(function () {
@@ -250,15 +237,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     });
 
-    this.elements = [];
-    this.dropZones = [];
-
     // Add Elements
+    this.elements = [];
     for (var i = 0; i < this.params.elements.length; i++) {
       this.insertElement(i);
     }
 
     // Add Drop Zones
+    this.dropZones = [];
     for (var i = 0; i < this.params.dropZones.length; i++) {
       this.insertDropZone(i);
     }
@@ -387,13 +373,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       .appendTo(this.$editor)
       .data('id', index)
       .dblclick(function () {
-        if (that.editingDropZone !== undefined) {
-          // Prevent double editing when drop zones are inside static texts
-          delete that.editingDropZone;
-        }
-        else {
-          that.editElement(element);
-        }
+        that.editElement(element);
       }).hover(function () {
         C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
       }, function () {
@@ -492,27 +472,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   C.prototype.updateElement = function (element, id) {
     var self = this;
     var params = this.params.elements[id];
+
     var type = (params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image');
-    var draggable = (params.dropZones !== undefined && params.dropZones.length);
-    
-    if (!draggable && type === 'text') {
-      var ids = [];
-      
-      // Update text params
-      params.type.params.text = C.processParamsText(params.type.params.text, self.params.dropZones, ids);
-      
-      if (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined) {
-        // Update CK with text
-        element.children[0].children[0].ckeditor.setData(params.type.params.text);
-      }
-      
-      // Create new text instance, replacing valid drop zones with spans
+    var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
+    if (type === 'text' && hasCk) {
+      // Create new text instance. Replace asterisk with spans
       element.instance = H5P.newRunnable({
         library: params.type.library,
         params: {
-          text: C.processParamsHtml(params.type.params.text, ids)
+          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
         }
       }, H5PEditor.contentId, element.$element);
+
+      // Remove asterisk from params and input field
+      params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
+      element.children[0].children[0].ckeditor.setData(params.type.params.text);
     }
     else {
       // Create new instance
@@ -531,17 +505,40 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: C.t(type) + ': ' + C.getLabel(label)
     };
 
-    if (draggable) {
+    if (params.dropZones !== undefined && params.dropZones.length) {
       element.$element.addClass('h5p-draggable');
     }
     else {
       element.$element.removeClass('h5p-draggable');
       
-      if (type === 'text') {
-        element.$element.find('.h5p-dq-dz').each(function (i) {
-          self.insertDropZone(ids[i], $(this));
-        });
-      }
+      if (type === 'text' && hasCk) {
+        // When dialog closes, replace spans with drop zones
+        this.hideDialogCallback = function () {
+          var pWidth = self.$editor.width() / 100;
+          var pHeight = self.$editor.height() / 100;
+          element.$element.find('span').each(function () {
+            var $span = $(this);
+            var pos = $span.position();
+
+            // Add new drop zone
+            self.params.dropZones.push({
+              x: params.x + ((pos.left - 3) / pWidth),
+              y: params.y + ((pos.top - 2) / pHeight),
+              width: ($span.width() / self.fontSize) + 0.5,
+              height: ($span.height() / self.fontSize) + 0.3,
+              backgroundOpacity: 0,
+              correctElements: [],
+              label: C.getLabel($span.text()),
+              showLabel: false
+            });
+            self.insertDropZone(self.params.dropZones.length - 1);
+
+            // Remove span
+            $span.contents().unwrap();
+          });
+          delete self.hideDialogCallback;
+        };
+    }
     }
     
     C.setElementOpacity(element.$element, params.backgroundOpacity);
@@ -558,110 +555,33 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
-   * Find all drop zones inserted with *id:text*. 
-   * Adds a new DZ if no id is present.
-   * 
-   * @param {String} text
-   * @param {Array} dropZones params
-   * @param {Array} ids All valid DZ ids.
-   * @returns {undefined}
-   */
-  C.processParamsText = function (text, dropZones, ids) {
-    text = text.replace(/\*(\d+:)?([^*]+)\*/g, function (original, id, text) {
-      id = parseInt(id);
-      
-      if (isNaN(id)) {
-        // Insert new drop zone
-        dropZones.push({
-          x: -1,
-          y: -1,
-          width: -1,
-          height: -1,
-          backgroundOpacity: 0,
-          correctElements: [],
-          label: C.getLabel(text),
-          showLabel: false
-        });
-        id = dropZones.length - 1;
-        ids.push(id);
-
-        // Add id to text
-        return '*' + id + ':' + text + '*';
-      }
-      
-      if (dropZones[id] !== undefined && dropZones[id].x === -1) {
-        // Exists use it
-        ids.push(id);
-      }
-      
-      return original;
-    });
-    
-    return text;
-  };
-
-  /**
-   * Replace drop zones inserted with *id:text*. 
-   * 
-   * @param {String} text
-   * @param {Array} ids All valid DZ ids.
-   * @returns {undefined}
-   */
-  C.processParamsHtml = function (html, ids) {
-    html = html.replace(/\*(\d+):([^*]+)\*/g, function (original, id, text) {
-      id = parseInt(id);
-      for (var i = 0; i < ids.length; i++) {
-        if (ids[i] === id) {
-          return '<span class="h5p-dq-dz">' + text + '</span>'; 
-        }
-      }
-      return original;
-    });
-    
-    return html;
-  };
-
-  /**
    * Insert the drop zone at the given index.
    *
    * @param {int} index
    * @returns {unresolved}
    */
-  C.prototype.insertDropZone = function (index, $element) {
+  C.prototype.insertDropZone = function (index) {
     var that = this,
       dropZoneParams = this.params.dropZones[index],
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
-    if ($element !== undefined) {
-      dropZone.$dropZone = $element;
-    }
-    else {
-      if (dropZoneParams.x === -1) {
-        return; // Do not insert, inside DZ should already have an $element.
-      }
-      dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
-        .appendTo(this.$editor);
-
-      // Make moving possible
-      this.dnb.add(dropZone.$dropZone);
-      
-      // Make resize possible
-      this.dnr.add(dropZone.$dropZone);
-    }
-
-    // Make editable
-    dropZone.$dropZone
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+      .appendTo(this.$editor)
       .data('id', index)
       .dblclick(function () {
         // Edit
         that.editDropZone(dropZone);
-        that.editingDropZone = true;
       });
-
+    
+    this.dnb.add(dropZone.$dropZone);
+    
     // Add tip if any
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
       dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
     }
+    
+    // Make resize possible
+    this.dnr.add(dropZone.$dropZone);
 
     // Add label
     this.updateDropZone(dropZone, index);
@@ -678,7 +598,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.editDropZone = function (dropZone) {
     var that = this;
-    var id = dropZone.$dropZone.data('id');
+    var i, j, id = dropZone.$dropZone.data('id');
 
     this.doneCallback = function () {
       // Validate form
@@ -697,15 +617,48 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     this.removeCallback = function () {
-      that.removeDropZone(id);
+      // Remove element form
+      H5PEditor.removeChildren(dropZone.children);
+
+      // Remove element
+      dropZone.$dropZone.remove();
+      that.dropZones.splice(id, 1);
+      that.params.dropZones.splice(id, 1);
+
+      // Remove from elements
+      this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
+      
+      // Remove dropZone from element params properly
+      for (i = 0; i < that.params.elements.length; i++) {
+        var dropZones = that.params.elements[i].dropZones;
+        for (j = 0; j < dropZones.length; j++) {
+          if (parseInt(dropZones[j]) === id) {
+            // Remove from element drop zones
+            dropZones.splice(j, 1);
+            if (!dropZones.length) {
+              that.elements[i].$element.removeClass('h5p-draggable');
+            }
+          }
+          else if (dropZones[j] > id) {
+            // Re index other drop zones
+            dropZones[j] = '' + (dropZones[j] - 1);
+          }
+        }
+      }
+
+      // Reindex all dropzones
+      for (i = id; i < that.dropZones.length; i++) {
+        that.dropZones[i].$dropZone.data('id', i);
+        this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
+      }
     };
 
     // Add only available options
     var options = this.dropZoneFields[this.dropZoneElementFieldWeight].options = [];
     var dropZones;
-    for (var i = 0; i < this.elementOptions.length; i++) {
+    for (i = 0; i < this.elementOptions.length; i++) {
       dropZones = this.params.elements[i].dropZones;
-      for (var j = 0; j < dropZones.length; j++) {
+      for (j = 0; j < dropZones.length; j++) {
         if (dropZones[j] === (id + '')) {
           options.push(this.elementOptions[i]);
           break;
@@ -715,75 +668,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
-  };
-
-  /**
-   * Remove drop zone with given id.
-   * 
-   * @param {Number} id
-   * @returns {undefined}
-   */
-  C.prototype.removeDropZone = function (id) {
-    var self = this;
-    var dropZone = self.dropZones[id];
-    
-    // Remove element form
-    H5PEditor.removeChildren(dropZone.children);
-
-    // Remove element
-    dropZone.$dropZone.remove();
-    self.dropZones.splice(id, 1);
-    self.params.dropZones.splice(id, 1);
-
-    // Remove from elements
-    self.elementFields[self.elementDropZoneFieldWeight].options.splice(id, 1);
-
-    // Remove dropZone from element params properly
-    for (var i = 0; i < self.params.elements.length; i++) {
-      var element = self.params.elements[i];
-      for (var j = 0; j < element.dropZones.length; j++) {
-        if (parseInt(element.dropZones[j]) === id) {
-          // Remove from element drop zones
-          element.dropZones.splice(j, 1);
-          if (!element.dropZones.length) {
-            self.elements[i].$element.removeClass('h5p-draggable');
-          }
-        }
-        else if (element.dropZones[j] > id) {
-          // Re index other drop zones
-          element.dropZones[j] = '' + (element.dropZones[j] - 1);
-        }
-      }
-      
-      if (element.type.library.split(' ')[0] === 'H5P.Text' && (element.dropZones === undefined || element.dropZones.length === 0)) {
-        // Update drop zones inserted via params text
-        element.type.params.text = element.type.params.text.replace(/\*(\d+):([^*]+)\*/g, function (original, i, text) {
-          i = parseInt(i);
-          if (i === id) {
-            return text;
-          }
-          else if (i > id) {
-            return '*' + (i - 1) + ':' + text + '*';
-          }
-          return original;
-        });
-        
-        var children = self.elements[i].children[0].children;
-        if (children !== undefined) {
-          // Update CK with text
-          children[0].$input.html(element.type.params.text);
-          if (children[0].ckeditor !== undefined) {
-            children[0].ckeditor.setData(element.type.params.text);
-          }
-        }
-      }
-    }
-
-    // Reindex all dropzones
-    for (i = id; i < self.dropZones.length; i++) {
-      self.dropZones[i].$dropZone.data('id', i);
-      self.elementFields[self.elementDropZoneFieldWeight].options[i].value = i + '';
-    }
   };
 
   /**
@@ -848,6 +732,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$currentForm.detach();
     this.$dialog.hide();
     this.$editor.add(this.$dnbWrapper).show();
+    
+    if (this.hideDialogCallback !== undefined) {
+      this.hideDialogCallback();
+    }
   };
 
   /**

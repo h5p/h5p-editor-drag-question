@@ -152,10 +152,7 @@
   width: auto;
   height: auto;
 }
-span.h5p-dq-dz {
-  position: relative;
-  padding: 0.15em 0.25em;
-}
+
 .h5peditor-dragquestion .h5p-moving {
   opacity: 0.75;
 }
