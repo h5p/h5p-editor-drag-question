@@ -567,6 +567,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.processParamsText = function (text, dropZones, ids) {
+    if (text === undefined) {
+      return;
+    }
     text = text.replace(/\*(\d+:)?([^*]+)\*/g, function (original, id, text) {
       id = parseInt(id);
       
@@ -608,6 +611,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.processParamsHtml = function (html, ids) {
+    if (html === undefined) {
+      return;
+    }
     html = html.replace(/\*(\d+):([^*]+)\*/g, function (original, id, text) {
       id = parseInt(id);
       for (var i = 0; i < ids.length; i++) {
