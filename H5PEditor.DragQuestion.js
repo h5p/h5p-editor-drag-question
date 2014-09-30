@@ -3,7 +3,7 @@ var H5PEditor = H5PEditor || {};
 /**
  * Interactive Video editor widget module
  * TODO: Rewrite to use H5P.DragQuestion for previewing?
- 
+
  * @param {jQuery} $
  */
 H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
@@ -80,8 +80,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
       return false;
     }).end().find('.h5peditor-remove').click(function () {
-      that.removeCallback();
-      that.hideDialog();
+      if (confirm(C.t('confirmRemoval'))) {
+        that.removeCallback();
+        that.hideDialog();
+      }
       return false;
     });
 
@@ -379,7 +381,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }, function () {
         C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
       });
-    
+
     this.dnb.add(element.$element);
 
     // Update element
@@ -510,7 +512,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     else {
       element.$element.removeClass('h5p-draggable');
-      
+
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
         this.hideDialogCallback = function () {
@@ -540,13 +542,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         };
     }
     }
-    
+
     C.setElementOpacity(element.$element, params.backgroundOpacity);
   };
 
   /**
    * Clips text at 32 chars
-   * 
+   *
    * @param {String} text
    * @returns {String}
    */
@@ -572,14 +574,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         // Edit
         that.editDropZone(dropZone);
       });
-    
+
     this.dnb.add(dropZone.$dropZone);
-    
+
     // Add tip if any
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
       dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
     }
-    
+
     // Make resize possible
     this.dnr.add(dropZone.$dropZone);
 
@@ -627,7 +629,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Remove from elements
       this.elementFields[this.elementDropZoneFieldWeight].options.splice(id, 1);
-      
+
       // Remove dropZone from element params properly
       for (i = 0; i < that.params.elements.length; i++) {
         var dropZones = that.params.elements[i].dropZones;
@@ -689,7 +691,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     else {
       dropZone.$dropZone.removeClass('h5p-has-label');
     }
-    
+
     // Update Tip:
     dropZone.$dropZone.children('.joubel-tip-container').remove();
     if (params.tip !== undefined && params.tip.trim().length > 0) {
@@ -732,7 +734,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$currentForm.detach();
     this.$dialog.hide();
     this.$editor.add(this.$dnbWrapper).show();
-    
+
     if (this.hideDialogCallback !== undefined) {
       this.hideDialogCallback();
     }
@@ -752,30 +754,30 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
   /**
    * Updates alpha channel for colors in the given style.
-   *   
+   *
    * @param {String} style
    * @param {String} prefix
    * @param {Number} alpha
    */
   C.setAlphas = function (style, prefix, alpha) {
     var colorStart = style.indexOf(prefix);
-    
+
     while (colorStart !== -1) {
       var colorEnd = style.indexOf(')', colorStart);
       var channels = style.substring(colorStart + prefix.length, colorEnd).split(',');
-      
+
       // Set alpha channel
       channels[3] = (channels[3] !== undefined ? parseFloat(channels[3]) * alpha : alpha);
-      
+
       style = style.substring(0, colorStart) + 'rgba(' + channels.join(',') + style.substring(colorEnd, style.length);
-            
+
       // Look for more colors
       colorStart = style.indexOf(prefix, colorEnd);
     }
-    
+
     return style;
   };
-  
+
   /**
    * Makes element background, border and shadow transparent.
    *
@@ -790,9 +792,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       C.setOpacity($element, 'backgroundImage', opacity);
       return;
     }
-    
+
     opacity = (opacity === undefined ? 1 : opacity / 100);
-    
+
     // Private. Get css properties objects.
     function getProperties(property, value) {
       switch (property) {
@@ -803,25 +805,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
             borderBottomColor: value,
             borderLeftColor: value
           };
-        
+
         default:
           var properties = {};
           properties[property] = value;
           return properties;
       }
     }
-    
+
     // Reset css to be sure we're using CSS and not inline values.
     var properties = getProperties(property, '');
     $element.css(properties);
-    
+
     for (var prop in properties) {
       break;
     }
     var style = $element.css(prop); // Assume all props are the same and use the first.
     style = C.setAlphas(style, 'rgba(', opacity); // Update rgba
     style = C.setAlphas(style, 'rgb(', opacity); // Convert rgb
-    
+
     $element.css(getProperties(property, style));
   };
 
@@ -880,6 +882,7 @@ H5PEditor.language['H5PEditor.DragQuestion'] = {
     remove: 'Remove',
     image: 'Image',
     text: 'Text',
-    noTaskSize: 'Please specify task size first.'
+    noTaskSize: 'Please specify task size first.',
+    confirmRemoval: 'Are you sure you wish to remove this element?'
   }
 };
