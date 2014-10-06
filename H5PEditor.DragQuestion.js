@@ -30,7 +30,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     else {
       this.params = params;
     }
-
+    
     // Get updates for fields
     H5PEditor.followField(parent, 'settings/background', function (params) {
       that.setBackground(params);
@@ -38,7 +38,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     H5PEditor.followField(parent, 'settings/size', function (params) {
       that.setSize(params);
     });
-
+    
+    // Need the override background opacity
+    this.backgroundOpacity = parent.parent.params.backgroundOpacity;
+    
+    // Update opacity for all dropzones/draggables when global background opacity is changed
+    parent.ready(function () {
+      H5PEditor.findField('../backgroundOpacity', parent).$item.find('input').on('change', function () {
+        that.backgroundOpacity = $(this).val();
+        that.updateAllElementsOpacity(that.elements, that.params.elements, '$element');
+        that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, '$dropZone');
+      });
+    });
+    
     // Get options from semantics, clone since we'll be changing values.
     this.elementFields = H5P.cloneObject(field.fields[0].field.fields, true);
     this.dropZoneFields = H5P.cloneObject(field.fields[1].field.fields, true);
@@ -377,9 +389,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       .dblclick(function () {
         that.editElement(element);
       }).hover(function () {
-        C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
+        C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       }, function () {
-        C.setElementOpacity(element.$element, elementParams.backgroundOpacity);
+        C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       });
 
     this.dnb.add(element.$element);
@@ -460,6 +472,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     };
 
+    // Disable background opacity input if overriden globally
+    $('div.field.number input', element.$form).prop({
+      disabled: this.backgroundOpacity,
+      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
+    });
+    
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
   };
@@ -540,10 +558,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           });
           delete self.hideDialogCallback;
         };
-    }
+      }
     }
 
-    C.setElementOpacity(element.$element, params.backgroundOpacity);
+    C.setElementOpacity(element.$element, this.getElementOpacitySetting(params));
   };
 
   /**
@@ -667,7 +685,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }
       }
     }
-
+    
+    // Disable background opacity input if overriden globally
+    $('div.field.number input', dropZone.$form).prop({
+      disabled: this.backgroundOpacity,
+      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
+    });
+    
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
   };
@@ -703,7 +727,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', params.backgroundOpacity);
+    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', this.getElementOpacitySetting(params));
   };
 
   /**
@@ -750,6 +774,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     C.setOpacity($element, 'background', opacity);
     C.setOpacity($element, 'boxShadow', opacity);
     C.setOpacity($element, 'borderColor', opacity);
+  };
+  
+  C.prototype.updateAllElementsOpacity = function (domElements, elements, type) {
+    for(var i=0; i<domElements.length; i++) {
+      C.setElementOpacity(domElements[i][type], this.getElementOpacitySetting(elements[i]));
+    }
+  };
+  
+  C.prototype.getElementOpacitySetting = function (element) {
+    if (this.backgroundOpacity !== undefined && this.backgroundOpacity !== '') {
+      return this.backgroundOpacity;
+    }
+    return element.backgroundOpacity;
   };
 
   /**
@@ -883,6 +920,7 @@ H5PEditor.language['H5PEditor.DragQuestion'] = {
     image: 'Image',
     text: 'Text',
     noTaskSize: 'Please specify task size first.',
-    confirmRemoval: 'Are you sure you wish to remove this element?'
+    confirmRemoval: 'Are you sure you wish to remove this element?',
+    backgroundOpacityOverridden: 'The background opacity is overridden'
   }
 };
