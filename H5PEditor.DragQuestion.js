@@ -391,7 +391,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }).hover(function () {
         C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       }, function () {
-        C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
+        // Need this timeout for firefox beeing able to get the css hover rule in place
+        setTimeout(function () {
+          C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
+        }, 1);
       });
 
     this.dnb.add(element.$element);
