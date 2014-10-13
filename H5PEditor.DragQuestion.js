@@ -46,8 +46,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     parent.ready(function () {
       H5PEditor.findField('../backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val();
-        that.updateAllElementsOpacity(that.elements, that.params.elements, '$element');
-        that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, '$dropZone');
+        that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
+        that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, 'dropZone');
       });
     });
     
@@ -474,15 +474,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.elementOptions[i].value = '' + i;
       }
     };
-
+    
     // Disable background opacity input if overriden globally
-    $('div.field.number input', element.$form).prop({
-      disabled: this.backgroundOpacity,
-      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
-    });
+    this.disableOpacityInputIfOverridden(element);
     
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
+  };
+  
+  /**
+   * Disable backgroundOpacity input if set globally
+   *  
+   * @param {Object element
+   */
+  C.prototype.disableOpacityInputIfOverridden = function (element) {
+     // Disable background opacity input if overriden globally
+    H5PEditor.findField('backgroundOpacity', element).$item.find('input').prop({
+      disabled: (this.backgroundOpacity !== undefined && this.backgroundOpacity !== ''),
+      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
+    });
   };
 
   /**
@@ -690,10 +700,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     
     // Disable background opacity input if overriden globally
-    $('div.field.number input', dropZone.$form).prop({
-      disabled: this.backgroundOpacity,
-      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
-    });
+    this.disableOpacityInputIfOverridden(dropZone);
     
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
@@ -730,7 +737,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', this.getElementOpacitySetting(params));
+    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', this.getElementOpacitySetting(dropZone));
   };
 
   /**
@@ -779,17 +786,37 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     C.setOpacity($element, 'borderColor', opacity);
   };
   
+  /**
+   * Update all elements' opacity
+   * 
+   * @param {Array} domElements
+   * @param {Array} elements
+   * @param {String} type 
+   */
   C.prototype.updateAllElementsOpacity = function (domElements, elements, type) {
-    for(var i=0; i<domElements.length; i++) {
-      C.setElementOpacity(domElements[i][type], this.getElementOpacitySetting(elements[i]));
+    for (var i = 0; i < domElements.length; i++) {
+      C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
+      
+      // Update dropzone's label
+      if (type === 'dropZone') {
+        this.updateDropZone(this.dropZones[i], i);
+      }
     }
   };
   
+  /**
+   * Get the opacity setting for a given element
+   * 
+   * @param {Object} element
+   * @returns {String} opacity 
+   */
   C.prototype.getElementOpacitySetting = function (element) {
-    if (this.backgroundOpacity !== undefined && this.backgroundOpacity !== '') {
-      return this.backgroundOpacity;
+    if((element.dropZones !== undefined && element.dropZones.length === 0) ||
+       (this.backgroundOpacity === undefined || this.backgroundOpacity === '')) {
+      return element.backgroundOpacity;
     }
-    return element.backgroundOpacity;
+        
+    return this.backgroundOpacity;
   };
 
   /**
