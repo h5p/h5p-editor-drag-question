@@ -41,11 +41,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     
     // Need the override background opacity
     this.backgroundOpacity = parent.parent.params.backgroundOpacity;
+    this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
     
     // Update opacity for all dropzones/draggables when global background opacity is changed
     parent.ready(function () {
       H5PEditor.findField('../backgroundOpacity', parent).$item.find('input').on('change', function () {
-        that.backgroundOpacity = $(this).val();
+        that.backgroundOpacity = $(this).val().trim();
+        that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
+        
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
         that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, 'dropZone');
       });
@@ -794,6 +797,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @param {String} type 
    */
   C.prototype.updateAllElementsOpacity = function (domElements, elements, type) {
+    if (domElements === undefined) {
+      return;
+    }
+    
     for (var i = 0; i < domElements.length; i++) {
       C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
       
@@ -811,8 +818,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {String} opacity 
    */
   C.prototype.getElementOpacitySetting = function (element) {
-    if((element.dropZones !== undefined && element.dropZones.length === 0) ||
-       (this.backgroundOpacity === undefined || this.backgroundOpacity === '')) {
+    if ((element.dropZones !== undefined && element.dropZones.length === 0) ||
+       (this.backgroundOpacity === undefined)) {
       return element.backgroundOpacity;
     }
         
