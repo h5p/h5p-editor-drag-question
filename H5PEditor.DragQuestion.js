@@ -30,7 +30,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     else {
       this.params = params;
     }
-    
+
+
+
     // Get updates for fields
     H5PEditor.followField(parent, 'settings/background', function (params) {
       that.setBackground(params);
@@ -38,22 +40,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     H5PEditor.followField(parent, 'settings/size', function (params) {
       that.setSize(params);
     });
-    
+
     // Need the override background opacity
     this.backgroundOpacity = parent.parent.params.backgroundOpacity;
     this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
-    
+
     // Update opacity for all dropzones/draggables when global background opacity is changed
     parent.ready(function () {
       H5PEditor.findField('../backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val().trim();
         that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
-        
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
         that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, 'dropZone');
       });
     });
-    
+
     // Get options from semantics, clone since we'll be changing values.
     this.elementFields = H5P.cloneObject(field.fields[0].field.fields, true);
     this.dropZoneFields = H5P.cloneObject(field.fields[1].field.fields, true);
@@ -477,17 +478,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.elementOptions[i].value = '' + i;
       }
     };
-    
+
     // Disable background opacity input if overriden globally
-    this.disableOpacityInputIfOverridden(element);
-    
+    if (that.params.elements[id].dropZones.length !== 0) {
+      this.disableOpacityInputIfOverridden(element);
+    }
+
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
   };
-  
+
   /**
    * Disable backgroundOpacity input if set globally
-   *  
+   *
    * @param {Object element
    */
   C.prototype.disableOpacityInputIfOverridden = function (element) {
@@ -701,10 +704,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }
       }
     }
-    
+
     // Disable background opacity input if overriden globally
     this.disableOpacityInputIfOverridden(dropZone);
-    
+
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
   };
@@ -788,41 +791,41 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     C.setOpacity($element, 'boxShadow', opacity);
     C.setOpacity($element, 'borderColor', opacity);
   };
-  
+
   /**
    * Update all elements' opacity
-   * 
+   *
    * @param {Array} domElements
    * @param {Array} elements
-   * @param {String} type 
+   * @param {String} type
    */
   C.prototype.updateAllElementsOpacity = function (domElements, elements, type) {
     if (domElements === undefined) {
       return;
     }
-    
+
     for (var i = 0; i < domElements.length; i++) {
       C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
-      
+
       // Update dropzone's label
       if (type === 'dropZone') {
         this.updateDropZone(this.dropZones[i], i);
       }
     }
   };
-  
+
   /**
    * Get the opacity setting for a given element
-   * 
+   *
    * @param {Object} element
-   * @returns {String} opacity 
+   * @returns {String} opacity
    */
   C.prototype.getElementOpacitySetting = function (element) {
     if ((element.dropZones !== undefined && element.dropZones.length === 0) ||
        (this.backgroundOpacity === undefined)) {
       return element.backgroundOpacity;
     }
-        
+
     return this.backgroundOpacity;
   };
 
