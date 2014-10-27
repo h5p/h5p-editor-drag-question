@@ -480,9 +480,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     // Disable background opacity input if overriden globally
-    if (that.params.elements[id].dropZones.length !== 0) {
-      this.disableOpacityInputIfOverridden(element);
-    }
+    this.disableOpacityInputIfOverridden(element, that.params.elements[id].dropZones.length === 0);
 
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
@@ -493,11 +491,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    *
    * @param {Object element
    */
-  C.prototype.disableOpacityInputIfOverridden = function (element) {
+  C.prototype.disableOpacityInputIfOverridden = function (element, forceEnabled) {
      // Disable background opacity input if overriden globally
+    forceEnabled = forceEnabled || false;
+
     H5PEditor.findField('backgroundOpacity', element).$item.find('input').prop({
-      disabled: (this.backgroundOpacity !== undefined && this.backgroundOpacity !== ''),
-      title: this.backgroundOpacity ? C.t('backgroundOpacityOverridden') : ''
+      disabled: (!forceEnabled && this.backgroundOpacity),
+      title: (!forceEnabled && this.backgroundOpacity) ? C.t('backgroundOpacityOverridden') : ''
     });
   };
 
@@ -743,7 +743,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', this.getElementOpacitySetting(dropZone));
+    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', this.getElementOpacitySetting(params));
   };
 
   /**
