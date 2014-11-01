@@ -72,7 +72,7 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
             break;
           }
         }
-        html += '<li><label class="h5p-editor-label"><input type="checkbox" value="' + option.value + '"' + (selected ? ' checked="checked"' : '') + '/>' + option.label + '</label></li>';
+        html += '<li><label class="h5p-editor-label"><input type="checkbox" value="' + option.value + '"' + (selected ? ' checked="checked"' : '') + '/><div class="h5p-label-text">' + option.label + '</div></label></li>';
       }
       else {
         // Check if selected
