@@ -53,7 +53,7 @@
 .dragQuestion .h5p-dragnbar-a:hover {
   text-decoration: none;
 }
-.dragQuestion .h5p-dragnbar-text-button:before {
+.dragQuestion .h5p-dragnbar-advancedtext-button:before {
   font-size: 1.125em;
   font-weight: bold;
   content: "T";
