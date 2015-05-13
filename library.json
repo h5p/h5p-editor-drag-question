@@ -1,7 +1,7 @@
 {
   "title": "Drag Question Editor",
   "majorVersion": 1,
-  "minorVersion": 2,
+  "minorVersion": 3,
   "patchVersion": 0,
   "runnable": 0,
   "author": "Joubel AS",
@@ -45,7 +45,7 @@
       "minorVersion": 0
     },
     {
-      "machineName": "H5P.Text",
+      "machineName": "H5P.AdvancedText",
       "majorVersion": 1,
       "minorVersion": 0
     },

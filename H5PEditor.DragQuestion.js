@@ -70,7 +70,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     parent.ready(function () {
       that.passReadies = false;
     });
-  };
+  }
 
   /**
    * Append field to wrapper.
@@ -117,15 +117,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       html += '<span class="h5peditor-label">' + this.field.label + '</span>';
     }
 
-    html += '<div class="h5peditor-dragnbar"></div>'
-      + '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>'
-      + '<div class="h5peditor-fluid-dialog">'
-      + '  <div class="h5peditor-fd-inner"></div>'
-      + '  <div class="h5peditor-fd-buttons">'
-      + '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>'
-      + '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>'
-      + '  </div>'
-      + '</div>';
+    html += '<div class="h5peditor-dragnbar"></div>' +
+      '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>' +
+      '<div class="h5peditor-fluid-dialog">' +
+      '  <div class="h5peditor-fd-inner"></div>' +
+      '  <div class="h5peditor-fd-buttons">' +
+      '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>' +
+      '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>' +
+      '  </div>' +
+      '</div>';
 
     if (this.field.description !== undefined) {
       html += '<div class="h5peditor-field-description">' + this.field.description + '</div>';
@@ -500,14 +500,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var self = this;
     var params = this.params.elements[id];
 
-    var type = (params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image');
+    var type = (params.type.library.split(' ')[0] === 'H5P.AdvancedText' ? 'text' : 'image');
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
       element.instance = H5P.newRunnable({
         library: params.type.library,
         params: {
-          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
+          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
       }, H5PEditor.contentId, element.$element);
 
@@ -524,7 +524,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnr.add(element.$element);
 
     // Find label text without html
-    var label = (type === 'text' ? $('<div>' + element.instance.text + '</div>').text() : params.type.params.alt + '');
+    var label = (type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '');
 
     // Update correct element options
     this.elementOptions[id] = {
@@ -543,7 +543,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         this.hideDialogCallback = function () {
           var pWidth = self.$editor.width() / 100;
           var pHeight = self.$editor.height() / 100;
-          element.$element.find('span').each(function () {
+          element.$element.find('.h5p-dragquestion-placeholder').each(function () {
             var $span = $(this);
             var pos = $span.position();
 
