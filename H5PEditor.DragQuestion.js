@@ -507,7 +507,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       element.instance = H5P.newRunnable({
         library: params.type.library,
         params: {
-          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span>$1</span>')
+          text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
       }, H5PEditor.contentId, element.$element);
 
@@ -543,7 +543,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         this.hideDialogCallback = function () {
           var pWidth = self.$editor.width() / 100;
           var pHeight = self.$editor.height() / 100;
-          element.$element.find('span').each(function () {
+          element.$element.find('.h5p-dragquestion-placeholder').each(function () {
             var $span = $(this);
             var pos = $span.position();
 
