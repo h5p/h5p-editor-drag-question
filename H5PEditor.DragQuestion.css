@@ -137,6 +137,9 @@
   margin: 0;
   padding: 0;
 }
+.h5p-dq-element span {
+  line-height: 1em;
+}
 .h5p-dq-dz {
   position: absolute;
   border: 0.1em dashed #999;

@@ -500,7 +500,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var self = this;
     var params = this.params.elements[id];
 
-    var type = (params.type.library.split(' ')[0] === 'H5P.Text' ? 'text' : 'image');
+    var type = (params.type.library.split(' ')[0] === 'H5P.AdvancedText' ? 'text' : 'image');
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
@@ -524,7 +524,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnr.add(element.$element);
 
     // Find label text without html
-    var label = (type === 'text' ? $('<div>' + element.instance.text + '</div>').text() : params.type.params.alt + '');
+    var label = (type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '');
 
     // Update correct element options
     this.elementOptions[id] = {
