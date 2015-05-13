@@ -70,7 +70,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     parent.ready(function () {
       that.passReadies = false;
     });
-  };
+  }
 
   /**
    * Append field to wrapper.
@@ -117,15 +117,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       html += '<span class="h5peditor-label">' + this.field.label + '</span>';
     }
 
-    html += '<div class="h5peditor-dragnbar"></div>'
-      + '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>'
-      + '<div class="h5peditor-fluid-dialog">'
-      + '  <div class="h5peditor-fd-inner"></div>'
-      + '  <div class="h5peditor-fd-buttons">'
-      + '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>'
-      + '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>'
-      + '  </div>'
-      + '</div>';
+    html += '<div class="h5peditor-dragnbar"></div>' +
+      '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>' +
+      '<div class="h5peditor-fluid-dialog">' +
+      '  <div class="h5peditor-fd-inner"></div>' +
+      '  <div class="h5peditor-fd-buttons">' +
+      '    <a href="#" class="h5peditor-fd-button h5peditor-done">' + C.t('done') + '</a>' +
+      '    <a href="#" class="h5peditor-fd-button h5peditor-remove">' + C.t('remove') + '</a>' +
+      '  </div>' +
+      '</div>';
 
     if (this.field.description !== undefined) {
       html += '<div class="h5peditor-field-description">' + this.field.description + '</div>';
