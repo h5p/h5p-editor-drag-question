@@ -20,18 +20,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     var that = this;
 
     // Set params
-    if (params === undefined) {
-      this.params = {
-        elements: [],
-        dropZones: []
-      };
-      setValue(field, this.params);
-    }
-    else {
-      this.params = params;
-    }
-
-
+    this.params = $.extend({
+      elements: [],
+      dropZones: []
+    }, params);
+    setValue(field, this.params);
 
     // Get updates for fields
     H5PEditor.followField(parent, 'settings/background', function (params) {
