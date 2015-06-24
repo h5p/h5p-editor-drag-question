@@ -237,16 +237,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
     this.dnr.snap = 10;
 
-    H5P.$body.keydown(function (event) {
-      if (event.keyCode === 17 && that.dnr.snap !== undefined) {
-        delete that.dnr.snap;
-      }
-    }).keyup(function (event) {
-      if (event.keyCode === 17) {
-        that.dnr.snap = 10;
-      }
-    });
-
     // Add Elements
     this.elements = [];
     for (var i = 0; i < this.params.elements.length; i++) {
@@ -255,8 +245,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     // Add Drop Zones
     this.dropZones = [];
-    for (var i = 0; i < this.params.dropZones.length; i++) {
-      this.insertDropZone(i);
+    for (var j = 0; j < this.params.dropZones.length; j++) {
+      this.insertDropZone(j);
     }
   };
 
@@ -514,7 +504,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
 
     // Make resize possible
-    this.dnr.add(element.$element);
+    this.dnr.add(element.$element, {lock: type === 'image'});
 
     // Find label text without html
     var label = (type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '');
