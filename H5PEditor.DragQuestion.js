@@ -359,6 +359,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           }
         });
       }
+      else if (library.children[0].field.type === 'text') {
+        elementParams.height = 1.2;
+        if (element.$element) {
+          element.$element.css('height', 1.2 + 'em');
+        }
+      }
     };
 
     if (library.children === undefined) {
