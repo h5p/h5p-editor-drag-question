@@ -422,12 +422,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Update element
       that.updateElement(element, id);
-
-      // TODO: Resize element if it's to small
-//      var params = that.params.elements[id];
-//      if (params.type.library.split(' ')[0] === 'H5P.Text' && (params.dropZones === undefined || params.dropZones.length === 0)) {
-//        console.log('Are you too small sir?', params.type.params.text);
-//      }
     };
 
     this.removeCallback = function () {
