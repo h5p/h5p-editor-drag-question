@@ -101,22 +101,18 @@
   padding: 0.3em 0.3em;
   line-height: 1.25em;
 
-  background: rgb(255,255,255);
-  background: -webkit-linear-gradient(to bottom, rgb(255,255,255) 0%, rgb(224,224,224) 100%);
-  background: linear-gradient(to bottom, rgb(255,255,255) 0%, rgb(224,224,224) 100%);
+  background: #ddd ;
 
-  box-shadow: 0em 0em 0.4em rgba(0,0,0,0.5);
+  box-shadow: 0 0 0.3em rgba(0,0,0,0.2);
   z-index: 3;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
 }
 .h5p-dq-element.h5p-draggable:hover {
-  border: 0.1em solid #ceb8d2;
+  border: 0.1em solid rgb(212,190,216);
   color: #663366;
-  background: rgb(234,224,236);
-  background: -webkit-linear-gradient(to bottom, rgb(234,224,236) 0%, rgb(212,190,216) 100%);
-  background: linear-gradient(to bottom, rgb(234,224,236) 0%, rgb(212,190,216) 100%);
+  background: #edd6e9;
 }
 
 
@@ -147,7 +143,7 @@
   z-index: 2;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  background: #fff;
+  background: rgb(245, 245, 245);
 }
 .h5p-dq-dz:focus {
   outline: none;
@@ -224,7 +220,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   color: #e40000;
 }
 .h5p-dq-dz-label {
-  background: none repeat scroll 0 0 rgb(255, 255, 255);
+  background: none repeat scroll 0 0 #ddd;
   margin-bottom: 0.1em;
   line-height: 1.25em;
   padding-left: 0.5em;
