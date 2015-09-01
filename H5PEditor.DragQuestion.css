@@ -138,6 +138,7 @@
   line-height: 1em;
 }
 .h5p-dq-dz {
+  cursor: pointer;
   position: absolute;
   border: 0.1em dashed #999;
   border-radius: 0.5em;
