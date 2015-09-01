@@ -83,6 +83,7 @@
   line-height: 1.25em;
   z-index: 1;
   background: #fff;
+  cursor: pointer;
 }
 .h5p-dq-element:focus {
   outline: none;
