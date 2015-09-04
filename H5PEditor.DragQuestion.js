@@ -1,3 +1,4 @@
+/*global H5P*/
 var H5PEditor = H5PEditor || {};
 
 /**
@@ -14,7 +15,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @param {Object} field
    * @param {Object} params
    * @param {function} setValue
-   * @returns {_L8.C}
    */
   function C(parent, field, params, setValue) {
     var that = this;
@@ -102,7 +102,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   /**
    * Create HTML for the field.
    *
-   * @returns {@exp;H5PEditor@call;createItem}
+   * @returns {String}
    */
   C.prototype.createHtml = function () {
     var html = '';
@@ -206,7 +206,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor);
+    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$editor, true);
 
     // Add event handling
     this.dnb.stopMovingCallback = function (x, y) {
@@ -254,7 +254,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    *
    * @param {Object} semantics
    * @param {Object} params
-   * @returns {_L8.C.prototype.generateElementForm.Anonym$2}
+   * @returns {Object} generatedForm
    */
   C.prototype.generateForm = function (semantics, params) {
     var $form = $('<div></div>');
@@ -375,8 +375,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
 
     element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%"></div>')
-      .appendTo(this.$editor)
       .data('id', index)
+      .appendTo(this.$editor)
       .dblclick(function () {
         that.editElement(element);
       }).hover(function () {
@@ -388,7 +388,52 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }, 1);
       });
 
-    this.dnb.add(element.$element);
+    element.$innerElement = $('<div>', {
+      'class': 'h5p-dq-element-inner'
+    }).appendTo(element.$element);
+
+    var dnbElement = this.dnb.add(element.$element);
+
+    dnbElement.contextMenu.on('contextMenuEdit', function () {
+      that.editElement(element);
+    });
+
+    dnbElement.contextMenu.on('contextMenuRemove', function () {
+      var i, j, ce;
+      var id = element.$element.data('id');
+
+      // Remove element form
+      H5PEditor.removeChildren(element.children);
+
+      // Remove element
+      element.$element.remove();
+      that.elements.splice(id, 1);
+      that.params.elements.splice(id, 1);
+
+      // Remove from options
+      that.elementOptions.splice(id, 1);
+
+      // Update drop zone params
+      for (i = 0; i < that.params.dropZones.length; i++) {
+        ce = that.params.dropZones[i].correctElements;
+        for (j = 0; j < ce.length; j++) {
+          if (ce[j] === '' + id) {
+            // Remove from correct answers
+            ce.splice(j, 1);
+          }
+          else if (ce[j] > id) {
+            // Adjust index for others
+            ce[j] = '' + (ce[j] - 1);
+          }
+        }
+      }
+
+      // Change data index for "all" elements
+      for (i = id; i < that.elements.length; i++) {
+        that.elements[i].$element.data('id', i);
+        that.elementOptions[i].value = '' + i;
+      }
+    });
 
     // Update element
     that.updateElement(element, index);
@@ -491,7 +536,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         params: {
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
-      }, H5PEditor.contentId, element.$element);
+      }, H5PEditor.contentId, element.$innerElement);
 
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
@@ -499,11 +544,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }
     else {
       // Create new instance
-      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$element);
+      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$innerElement);
     }
-
-    // Make resize possible
-    this.dnr.add(element.$element, {lock: type === 'image'});
 
     // Find label text without html
     var label = (type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '');
@@ -582,7 +624,52 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.editDropZone(dropZone);
       });
 
-    this.dnb.add(dropZone.$dropZone);
+    var dropzoneDnBElement = this.dnb.add(dropZone.$dropZone);
+
+    // Register listeners for context menu buttons
+    dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
+      that.editDropZone(dropZone);
+    });
+
+    dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
+      // Remove element form
+      H5PEditor.removeChildren(dropZone.children);
+      var i;
+      var j;
+      var id = dropZone.$dropZone.data('id');
+
+      // Remove element
+      dropZone.$dropZone.remove();
+      that.dropZones.splice(id, 1);
+      that.params.dropZones.splice(id, 1);
+
+      // Remove from elements
+      that.elementFields[that.elementDropZoneFieldWeight].options.splice(id, 1);
+
+      // Remove dropZone from element params properly
+      for (i = 0; i < that.params.elements.length; i++) {
+        var dropZones = that.params.elements[i].dropZones;
+        for (j = 0; j < dropZones.length; j++) {
+          if (parseInt(dropZones[j]) === id) {
+            // Remove from element drop zones
+            dropZones.splice(j, 1);
+            if (!dropZones.length) {
+              that.elements[i].$element.removeClass('h5p-draggable');
+            }
+          }
+          else if (dropZones[j] > id) {
+            // Re index other drop zones
+            dropZones[j] = '' + (dropZones[j] - 1);
+          }
+        }
+      }
+
+      // Reindex all dropzones
+      for (i = id; i < that.dropZones.length; i++) {
+        that.dropZones[i].$dropZone.data('id', i);
+        that.elementFields[that.elementDropZoneFieldWeight].options[i].value = i + '';
+      }
+    });
 
     // Add tip if any
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
@@ -720,7 +807,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @returns {undefined}
    */
   C.prototype.showDialog = function ($form) {
-    this.dnb.blur();
+    this.dnb.blurAll();
     this.$currentForm = $form;
     $form.appendTo(this.$dialogInner);
     this.$dialog.show();
