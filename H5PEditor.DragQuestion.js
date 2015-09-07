@@ -226,15 +226,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
     this.dnb.attach(this.$dnbWrapper);
 
-    // Init resize
-    this.dnr = new H5P.DragNResize(this.$editor);
-    this.dnr.resizeCallback = function (newWidth, newHeight) {
-      var id = that.dnr.$element.data('id');
-      var params = that.dnr.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
-      params.width = newWidth;
-      params.height = newHeight;
-    };
-    this.dnr.snap = 10;
+    // Update params on end of resize
+    this.dnb.dnr.on('stoppedResizing', function (dimensions) {
+      var id = that.dnb.$element.data('id');
+      var params = that.dnb.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
+      params.width = dimensions.data.width;
+      params.height = dimensions.data.height;
+    });
 
     // Add Elements
     this.elements = [];
@@ -675,9 +673,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
       dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
     }
-
-    // Make resize possible
-    this.dnr.add(dropZone.$dropZone);
 
     // Add label
     this.updateDropZone(dropZone, index);
