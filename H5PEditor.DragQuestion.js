@@ -230,8 +230,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.dnb.dnr.on('stoppedResizing', function (dimensions) {
       var id = that.dnb.$element.data('id');
       var params = that.dnb.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
-      params.width = dimensions.width;
-      params.height = dimensions.height;
+      params.width = dimensions.data.width;
+      params.height = dimensions.data.height;
     });
 
     // Add Elements
