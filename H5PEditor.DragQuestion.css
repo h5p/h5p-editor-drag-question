@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.dragQuestion {
+  position: relative;
+}
+
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
   overflow: hidden;
