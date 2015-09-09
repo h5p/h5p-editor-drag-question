@@ -207,6 +207,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     // Create new bar
     this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$editor, true);
+    that.dnb.dnr.snap = 10;
 
     // Add event handling
     this.dnb.stopMovingCallback = function (x, y) {
@@ -356,12 +357,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
             element.$element.css('height', elementParams.height + 'em');
           }
         });
-      }
-      else if (library.children[0].field.type === 'text') {
-        elementParams.height = 1.2;
-        if (element.$element) {
-          element.$element.css('height', 1.2 + 'em');
-        }
       }
     };
 
