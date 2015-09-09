@@ -222,6 +222,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       if (that.dnb.newElement) {
         setTimeout(function () {
           that.dnb.dnd.$element.dblclick();
+          that.dnb.blurAll();
         }, 1);
       }
     };
@@ -372,6 +373,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       .appendTo(this.$editor)
       .dblclick(function () {
         that.editElement(element);
+        that.dnb.blurAll();
       }).hover(function () {
         C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       }, function () {
@@ -389,6 +391,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     dnbElement.contextMenu.on('contextMenuEdit', function () {
       that.editElement(element);
+      that.dnb.blurAll();
     });
 
     dnbElement.contextMenu.on('contextMenuRemove', function () {
@@ -426,6 +429,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.elements[i].$element.data('id', i);
         that.elementOptions[i].value = '' + i;
       }
+      that.dnb.blurAll();
     });
 
     // Update element
@@ -460,6 +464,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
       // Update element
       that.updateElement(element, id);
+      that.dnb.focus(element.$element);
     };
 
     this.removeCallback = function () {
@@ -615,6 +620,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       .dblclick(function () {
         // Edit
         that.editDropZone(dropZone);
+        that.dnb.blurAll();
       });
 
     var dropzoneDnBElement = this.dnb.add(dropZone.$dropZone);
@@ -622,6 +628,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     // Register listeners for context menu buttons
     dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
       that.editDropZone(dropZone);
+      that.dnb.blurAll();
     });
 
     dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
@@ -662,6 +669,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.dropZones[i].$dropZone.data('id', i);
         that.elementFields[that.elementDropZoneFieldWeight].options[i].value = i + '';
       }
+      that.dnb.blurAll();
     });
 
     // Add tip if any
@@ -700,6 +708,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
 
       that.updateDropZone(dropZone, id);
+      that.dnb.focus(dropZone.$dropZone);
     };
 
     this.removeCallback = function () {
