@@ -841,6 +841,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.setElementOpacity = function ($element, opacity) {
     C.setOpacity($element, 'background', opacity);
+    C.setOpacity($element, 'boxShadow', opacity);
+    C.setOpacity($element, 'borderColor', opacity);
   };
 
   /**
@@ -883,7 +885,71 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    * @param {Number} opacity
    */
   C.setOpacity = function ($element, property, opacity) {
-    $element.css('opacity', opacity / 100);
+    if (property === 'background') {
+      // Set both color and gradient.
+      C.setOpacity($element, 'backgroundColor', opacity);
+      C.setOpacity($element, 'backgroundImage', opacity);
+      return;
+    }
+
+    opacity = (opacity === undefined ? 1 : opacity / 100);
+
+    // Private. Get css properties objects.
+    function getProperties(property, value) {
+      switch (property) {
+        case 'borderColor':
+          return {
+            borderTopColor: value,
+            borderRightColor: value,
+            borderBottomColor: value,
+            borderLeftColor: value
+          };
+
+        default:
+          var properties = {};
+          properties[property] = value;
+          return properties;
+      }
+    }
+
+    // Reset css to be sure we're using CSS and not inline values.
+    var properties = getProperties(property, '');
+    $element.css(properties);
+
+    for (var prop in properties) {
+      break;
+    }
+    var style = $element.css(prop); // Assume all props are the same and use the first.
+    style = C.setAlphas(style, 'rgba(', opacity); // Update rgba
+    style = C.setAlphas(style, 'rgb(', opacity); // Convert rgb
+
+    $element.css(getProperties(property, style));
+  };
+
+  /**
+   * Updates alpha channel for colors in the given style.
+   *
+   * @param {String} style
+   * @param {String} prefix
+   * @param {Number} alpha
+   */
+  C.setAlphas = function (style, prefix, alpha) {
+    var colorStart = style.indexOf(prefix);
+
+    while (colorStart !== -1) {
+      var colorEnd = style.indexOf(')', colorStart);
+      var channels = style.substring(colorStart + prefix.length, colorEnd).split(',');
+
+      // Set alpha channel
+      channels[3] = (channels[3] !== undefined ? parseFloat(channels[3]) * alpha : alpha);
+
+      style = style.substring(0, colorStart) + 'rgba(' + channels.join(',') + style.substring(colorEnd, style.length);
+
+      // Look for more colors
+      colorStart = style.indexOf(prefix, colorEnd);
+    }
+
+    return style;
   };
 
   /**
