@@ -424,12 +424,39 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }
       }
 
-      // Change data index for "all" elements
-      for (i = id; i < that.elements.length; i++) {
-        that.elements[i].$element.data('id', i);
-        that.elementOptions[i].value = '' + i;
-      }
+      that.updateInternalElementIDs(id);
       that.dnb.blurAll();
+    });
+
+    dnbElement.contextMenu.on('contextMenuBringToFront', function () {
+      // Find element ID
+      var id = element.$element.data('id');
+
+      // Update visuals
+      element.$element.appendTo(that.$editor);
+
+      // Give new ID
+      that.elements.push(that.elements.splice(id, 1)[0]);
+      that.params.elements.push(that.params.elements.splice(id, 1)[0]);
+      that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
+      var newID = (that.elements.length - 1);
+
+      // Update drop zone params
+      for (i = 0; i < that.params.dropZones.length; i++) {
+        ce = that.params.dropZones[i].correctElements;
+        for (j = 0; j < ce.length; j++) {
+          if (ce[j] === '' + id) {
+            // Update ID in correct answers
+            ce[j] = newID;
+          }
+          else if (ce[j] > id) {
+            // Adjust index for others
+            ce[j] = '' + (ce[j] - 1);
+          }
+        }
+      }
+
+      that.updateInternalElementIDs(id);
     });
 
     // Update element
@@ -437,6 +464,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.elements[index] = element;
     return element.$element;
+  };
+
+  /**
+   * Sync the internal ID of each element.
+   * @param {number} start
+   */
+  C.prototype.updateInternalElementIDs = function (start) {
+    for (i = start; i < this.elements.length; i++) {
+      this.elements[i].$element.data('id', i);
+      this.elementOptions[i].value = '' + i;
+    }
   };
 
   /**
@@ -664,12 +702,39 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         }
       }
 
-      // Reindex all dropzones
-      for (i = id; i < that.dropZones.length; i++) {
-        that.dropZones[i].$dropZone.data('id', i);
-        that.elementFields[that.elementDropZoneFieldWeight].options[i].value = i + '';
-      }
+      that.updateInternalDropZoneIDs(id);
       that.dnb.blurAll();
+    });
+
+    dropzoneDnBElement.contextMenu.on('contextMenuBringToFront', function () {
+      var id = dropZone.$dropZone.data('id');
+
+      // Update visuals
+      dropZone.$dropZone.appendTo(that.$editor);
+
+      // Get new ID
+      that.dropZones.push(that.dropZones.splice(id, 1)[0]);
+      that.params.dropZones.push(that.params.dropZones.splice(id, 1)[0]);
+      var options = that.elementFields[that.elementDropZoneFieldWeight].options;
+      options.push(options.splice(id, 1)[0]);
+      var newID = (that.dropZones.length - 1);
+
+      // Update dropZone IDs in element params
+      for (i = 0; i < that.params.elements.length; i++) {
+        var dropZones = that.params.elements[i].dropZones;
+        for (j = 0; j < dropZones.length; j++) {
+          if (parseInt(dropZones[j]) === id) {
+            // Update ID
+            dropZones[j] = newID;
+          }
+          else if (dropZones[j] > id) {
+            // Re-index other drop zones
+            dropZones[j] = '' + (dropZones[j] - 1);
+          }
+        }
+      }
+
+      that.updateInternalDropZoneIDs(id);
     });
 
     // Add tip if any
@@ -682,6 +747,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.dropZones[index] = dropZone;
     return dropZone.$dropZone;
+  };
+
+  /**
+   * Sync the internal ID of each drop zone.
+   * @param {number} start
+   */
+  C.prototype.updateInternalDropZoneIDs = function (start) {
+    for (i = start; i < this.dropZones.length; i++) {
+      this.dropZones[i].$dropZone.data('id', i);
+      this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
+    }
   };
 
   /**
