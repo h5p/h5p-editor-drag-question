@@ -7,7 +7,14 @@ var H5PEditor = H5PEditor || {};
 
  * @param {jQuery} $
  */
-H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
+H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar) {
+  /**
+   * Must be changed if the semantics for the elements changes.
+   * @πvate
+   * @type {string}
+   */
+  var clipboardKey = 'H5PEditor.DragQuestion';
+
   /**
    * Initialize interactive video editor.
    *
@@ -206,7 +213,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item, true);
+    this.dnb = new DragNBar(this.getButtons(), this.$editor, this.$item, true);
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -227,6 +234,42 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
     };
     this.dnb.attach(this.$dnbWrapper);
+
+    this.dnb.on('paste', function (event) {
+      var pasted = event.data;
+
+      if (pasted.from === clipboardKey) {
+        // Pasted content comes from the same version of DQ
+
+        if (!pasted.generic) {
+          // Non generic part, must be a drop zone
+          that.params.dropZones.push(pasted.specific);
+          that.insertDropZone(that.params.dropZones.length - 1);
+        }
+        else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+          // Has generic part and the generic libray is supported
+          that.params.elements.push(pasted.specific);
+          that.insertElement(that.params.elements.length - 1);
+        }
+      }
+      else if (pasted.generic && that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+        // Supported library from another content type
+        var id = C.getLibraryID(pasted.generic.library);
+        var elementParams = C.getDefaultElementParams(id);
+        elementParams.type = pasted.generic;
+        if (id === 'image') {
+          // Apply aspect ratio for images
+          var imgFileParams = elementParams.type.params.file;
+          if (imgFileParams.width !== undefined && imgFileParams.height !== undefined) {
+            elementParams.height = elementParams.width * (imgFileParams.height / imgFileParams.width);
+          }
+        }
+
+        that.params.elements.push(elementParams);
+        that.insertElement(that.params.elements.length - 1);
+      }
+    });
+
 
     // Update params on end of resize
     this.dnb.dnr.on('stoppedResizing', function (dimensions) {
@@ -302,6 +345,30 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Creates a fresh object with default element parameters.
+   * @returns {object}
+   */
+  C.getDefaultElementParams = function (id) {
+    return {
+      x: 0,
+      y: 0,
+      width: 5,
+      height: id === 'text' ? 1.25 : 5,
+      dropZones: []
+    };
+  };
+
+  /**
+   * Find generic library identifier without version name.
+   *
+   * @param {string} library
+   * @returns {string}
+   */
+  C.getLibraryID = function (library) {
+    return library.split(' ')[0].split('.')[1].toLowerCase();
+  };
+
+  /**
    * Generate a single element button for the DnB.
    *
    * @param {String} library Library name + version
@@ -309,24 +376,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.getButton = function (library) {
     var that = this;
-    var id = library.split(' ')[0].split('.')[1].toLowerCase();
-    var h = id === 'text' ? 1.25 : 5;
+    var id = C.getLibraryID(library);
     return {
       id: id,
       title: C.t('insertElement', {':type': id}),
       createElement: function () {
-        that.params.elements.push({
-          type: {
-            library: library,
-            params: {}
-          },
-          x: 0,
-          y: 0,
-          width: 5,
-          height: h,
-          dropZones: []
-        });
-
+        var elementParams = C.getDefaultElementParams(id);
+        elementParams.type = {
+          library: library,
+          params: {}
+        };
+        that.params.elements.push(elementParams);
         return that.insertElement(that.params.elements.length - 1);
       }
     };
@@ -387,7 +447,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       'class': 'h5p-dq-element-inner'
     }).appendTo(element.$element);
 
-    var dnbElement = this.dnb.add(element.$element);
+    var dnbElement = this.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'));
 
     dnbElement.contextMenu.on('contextMenuEdit', function () {
       that.editElement(element);
@@ -661,7 +721,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
         that.dnb.blurAll();
       });
 
-    var dropzoneDnBElement = this.dnb.add(dropZone.$dropZone);
+    var dropzoneDnBElement = this.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
 
     // Register listeners for context menu buttons
     dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
@@ -1077,7 +1137,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   return C;
-})(H5P.jQuery);
+})(H5P.jQuery, H5P.DragNBar);
 
 // Default english translations
 H5PEditor.language['H5PEditor.DragQuestion'] = {
