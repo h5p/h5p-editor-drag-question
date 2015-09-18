@@ -193,6 +193,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
     }
 
+    this.pToEm = (parseFloat(window.getComputedStyle(this.$editor[0]).width) / this.fontSize) / 100;
 
     // TODO: Should we care about resize events? Will only be an issue for responsive designs.
 
@@ -257,13 +258,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         var id = C.getLibraryID(pasted.generic.library);
         var elementParams = C.getDefaultElementParams(id);
         elementParams.type = pasted.generic;
-        if (id === 'image') {
-          // Apply aspect ratio for images
-          var imgFileParams = elementParams.type.params.file;
-          if (imgFileParams.width !== undefined && imgFileParams.height !== undefined) {
-            elementParams.height = elementParams.width * (imgFileParams.height / imgFileParams.width);
-          }
-        }
+        elementParams.width = pasted.width * that.pToEm;
+        elementParams.height = pasted.height * that.pToEm;
 
         that.params.elements.push(elementParams);
         that.insertElement(that.params.elements.length - 1);
