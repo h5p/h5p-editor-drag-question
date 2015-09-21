@@ -244,25 +244,36 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         if (!pasted.generic) {
           // Non generic part, must be a drop zone
+          that.center(pasted.specific);
           that.params.dropZones.push(pasted.specific);
-          that.insertDropZone(that.params.dropZones.length - 1);
+          that.dnb.focus(that.insertDropZone(that.params.dropZones.length - 1));
         }
         else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
           // Has generic part and the generic libray is supported
+          that.center(pasted.specific);
           that.params.elements.push(pasted.specific);
-          that.insertElement(that.params.elements.length - 1);
+          that.dnb.focus(that.insertElement(that.params.elements.length - 1));
+        }
+        else {
+          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
         }
       }
-      else if (pasted.generic && that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-        // Supported library from another content type
-        var id = C.getLibraryID(pasted.generic.library);
-        var elementParams = C.getDefaultElementParams(id);
-        elementParams.type = pasted.generic;
-        elementParams.width = pasted.width * that.pToEm;
-        elementParams.height = pasted.height * that.pToEm;
+      else if (pasted.generic) {
+        if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+          // Supported library from another content type
+          var id = C.getLibraryID(pasted.generic.library);
+          var elementParams = C.getDefaultElementParams(id);
+          elementParams.type = pasted.generic;
+          elementParams.width = pasted.width * that.pToEm;
+          elementParams.height = pasted.height * that.pToEm;
 
-        that.params.elements.push(elementParams);
-        that.insertElement(that.params.elements.length - 1);
+          that.center(elementParams);
+          that.params.elements.push(elementParams);
+          that.dnb.focus(that.insertElement(that.params.elements.length - 1));
+        }
+        else {
+          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
+        }
       }
     });
 
@@ -286,6 +297,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     for (var j = 0; j < this.params.dropZones.length; j++) {
       this.insertDropZone(j);
     }
+  };
+
+  /**
+   * Help center new elements
+   * @param {object} params
+   */
+  C.prototype.center = function (params) {
+    var size = window.getComputedStyle(this.dnb.$container[0]);
+    var width = parseFloat(size.width);
+    var height = parseFloat(size.height);
+    var pos = {
+      x: (width - (params.width * this.fontSize)) / 2,
+      y: (height - (params.height * this.fontSize)) / 2
+    };
+    this.dnb.avoidOverlapping(pos);
+    params.x = pos.x / (width / 100);
+    params.y = pos.y / (height / 100);
   };
 
   /**
