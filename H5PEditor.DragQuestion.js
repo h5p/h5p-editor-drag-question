@@ -373,7 +373,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       .appendTo(this.$editor)
       .dblclick(function () {
         that.editElement(element);
-        that.dnb.blurAll();
       }).hover(function () {
         C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       }, function () {
@@ -514,6 +513,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
+
+    // Blur context menu when showing dialog.
+    setTimeout(function () {
+      that.dnb.blurAll();
+    }, 10);
   };
 
   /**
@@ -769,6 +773,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
+
+    // Blur context menu when showing dialog
+    setTimeout(function () {
+      that.dnb.blurAll();
+    }, 10);
   };
 
   /**
