@@ -457,7 +457,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       .appendTo(this.$editor)
       .dblclick(function () {
         that.editElement(element);
-        that.dnb.blurAll();
       }).hover(function () {
         C.setElementOpacity(element.$element, that.getElementOpacitySetting(elementParams));
       }, function () {
@@ -471,46 +470,48 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       'class': 'h5p-dq-element-inner'
     }).appendTo(element.$element);
 
-    var dnbElement = this.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'));
+    setTimeout(function () {
+      var dnbElement = that.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'));
 
-    dnbElement.contextMenu.on('contextMenuEdit', function () {
-      that.editElement(element);
-      that.dnb.blurAll();
-    });
+      dnbElement.contextMenu.on('contextMenuEdit', function () {
+        that.editElement(element);
+        that.dnb.blurAll();
+      });
 
-    dnbElement.contextMenu.on('contextMenuRemove', function () {
-      var i, j, ce;
-      var id = element.$element.data('id');
+      dnbElement.contextMenu.on('contextMenuRemove', function () {
+        var i, j, ce;
+        var id = element.$element.data('id');
 
-      // Remove element form
-      H5PEditor.removeChildren(element.children);
+        // Remove element form
+        H5PEditor.removeChildren(element.children);
 
-      // Remove element
-      element.$element.remove();
-      that.elements.splice(id, 1);
-      that.params.elements.splice(id, 1);
+        // Remove element
+        element.$element.remove();
+        that.elements.splice(id, 1);
+        that.params.elements.splice(id, 1);
 
-      // Remove from options
-      that.elementOptions.splice(id, 1);
+        // Remove from options
+        that.elementOptions.splice(id, 1);
 
-      // Update drop zone params
-      for (i = 0; i < that.params.dropZones.length; i++) {
-        ce = that.params.dropZones[i].correctElements;
-        for (j = 0; j < ce.length; j++) {
-          if (ce[j] === '' + id) {
-            // Remove from correct answers
-            ce.splice(j, 1);
-          }
-          else if (ce[j] > id) {
-            // Adjust index for others
-            ce[j] = '' + (ce[j] - 1);
+        // Update drop zone params
+        for (i = 0; i < that.params.dropZones.length; i++) {
+          ce = that.params.dropZones[i].correctElements;
+          for (j = 0; j < ce.length; j++) {
+            if (ce[j] === '' + id) {
+              // Remove from correct answers
+              ce.splice(j, 1);
+            }
+            else if (ce[j] > id) {
+              // Adjust index for others
+              ce[j] = '' + (ce[j] - 1);
+            }
           }
         }
-      }
 
-      that.updateInternalElementIDs(id);
-      that.dnb.blurAll();
-    });
+        that.updateInternalElementIDs(id);
+        that.dnb.blurAll();
+      });
+    }, 0);
 
     dnbElement.contextMenu.on('contextMenuBringToFront', function () {
       // Find element ID
@@ -634,6 +635,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
+
+    // Blur context menu when showing dialog.
+    setTimeout(function () {
+      that.dnb.blurAll();
+    }, 10);
   };
 
   /**
@@ -729,7 +735,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * Insert the drop zone at the given index.
    *
    * @param {int} index
-   * @returns {unresolved}
+   * @returns {H5P.jQuery}
    */
   C.prototype.insertDropZone = function (index) {
     var that = this,
@@ -745,82 +751,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.dnb.blurAll();
       });
 
-    var dropzoneDnBElement = this.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
-
-    // Register listeners for context menu buttons
-    dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
-      that.editDropZone(dropZone);
-      that.dnb.blurAll();
-    });
-
-    dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
-      // Remove element form
-      H5PEditor.removeChildren(dropZone.children);
-      var i;
-      var j;
-      var id = dropZone.$dropZone.data('id');
-
-      // Remove element
-      dropZone.$dropZone.remove();
-      that.dropZones.splice(id, 1);
-      that.params.dropZones.splice(id, 1);
-
-      // Remove from elements
-      that.elementFields[that.elementDropZoneFieldWeight].options.splice(id, 1);
-
-      // Remove dropZone from element params properly
-      for (i = 0; i < that.params.elements.length; i++) {
-        var dropZones = that.params.elements[i].dropZones;
-        for (j = 0; j < dropZones.length; j++) {
-          if (parseInt(dropZones[j]) === id) {
-            // Remove from element drop zones
-            dropZones.splice(j, 1);
-            if (!dropZones.length) {
-              that.elements[i].$element.removeClass('h5p-draggable');
-            }
-          }
-          else if (dropZones[j] > id) {
-            // Re index other drop zones
-            dropZones[j] = '' + (dropZones[j] - 1);
-          }
-        }
-      }
-
-      that.updateInternalDropZoneIDs(id);
-      that.dnb.blurAll();
-    });
-
-    dropzoneDnBElement.contextMenu.on('contextMenuBringToFront', function () {
-      var id = dropZone.$dropZone.data('id');
-
-      // Update visuals
-      dropZone.$dropZone.appendTo(that.$editor);
-
-      // Get new ID
-      that.dropZones.push(that.dropZones.splice(id, 1)[0]);
-      that.params.dropZones.push(that.params.dropZones.splice(id, 1)[0]);
-      var options = that.elementFields[that.elementDropZoneFieldWeight].options;
-      options.push(options.splice(id, 1)[0]);
-      var newID = (that.dropZones.length - 1);
-
-      // Update dropZone IDs in element params
-      for (i = 0; i < that.params.elements.length; i++) {
-        var dropZones = that.params.elements[i].dropZones;
-        for (j = 0; j < dropZones.length; j++) {
-          if (parseInt(dropZones[j]) === id) {
-            // Update ID
-            dropZones[j] = newID;
-          }
-          else if (dropZones[j] > id) {
-            // Re-index other drop zones
-            dropZones[j] = '' + (dropZones[j] - 1);
-          }
-        }
-      }
-
-      that.updateInternalDropZoneIDs(id);
-    });
-
     // Add tip if any
     if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
       dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
@@ -829,8 +759,96 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Add label
     this.updateDropZone(dropZone, index);
 
-    this.dropZones[index] = dropZone;
-    return dropZone.$dropZone;
+    // Add to dnb after element has been attached
+    setTimeout(function () {
+
+      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
+
+      // Register listeners for context menu buttons
+      dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
+        that.editDropZone(dropZone);
+        that.dnb.blurAll();
+      });
+
+      dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
+        // Remove element form
+        H5PEditor.removeChildren(dropZone.children);
+        var i;
+        var j;
+        var id = dropZone.$dropZone.data('id');
+
+        // Remove element
+        dropZone.$dropZone.remove();
+        that.dropZones.splice(id, 1);
+        that.params.dropZones.splice(id, 1);
+
+        // Remove from elements
+        that.elementFields[that.elementDropZoneFieldWeight].options.splice(id, 1);
+
+        // Remove dropZone from element params properly
+        for (i = 0; i < that.params.elements.length; i++) {
+          var dropZones = that.params.elements[i].dropZones;
+          for (j = 0; j < dropZones.length; j++) {
+            if (parseInt(dropZones[j]) === id) {
+              // Remove from element drop zones
+              dropZones.splice(j, 1);
+              if (!dropZones.length) {
+                that.elements[i].$element.removeClass('h5p-draggable');
+              }
+            }
+            else if (dropZones[j] > id) {
+              // Re index other drop zones
+              dropZones[j] = '' + (dropZones[j] - 1);
+            }
+          }
+        }
+
+        that.updateInternalDropZoneIDs(id);
+        that.dnb.blurAll();
+      });
+
+      dropzoneDnBElement.contextMenu.on('contextMenuBringToFront', function () {
+        var id = dropZone.$dropZone.data('id');
+
+        // Update visuals
+        dropZone.$dropZone.appendTo(that.$editor);
+
+        // Get new ID
+        that.dropZones.push(that.dropZones.splice(id, 1)[0]);
+        that.params.dropZones.push(that.params.dropZones.splice(id, 1)[0]);
+        var options = that.elementFields[that.elementDropZoneFieldWeight].options;
+        options.push(options.splice(id, 1)[0]);
+        var newID = (that.dropZones.length - 1);
+
+        // Update dropZone IDs in element params
+        for (i = 0; i < that.params.elements.length; i++) {
+          var dropZones = that.params.elements[i].dropZones;
+          for (j = 0; j < dropZones.length; j++) {
+            if (parseInt(dropZones[j]) === id) {
+              // Update ID
+              dropZones[j] = newID;
+            }
+            else if (dropZones[j] > id) {
+              // Re-index other drop zones
+              dropZones[j] = '' + (dropZones[j] - 1);
+            }
+          }
+        }
+
+        that.updateInternalDropZoneIDs(id);
+      });
+
+      // Add tip if any
+      if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
+        dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
+      }
+
+      // Add label
+      this.updateDropZone(dropZone, index);
+
+      this.dropZones[index] = dropZone;
+      return dropZone.$dropZone;
+    }, 0);
   };
 
   /**
@@ -923,6 +941,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
+
+    // Blur context menu when showing dialog
+    setTimeout(function () {
+      that.dnb.blurAll();
+    }, 10);
   };
 
   /**
