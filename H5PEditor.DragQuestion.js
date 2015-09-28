@@ -511,38 +511,38 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.updateInternalElementIDs(id);
         that.dnb.blurAll();
       });
-    }, 0);
 
-    dnbElement.contextMenu.on('contextMenuBringToFront', function () {
-      // Find element ID
-      var id = element.$element.data('id');
+      dnbElement.contextMenu.on('contextMenuBringToFront', function () {
+        // Find element ID
+        var id = element.$element.data('id');
 
-      // Update visuals
-      element.$element.appendTo(that.$editor);
+        // Update visuals
+        element.$element.appendTo(that.$editor);
 
-      // Give new ID
-      that.elements.push(that.elements.splice(id, 1)[0]);
-      that.params.elements.push(that.params.elements.splice(id, 1)[0]);
-      that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
-      var newID = (that.elements.length - 1);
+        // Give new ID
+        that.elements.push(that.elements.splice(id, 1)[0]);
+        that.params.elements.push(that.params.elements.splice(id, 1)[0]);
+        that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
+        var newID = (that.elements.length - 1);
 
-      // Update drop zone params
-      for (i = 0; i < that.params.dropZones.length; i++) {
-        ce = that.params.dropZones[i].correctElements;
-        for (j = 0; j < ce.length; j++) {
-          if (ce[j] === '' + id) {
-            // Update ID in correct answers
-            ce[j] = newID;
-          }
-          else if (ce[j] > id) {
-            // Adjust index for others
-            ce[j] = '' + (ce[j] - 1);
+        // Update drop zone params
+        for (i = 0; i < that.params.dropZones.length; i++) {
+          ce = that.params.dropZones[i].correctElements;
+          for (j = 0; j < ce.length; j++) {
+            if (ce[j] === '' + id) {
+              // Update ID in correct answers
+              ce[j] = newID;
+            }
+            else if (ce[j] > id) {
+              // Adjust index for others
+              ce[j] = '' + (ce[j] - 1);
+            }
           }
         }
-      }
 
-      that.updateInternalElementIDs(id);
-    });
+        that.updateInternalElementIDs(id);
+      });
+    }, 0);
 
     // Update element
     that.updateElement(element, index);
@@ -837,18 +837,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         that.updateInternalDropZoneIDs(id);
       });
-
-      // Add tip if any
-      if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
-        dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
-      }
-
-      // Add label
-      this.updateDropZone(dropZone, index);
-
-      this.dropZones[index] = dropZone;
-      return dropZone.$dropZone;
     }, 0);
+
+    // Add tip if any
+    if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
+      dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
+    }
+
+    // Add label
+    this.updateDropZone(dropZone, index);
+
+    this.dropZones[index] = dropZone;
+    return dropZone.$dropZone;
   };
 
   /**
