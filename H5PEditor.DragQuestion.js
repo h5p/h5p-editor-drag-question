@@ -206,7 +206,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item, true);
+    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item);
     that.dnb.dnr.snap = 10;
 
     // Add event handling
