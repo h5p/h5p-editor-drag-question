@@ -206,7 +206,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item, true);
+    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item);
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -395,6 +395,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       });
 
       dnbElement.contextMenu.on('contextMenuRemove', function () {
+        if (!confirm(C.t('confirmRemoval'))) {
+          return;
+        }
         var i, j, ce;
         var id = element.$element.data('id');
 
@@ -649,6 +652,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       });
 
       dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
+        if (!confirm(C.t('confirmRemoval'))) {
+          return;
+        }
+
         // Remove element form
         H5PEditor.removeChildren(dropZone.children);
         var i;
