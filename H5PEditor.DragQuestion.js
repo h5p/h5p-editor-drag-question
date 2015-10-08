@@ -591,6 +591,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       // Update element
       that.updateElement(element, id);
       that.dnb.focus(element.$element);
+      that.dnb.pressed = undefined;
     };
 
     this.removeCallback = function () {
@@ -894,6 +895,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
       that.updateDropZone(dropZone, id);
       that.dnb.focus(dropZone.$dropZone);
+      that.dnb.pressed = undefined;
     };
 
     this.removeCallback = function () {
