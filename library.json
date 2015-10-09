@@ -1,8 +1,8 @@
 {
   "title": "Drag Question Editor",
   "majorVersion": 1,
-  "minorVersion": 3,
-  "patchVersion": 1,
+  "minorVersion": 4,
+  "patchVersion": 0,
   "runnable": 0,
   "author": "Joubel AS",
   "coreApi": {
@@ -42,7 +42,7 @@
     {
       "machineName": "H5P.AdvancedText",
       "majorVersion": 1,
-      "minorVersion": 0
+      "minorVersion": 1
     },
     {
       "machineName": "H5P.Image",
@@ -57,7 +57,7 @@
     {
       "machineName": "H5P.JoubelUI",
       "majorVersion": 1,
-      "minorVersion": 1
+      "minorVersion": 2
     }
   ]
 }
