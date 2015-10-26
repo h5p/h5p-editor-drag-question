@@ -70,6 +70,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     parent.ready(function () {
       that.passReadies = false;
     });
+
+    H5P.$window.on('resize', function () {
+      if (that.size !== undefined && that.size.width !== undefined) {
+        that.resize();
+      }
+    });
   }
 
   /**
@@ -171,6 +177,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (this.size === undefined || this.size.width === undefined) {
       return;
     }
+
+    this.resize();
+
+    if (this.dnb === undefined) {
+      this.activateEditor();
+    }
+  };
+
+  /**
+   * Adapt the editor when the window changes size.
+   */
+  C.prototype.resize = function () {
     var maxWidth = this.$item.width();
     if (this.size.width < maxWidth) {
       this.$editor.css({
@@ -194,14 +212,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     this.pToEm = (parseFloat(window.getComputedStyle(this.$editor[0]).width) / this.fontSize) / 100;
-
-    // TODO: Should we care about resize events? Will only be an issue for responsive designs.
-
-    if (this.dnb === undefined) {
-      this.activateEditor();
-    }
-
-    // TODO: Move elements that is outside inside.
   };
 
   /**
