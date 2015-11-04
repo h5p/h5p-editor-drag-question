@@ -598,6 +598,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         return false;
       }
 
+      // Must be removed before dnb changes focus!
+      if (H5PEditor.Html) {
+        H5PEditor.Html.removeWysiwyg();
+      }
+
       // Update element
       that.updateElement(element, id);
       that.dnb.focus(element.$element);
@@ -903,6 +908,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         return false;
       }
 
+      // Must be removed before dnb changes focus!
+      if (H5PEditor.Html) {
+        H5PEditor.Html.removeWysiwyg();
+      }
+
       that.updateDropZone(dropZone, id);
       that.dnb.focus(dropZone.$dropZone);
       that.dnb.pressed = undefined;
@@ -1022,9 +1032,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.hideDialog = function () {
     // Attempt to find and close CKEditor instances before detaching.
-    if (H5PEditor.Html) {
-      H5PEditor.Html.removeWysiwyg();
-    }
+
 
     this.$currentForm.detach();
     this.$dialog.hide();
