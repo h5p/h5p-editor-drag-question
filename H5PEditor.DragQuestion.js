@@ -107,9 +107,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
       return false;
     });
-
-    // Get editor default font size.
-    this.fontSize = parseInt(this.$editor.css('fontSize'));
   };
 
   /**
@@ -189,6 +186,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * Adapt the editor when the window changes size.
    */
   C.prototype.resize = function () {
+    if (!this.$editor.is(':visible')) {
+      return;
+    }
+    if (this.fontSize === undefined) {
+      // Get editor default font size.
+      this.fontSize = parseInt(this.$editor.css('fontSize'));
+    }
+
     var maxWidth = this.$item.width();
     if (this.size.width < maxWidth) {
       this.$editor.css({
