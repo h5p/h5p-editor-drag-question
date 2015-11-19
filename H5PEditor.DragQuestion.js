@@ -175,11 +175,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       return;
     }
 
-    this.resize();
-
     if (this.dnb === undefined) {
       this.activateEditor();
     }
+
+    this.resize();
   };
 
   /**
