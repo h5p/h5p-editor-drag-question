@@ -576,6 +576,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         that.updateInternalElementIDs(id);
       });
+      that.dnb.focus(element.$element);
     }, 0);
 
     // Update element
@@ -881,6 +882,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         that.updateInternalDropZoneIDs(id);
       });
+      that.dnb.focus(dropZone.$dropZone);
     }, 0);
 
     // Add tip if any
