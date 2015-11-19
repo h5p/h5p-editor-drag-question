@@ -259,6 +259,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     this.dnb.on('paste', function (event) {
       var pasted = event.data;
+      var $element;
 
       if (pasted.from === clipboardKey) {
         // Pasted content comes from the same version of DQ
@@ -273,7 +274,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           // Has generic part and the generic libray is supported
           that.center(pasted.specific);
           that.params.elements.push(pasted.specific);
-          that.dnb.focus(that.insertElement(that.params.elements.length - 1));
+          $element = that.insertElement(that.params.elements.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
         }
         else {
           alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
@@ -290,7 +294,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
           that.center(elementParams);
           that.params.elements.push(elementParams);
-          that.dnb.focus(that.insertElement(that.params.elements.length - 1));
+          $element = that.insertElement(that.params.elements.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
         }
         else {
           alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
