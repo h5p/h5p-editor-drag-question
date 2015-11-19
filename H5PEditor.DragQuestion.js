@@ -268,7 +268,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           // Non generic part, must be a drop zone
           that.center(pasted.specific);
           that.params.dropZones.push(pasted.specific);
-          that.dnb.focus(that.insertDropZone(that.params.dropZones.length - 1));
+          $element = that.insertDropZone(that.params.dropZones.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
         }
         else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
           // Has generic part and the generic libray is supported
