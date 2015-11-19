@@ -195,25 +195,31 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     var maxWidth = this.$item.width();
+    var editorCSS;
     if (this.size.width < maxWidth) {
-      this.$editor.css({
+      editorCss = {
         width: this.size.width,
         height: this.size.height,
         fontSize: this.fontSize
-      });
+      };
       this.$dnbWrapper.css({
         width: this.size.width
       });
     }
     else {
-      this.$editor.css({
+      editorCss = {
         width: '100%',
         height: maxWidth * (this.size.height / this.size.width),
         fontSize: this.fontSize * (maxWidth / this.size.width)
-      });
+      };
       this.$dnbWrapper.css({
         width: '100%'
       });
+    }
+
+    this.$editor.css(editorCss);
+    if (this.dnb !== undefined) {
+      this.dnb.dnr.setContainerEm(editorCss.fontSize);
     }
 
     this.pToEm = (parseFloat(window.getComputedStyle(this.$editor[0]).width) / this.fontSize) / 100;
