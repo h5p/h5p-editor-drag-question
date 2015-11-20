@@ -475,8 +475,22 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           }
 
           if (params.width !== undefined && params.height !== undefined) {
-            elementParams.height = elementParams.width * (params.height / params.width);
-            element.$element.css('height', elementParams.height + 'em');
+            var editorStyles = window.getComputedStyle(that.$editor[0]);
+            var editorWidth = parseFloat(editorStyles.width);
+            var editorHeight = parseFloat(editorStyles.height);
+
+            var aspectRatio = params.height / params.width;
+            if (editorHeight / editorWidth > aspectRatio) {
+              elementParams.height = elementParams.width * aspectRatio;
+            }
+            else {
+              elementParams.width = elementParams.height / aspectRatio;
+            }
+
+            element.$element.css({
+              width: elementParams.width + 'em',
+              height: elementParams.height + 'em'
+            });
           }
         });
       }
