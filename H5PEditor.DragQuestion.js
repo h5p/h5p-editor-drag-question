@@ -342,7 +342,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       x: (width - (params.width * this.fontSize)) / 2,
       y: (height - (params.height * this.fontSize)) / 2
     };
-    this.dnb.avoidOverlapping(pos);
+    this.dnb.avoidOverlapping(pos, {
+      width: params.width * this.fontSize,
+      height: params.height * this.fontSize,
+    });
     params.x = pos.x / (width / 100);
     params.y = pos.y / (height / 100);
   };
