@@ -689,7 +689,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     };
 
     // Disable background opacity input if overriden globally
-    var disableOpacityField = (that.params.elements[id].dropZones.length !== 0 && this.backgroundOpacity);
+    var disableOpacityField = !!(that.params.elements[id].dropZones.length !== 0 && this.backgroundOpacity);
     H5PEditor.findField('backgroundOpacity', element).$item.find('input').prop({
       disabled: disableOpacityField,
       title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
