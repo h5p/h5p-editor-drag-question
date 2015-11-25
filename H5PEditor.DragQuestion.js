@@ -640,6 +640,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         return false;
       }
 
+
       // Must be removed before dnb changes focus!
       if (H5PEditor.Html) {
         H5PEditor.Html.removeWysiwyg();
@@ -743,11 +744,59 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       label: C.t(type) + ': ' + C.getLabel(label)
     };
 
+    // Retain size after toggling class
+    var toggleDraggable = function (addClass, $element) {
+
+      var togglingClass = (addClass && !$element.hasClass('h5p-draggable'))
+        || (!addClass && $element.hasClass('h5p-draggable'));
+      if (!self.fontSize || !togglingClass) {
+        if (addClass) {
+          $element.addClass('h5p-draggable');
+        }
+        else {
+          $element.removeClass('h5p-draggable');
+        }
+
+        return;
+      }
+
+      var prevWidth = $element.outerWidth();
+      var prevHeight = $element.outerHeight();
+      var id = $element.data('id');
+      var params = $element.hasClass('h5p-dq-dz') ? self.params.dropZones[id] : self.params.elements[id];
+
+      var newWidth;
+      var newHeight;
+
+      if (addClass) {
+        $element.addClass('h5p-draggable');
+
+        $element.outerWidth(prevWidth);
+        $element.outerHeight(prevHeight);
+
+        newWidth = (parseFloat(element.$element.css('width')) / self.fontSize);
+        newHeight = (parseFloat(element.$element.css('height')) / self.fontSize);
+      }
+      else {
+        $element.removeClass('h5p-draggable');
+
+        newWidth = (prevWidth / self.fontSize);
+        newHeight = (prevHeight / self.fontSize);
+
+        element.$element.css('width', newWidth + 'em');
+        element.$element.css('height', newHeight + 'em');
+      }
+
+      params.width = newWidth;
+      params.height = newHeight;
+    };
+
     if (params.dropZones !== undefined && params.dropZones.length) {
-      element.$element.addClass('h5p-draggable');
+
+      toggleDraggable(true, element.$element);
     }
     else {
-      element.$element.removeClass('h5p-draggable');
+      toggleDraggable(false, element.$element);
 
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
