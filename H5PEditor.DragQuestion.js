@@ -747,8 +747,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Retain size after toggling class
     var toggleDraggable = function (addClass, $element) {
 
-      var togglingClass = (addClass && !$element.hasClass('h5p-draggable'))
-        || (!addClass && $element.hasClass('h5p-draggable'));
+      var togglingClass = (addClass && !$element.hasClass('h5p-draggable') && $element.hasClass('h5p-dragnbar-element'))
+        || (!addClass && $element.hasClass('h5p-draggable') && $element.hasClass('h5p-dragnbar-element'));
       if (!self.fontSize || !togglingClass) {
         if (addClass) {
           $element.addClass('h5p-draggable');
