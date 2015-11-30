@@ -747,16 +747,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Retain size after toggling class
     var toggleDraggable = function (addClass, $element) {
 
-      var togglingClass = (addClass && !$element.hasClass('h5p-draggable') && $element.hasClass('h5p-dragnbar-element'))
-        || (!addClass && $element.hasClass('h5p-draggable') && $element.hasClass('h5p-dragnbar-element'));
-      if (!self.fontSize || !togglingClass) {
-        if (addClass) {
-          $element.addClass('h5p-draggable');
-        }
-        else {
-          $element.removeClass('h5p-draggable');
-        }
-
+      var toggleClass = addClass !== $element.hasClass('h5p-draggable');
+      if (!toggleClass) {
         return;
       }
 
@@ -764,31 +756,27 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       var prevHeight = $element.outerHeight();
       var id = $element.data('id');
       var params = $element.hasClass('h5p-dq-dz') ? self.params.dropZones[id] : self.params.elements[id];
-
-      var newWidth;
-      var newHeight;
+      var fontSize = self.fontSize || parseFloat(self.$editor.css('font-size'));
+      var newWidth = (prevWidth / fontSize);
+      var newHeight = (prevHeight / fontSize);
 
       if (addClass) {
         $element.addClass('h5p-draggable');
 
         $element.outerWidth(prevWidth);
         $element.outerHeight(prevHeight);
-
-        newWidth = (parseFloat(element.$element.css('width')) / self.fontSize);
-        newHeight = (parseFloat(element.$element.css('height')) / self.fontSize);
       }
       else {
         $element.removeClass('h5p-draggable');
-
-        newWidth = (prevWidth / self.fontSize);
-        newHeight = (prevHeight / self.fontSize);
 
         element.$element.css('width', newWidth + 'em');
         element.$element.css('height', newHeight + 'em');
       }
 
-      params.width = newWidth;
-      params.height = newHeight;
+      if ($element.hasClass('h5p-dragnbar-element')) {
+        params.width = newWidth;
+        params.height = newHeight;
+      }
     };
 
     if (params.dropZones !== undefined && params.dropZones.length) {
