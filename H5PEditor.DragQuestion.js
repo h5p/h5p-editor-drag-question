@@ -7,7 +7,14 @@ var H5PEditor = H5PEditor || {};
 
  * @param {jQuery} $
  */
-H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
+H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar) {
+  /**
+   * Must be changed if the semantics for the elements changes.
+   * @πvate
+   * @type {string}
+   */
+  var clipboardKey = 'H5PEditor.DragQuestion';
+
   /**
    * Initialize interactive video editor.
    *
@@ -63,6 +70,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     parent.ready(function () {
       that.passReadies = false;
     });
+
+    H5P.$window.on('resize', function () {
+      if (that.size !== undefined && that.size.width !== undefined) {
+        that.resize();
+      }
+    });
   }
 
   /**
@@ -94,9 +107,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
       return false;
     });
-
-    // Get editor default font size.
-    this.fontSize = parseInt(this.$editor.css('fontSize'));
   };
 
   /**
@@ -164,36 +174,55 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     if (this.size === undefined || this.size.width === undefined) {
       return;
     }
-    var maxWidth = this.$item.width();
-    if (this.size.width < maxWidth) {
-      this.$editor.css({
-        width: this.size.width,
-        height: this.size.height,
-        fontSize: this.fontSize
-      });
-      this.$dnbWrapper.css({
-        width: this.size.width
-      });
-    }
-    else {
-      this.$editor.css({
-        width: '100%',
-        height: maxWidth * (this.size.height / this.size.width),
-        fontSize: this.fontSize * (maxWidth / this.size.width)
-      });
-      this.$dnbWrapper.css({
-        width: '100%'
-      });
-    }
-
-
-    // TODO: Should we care about resize events? Will only be an issue for responsive designs.
 
     if (this.dnb === undefined) {
       this.activateEditor();
     }
 
-    // TODO: Move elements that is outside inside.
+    this.resize();
+  };
+
+  /**
+   * Adapt the editor when the window changes size.
+   */
+  C.prototype.resize = function () {
+    if (!this.$editor.is(':visible')) {
+      return;
+    }
+    if (this.fontSize === undefined) {
+      // Get editor default font size.
+      this.fontSize = parseInt(this.$editor.css('fontSize'));
+    }
+
+    var maxWidth = this.$item.width();
+    var editorCSS;
+    if (this.size.width < maxWidth) {
+      editorCss = {
+        width: this.size.width,
+        height: this.size.height,
+        fontSize: this.fontSize
+      };
+      this.$dnbWrapper.css({
+        width: this.size.width
+      });
+    }
+    else {
+      editorCss = {
+        width: '100%',
+        height: maxWidth * (this.size.height / this.size.width),
+        fontSize: this.fontSize * (maxWidth / this.size.width)
+      };
+      this.$dnbWrapper.css({
+        width: '100%'
+      });
+    }
+
+    this.$editor.css(editorCss);
+    if (this.dnb !== undefined) {
+      this.dnb.dnr.setContainerEm(editorCss.fontSize);
+    }
+
+    this.pToEm = (parseFloat(window.getComputedStyle(this.$editor[0]).width) / this.fontSize) / 100;
   };
 
   /**
@@ -206,7 +235,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new H5P.DragNBar(this.getButtons(), this.$editor, this.$item);
+    this.dnb = new DragNBar(this.getButtons(), this.$editor, this.$item);
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -228,10 +257,65 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
     this.dnb.attach(this.$dnbWrapper);
 
+    this.dnb.on('paste', function (event) {
+      var pasted = event.data;
+      var $element;
+
+      if (pasted.from === clipboardKey) {
+        // Pasted content comes from the same version of DQ
+
+        if (!pasted.generic) {
+          // Non generic part, must be a drop zone
+          that.center(pasted.specific);
+          that.params.dropZones.push(pasted.specific);
+          $element = that.insertDropZone(that.params.dropZones.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
+        }
+        else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+          // Has generic part and the generic libray is supported
+          that.center(pasted.specific);
+          that.params.elements.push(pasted.specific);
+          $element = that.insertElement(that.params.elements.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
+        }
+        else {
+          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
+        }
+      }
+      else if (pasted.generic) {
+        if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+          // Supported library from another content type
+          var id = C.getLibraryID(pasted.generic.library);
+          var elementParams = C.getDefaultElementParams(id);
+          elementParams.type = pasted.generic;
+          elementParams.width = pasted.width * that.pToEm;
+          elementParams.height = pasted.height * that.pToEm;
+
+          that.center(elementParams);
+          that.params.elements.push(elementParams);
+          $element = that.insertElement(that.params.elements.length - 1);
+          setTimeout(function () {
+            that.dnb.focus($element);
+          });
+        }
+        else {
+          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
+        }
+      }
+    });
+
+
     // Update params on end of resize
     this.dnb.dnr.on('stoppedResizing', function (dimensions) {
       var id = that.dnb.$element.data('id');
       var params = that.dnb.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
+      var containerStyle = window.getComputedStyle(that.$editor[0]);
+      params.x = dimensions.data.left / (parseFloat(containerStyle.width) / 100);
+      params.y = dimensions.data.top / (parseFloat(containerStyle.height) / 100);
       params.width = dimensions.data.width;
       params.height = dimensions.data.height;
     });
@@ -247,6 +331,26 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     for (var j = 0; j < this.params.dropZones.length; j++) {
       this.insertDropZone(j);
     }
+  };
+
+  /**
+   * Help center new elements
+   * @param {object} params
+   */
+  C.prototype.center = function (params) {
+    var size = window.getComputedStyle(this.dnb.$container[0]);
+    var width = parseFloat(size.width);
+    var height = parseFloat(size.height);
+    var pos = {
+      x: (width - (params.width * this.fontSize)) / 2,
+      y: (height - (params.height * this.fontSize)) / 2
+    };
+    this.dnb.avoidOverlapping(pos, {
+      width: params.width * this.fontSize,
+      height: params.height * this.fontSize,
+    });
+    params.x = pos.x / (width / 100);
+    params.y = pos.y / (height / 100);
   };
 
   /**
@@ -302,6 +406,30 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   /**
+   * Creates a fresh object with default element parameters.
+   * @returns {object}
+   */
+  C.getDefaultElementParams = function (id) {
+    return {
+      x: 0,
+      y: 0,
+      width: 5,
+      height: id === 'text' ? 1.25 : 5,
+      dropZones: []
+    };
+  };
+
+  /**
+   * Find generic library identifier without version name.
+   *
+   * @param {string} library
+   * @returns {string}
+   */
+  C.getLibraryID = function (library) {
+    return library.split(' ')[0].split('.')[1].toLowerCase();
+  };
+
+  /**
    * Generate a single element button for the DnB.
    *
    * @param {String} library Library name + version
@@ -309,24 +437,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.getButton = function (library) {
     var that = this;
-    var id = library.split(' ')[0].split('.')[1].toLowerCase();
-    var h = id === 'text' ? 1.25 : 5;
+    var id = C.getLibraryID(library);
     return {
       id: id,
       title: C.t('insertElement', {':type': id}),
       createElement: function () {
-        that.params.elements.push({
-          type: {
-            library: library,
-            params: {}
-          },
-          x: 0,
-          y: 0,
-          width: 5,
-          height: h,
-          dropZones: []
-        });
-
+        var elementParams = C.getDefaultElementParams(id);
+        elementParams.type = {
+          library: library,
+          params: {}
+        };
+        that.params.elements.push(elementParams);
         return that.insertElement(that.params.elements.length - 1);
       }
     };
@@ -354,8 +475,22 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           }
 
           if (params.width !== undefined && params.height !== undefined) {
-            elementParams.height = elementParams.width * (params.height / params.width);
-            element.$element.css('height', elementParams.height + 'em');
+            var editorStyles = window.getComputedStyle(that.$editor[0]);
+            var editorWidth = parseFloat(editorStyles.width);
+            var editorHeight = parseFloat(editorStyles.height);
+
+            var aspectRatio = params.height / params.width;
+            if (editorHeight / editorWidth > aspectRatio) {
+              elementParams.height = elementParams.width * aspectRatio;
+            }
+            else {
+              elementParams.width = elementParams.height / aspectRatio;
+            }
+
+            element.$element.css({
+              width: elementParams.width + 'em',
+              height: elementParams.height + 'em'
+            });
           }
         });
       }
@@ -387,7 +522,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     }).appendTo(element.$element);
 
     setTimeout(function () {
-      var dnbElement = that.dnb.add(element.$element);
+      var dnbElement = that.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'));
 
       dnbElement.contextMenu.on('contextMenuEdit', function () {
         that.editElement(element);
@@ -427,13 +562,41 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           }
         }
 
-        // Change data index for "all" elements
-        for (i = id; i < that.elements.length; i++) {
-          that.elements[i].$element.data('id', i);
-          that.elementOptions[i].value = '' + i;
-        }
+        that.updateInternalElementIDs(id);
         that.dnb.blurAll();
       });
+
+      dnbElement.contextMenu.on('contextMenuBringToFront', function () {
+        // Find element ID
+        var id = element.$element.data('id');
+
+        // Update visuals
+        element.$element.appendTo(that.$editor);
+
+        // Give new ID
+        that.elements.push(that.elements.splice(id, 1)[0]);
+        that.params.elements.push(that.params.elements.splice(id, 1)[0]);
+        that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
+        var newID = (that.elements.length - 1);
+
+        // Update drop zone params
+        for (i = 0; i < that.params.dropZones.length; i++) {
+          ce = that.params.dropZones[i].correctElements;
+          for (j = 0; j < ce.length; j++) {
+            if (ce[j] === '' + id) {
+              // Update ID in correct answers
+              ce[j] = newID;
+            }
+            else if (ce[j] > id) {
+              // Adjust index for others
+              ce[j] = '' + (ce[j] - 1);
+            }
+          }
+        }
+
+        that.updateInternalElementIDs(id);
+      });
+      that.dnb.focus(element.$element);
     }, 0);
 
     // Update element
@@ -441,6 +604,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
 
     this.elements[index] = element;
     return element.$element;
+  };
+
+  /**
+   * Sync the internal ID of each element.
+   * @param {number} start
+   */
+  C.prototype.updateInternalElementIDs = function (start) {
+    for (i = start; i < this.elements.length; i++) {
+      this.elements[i].$element.data('id', i);
+      this.elementOptions[i].value = '' + i;
+    }
   };
 
   /**
@@ -464,6 +638,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
       if (!valid) {
         return false;
+      }
+
+
+      // Must be removed before dnb changes focus!
+      if (H5PEditor.Html) {
+        H5PEditor.Html.removeWysiwyg();
       }
 
       // Update element
@@ -509,7 +689,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     };
 
     // Disable background opacity input if overriden globally
-    var disableOpacityField = (that.params.elements[id].dropZones.length !== 0 && this.backgroundOpacity);
+    var disableOpacityField = !!(that.params.elements[id].dropZones.length !== 0 && this.backgroundOpacity);
     H5PEditor.findField('backgroundOpacity', element).$item.find('input').prop({
       disabled: disableOpacityField,
       title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
@@ -564,11 +744,47 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       label: C.t(type) + ': ' + C.getLabel(label)
     };
 
+    // Retain size after toggling class
+    var toggleDraggable = function (addClass, $element) {
+
+      var toggleClass = addClass !== $element.hasClass('h5p-draggable');
+      if (!toggleClass) {
+        return;
+      }
+
+      var prevWidth = $element.outerWidth();
+      var prevHeight = $element.outerHeight();
+      var id = $element.data('id');
+      var params = $element.hasClass('h5p-dq-dz') ? self.params.dropZones[id] : self.params.elements[id];
+      var fontSize = self.fontSize || parseFloat(self.$editor.css('font-size'));
+      var newWidth = (prevWidth / fontSize);
+      var newHeight = (prevHeight / fontSize);
+
+      if (addClass) {
+        $element.addClass('h5p-draggable');
+
+        $element.outerWidth(prevWidth);
+        $element.outerHeight(prevHeight);
+      }
+      else {
+        $element.removeClass('h5p-draggable');
+
+        element.$element.css('width', newWidth + 'em');
+        element.$element.css('height', newHeight + 'em');
+      }
+
+      if ($element.hasClass('h5p-dragnbar-element')) {
+        params.width = newWidth;
+        params.height = newHeight;
+      }
+    };
+
     if (params.dropZones !== undefined && params.dropZones.length) {
-      element.$element.addClass('h5p-draggable');
+
+      toggleDraggable(true, element.$element);
     }
     else {
-      element.$element.removeClass('h5p-draggable');
+      toggleDraggable(false, element.$element);
 
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
@@ -644,7 +860,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
     // Add to dnb after element has been attached
     setTimeout(function () {
 
-      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone);
+      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
 
       // Register listeners for context menu buttons
       dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
@@ -689,17 +905,64 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
           }
         }
 
-        // Reindex all dropzones
-        for (i = id; i < that.dropZones.length; i++) {
-          that.dropZones[i].$dropZone.data('id', i);
-          that.elementFields[that.elementDropZoneFieldWeight].options[i].value = i + '';
-        }
+        that.updateInternalDropZoneIDs(id);
         that.dnb.blurAll();
       });
+
+      dropzoneDnBElement.contextMenu.on('contextMenuBringToFront', function () {
+        var id = dropZone.$dropZone.data('id');
+
+        // Update visuals
+        dropZone.$dropZone.appendTo(that.$editor);
+
+        // Get new ID
+        that.dropZones.push(that.dropZones.splice(id, 1)[0]);
+        that.params.dropZones.push(that.params.dropZones.splice(id, 1)[0]);
+        var options = that.elementFields[that.elementDropZoneFieldWeight].options;
+        options.push(options.splice(id, 1)[0]);
+        var newID = (that.dropZones.length - 1);
+
+        // Update dropZone IDs in element params
+        for (i = 0; i < that.params.elements.length; i++) {
+          var dropZones = that.params.elements[i].dropZones;
+          for (j = 0; j < dropZones.length; j++) {
+            if (parseInt(dropZones[j]) === id) {
+              // Update ID
+              dropZones[j] = newID;
+            }
+            else if (dropZones[j] > id) {
+              // Re-index other drop zones
+              dropZones[j] = '' + (dropZones[j] - 1);
+            }
+          }
+        }
+
+        that.updateInternalDropZoneIDs(id);
+      });
+      that.dnb.focus(dropZone.$dropZone);
     }, 0);
+
+    // Add tip if any
+    if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
+      dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
+    }
+
+    // Add label
+    this.updateDropZone(dropZone, index);
 
     this.dropZones[index] = dropZone;
     return dropZone.$dropZone;
+  };
+
+  /**
+   * Sync the internal ID of each drop zone.
+   * @param {number} start
+   */
+  C.prototype.updateInternalDropZoneIDs = function (start) {
+    for (i = start; i < this.dropZones.length; i++) {
+      this.dropZones[i].$dropZone.data('id', i);
+      this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
+    }
   };
 
   /**
@@ -723,6 +986,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
       }
       if (!valid) {
         return false;
+      }
+
+      // Must be removed before dnb changes focus!
+      if (H5PEditor.Html) {
+        H5PEditor.Html.removeWysiwyg();
       }
 
       that.updateDropZone(dropZone, id);
@@ -844,9 +1112,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
    */
   C.prototype.hideDialog = function () {
     // Attempt to find and close CKEditor instances before detaching.
-    if (H5PEditor.Html) {
-      H5PEditor.Html.removeWysiwyg();
-    }
+
 
     this.$currentForm.detach();
     this.$dialog.hide();
@@ -1025,7 +1291,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($) {
   };
 
   return C;
-})(H5P.jQuery);
+})(H5P.jQuery, H5P.DragNBar);
 
 // Default english translations
 H5PEditor.language['H5PEditor.DragQuestion'] = {

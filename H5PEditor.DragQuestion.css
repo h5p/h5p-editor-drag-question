@@ -82,9 +82,12 @@
   overflow: hidden;
 }
 
-.h5peditor-dragquestion .h5p-dragnbar-element.focused,
-.h5peditor-dragquestion .h5p-dragnbar-element:focus {
+.h5peditor-dragquestion .h5p-dragnbar-element.focused {
   outline-offset: -2px;
+}
+
+.h5peditor-dragquestion .h5p-dragnbar-element:not(.focused):focus {
+  outline: none;
 }
 
 .h5p-dq-element {
