@@ -98,18 +98,8 @@
   cursor: pointer;
 }
 
-.h5p-dq-element .h5p-dq-element-inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.h5p-dq-element.h5p-advanced-text {
+.h5p-dq-text {
   padding: 0.25em 0.5em;
-  border-radius: 0.25em;
 }
 .h5p-dq-element.h5p-draggable {
   border-radius: 0.5em;
@@ -117,16 +107,17 @@
   cursor: pointer;
   position: absolute;
   text-align: center;
-  padding: 0.3em 0.3em;
-  line-height: 1.25em;
-
-  background: #ddd ;
-
+  background: #ddd;
   box-shadow: 0 0 0.3em rgba(0,0,0,0.2);
   z-index: 3;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  padding: 0.3em 0.3em;
+  line-height: 1.25em;
+}
+.h5p-dq-element.h5p-draggable .h5p-dq-element-inner {
+  padding: 0;
 }
 .h5p-dq-element.h5p-draggable:hover {
   border: 0.1em solid rgb(212,190,216);
@@ -134,7 +125,10 @@
   background: #edd6e9;
 }
 
-
+.h5p-dq-element-inner.h5p-image {
+  width: 100%;
+  height: 100%;
+}
 .h5p-draggable > ul {
   text-align: left;
   margin: 0.5em 0.5em 0.5em 2.25em;
@@ -171,13 +165,9 @@
 }
 .h5p-dq-dz .joubel-tip-container {
   position: absolute;
-  right: .2em;
-  bottom: .2em;
-}
-.h5p-dq-dz .joubel-tip-container .joubel-tip-icon {
-  line-height: inherit;
-  width: auto;
-  height: auto;
+  right: 0.15em;
+  bottom: 0;
+  font-size: 0.8em;
 }
 
 .h5peditor-dragquestion .h5p-moving {
