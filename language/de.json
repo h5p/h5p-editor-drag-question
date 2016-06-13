@@ -1,0 +1,12 @@
+{
+  "libraryStrings": {
+    "insertElement": ":Typ Einfügen",
+    "done": "Erledigt",
+    "remove": "Entfernen",
+    "image": "Bild",
+    "text": "Text",
+    "noTaskSize": "Bitte zuerst die Aufgabengröße festlegen.",
+    "confirmRemoval": "Dieses Element ganz sicher entfernen?",
+    "backgroundOpacityOverridden": "Die Deckkraft des Hintergrundes ist überschrieben."
+  }
+}
