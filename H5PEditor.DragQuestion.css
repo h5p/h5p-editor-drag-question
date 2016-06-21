@@ -118,6 +118,7 @@
 }
 .h5p-dq-element.h5p-draggable .h5p-dq-element-inner {
   padding: 0;
+  overflow: hidden;
 }
 .h5p-dq-element.h5p-draggable:hover {
   border: 0.1em solid rgb(212,190,216);
