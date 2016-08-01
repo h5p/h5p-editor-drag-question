@@ -1099,6 +1099,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     $form.appendTo(this.$dialogInner);
     this.$dialog.show();
     this.$editor.add(this.$dnbWrapper).hide();
+    this.dnb.dnr.toggleModifiers(false);
   };
 
   /**
@@ -1117,6 +1118,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (this.hideDialogCallback !== undefined) {
       this.hideDialogCallback();
     }
+
+    // Reset DnR options in case they got stuck
+    this.dnb.dnr.toggleModifiers(true);
   };
 
   /**
