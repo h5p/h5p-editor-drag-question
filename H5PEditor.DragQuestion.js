@@ -318,16 +318,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       var containerStyle = window.getComputedStyle(that.$editor[0]);
 
       // Set dimensions if they were passed in
-      if (dimensions.data.left) {
+      if (dimensions.data.left !== undefined) {
         params.x = dimensions.data.left / (parseFloat(containerStyle.width) / 100);
       }
-      if (dimensions.data.top) {
+      if (dimensions.data.top !== undefined) {
         params.y = dimensions.data.top / (parseFloat(containerStyle.height) / 100);
       }
-      if (dimensions.data.width) {
+      if (dimensions.data.width !== undefined) {
         params.width = dimensions.data.width;
       }
-      if (dimensions.data.height) {
+      if (dimensions.data.height !== undefined) {
         params.height = dimensions.data.height;
       }
     });
@@ -1099,6 +1099,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     $form.appendTo(this.$dialogInner);
     this.$dialog.show();
     this.$editor.add(this.$dnbWrapper).hide();
+    this.dnb.dnr.toggleModifiers(false);
   };
 
   /**
@@ -1117,6 +1118,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (this.hideDialogCallback !== undefined) {
       this.hideDialogCallback();
     }
+    this.dnb.dnr.toggleModifiers(true);
   };
 
   /**
