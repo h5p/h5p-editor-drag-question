@@ -115,9 +115,14 @@
   -ms-user-select: none;
   padding: 0.3em 0.3em;
   line-height: 1.25em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .h5p-dq-element.h5p-draggable .h5p-dq-element-inner {
   padding: 0;
+  overflow: hidden;
 }
 .h5p-dq-element.h5p-draggable:hover {
   border: 0.1em solid rgb(212,190,216);
@@ -152,12 +157,22 @@
 .h5p-dq-dz {
   cursor: pointer;
   position: absolute;
-  border: 0.1em dashed #999;
+  border: 2px solid rgba(255,255,255,0.7);
   border-radius: 0.5em;
   z-index: 2;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   background: rgb(245, 245, 245);
+}
+.h5p-dq-dz:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  border: 2px dashed rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  top: -2px;
+  left: -2px;
 }
 
 .h5p-dq-dz.h5p-has-label {
