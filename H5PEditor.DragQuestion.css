@@ -115,6 +115,10 @@
   -ms-user-select: none;
   padding: 0.3em 0.3em;
   line-height: 1.25em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .h5p-dq-element.h5p-draggable .h5p-dq-element-inner {
   padding: 0;
@@ -169,7 +173,6 @@
   height: 100%;
   top: -2px;
   left: -2px;
-  border-radius: 0.5em;
 }
 
 .h5p-dq-dz.h5p-has-label {
