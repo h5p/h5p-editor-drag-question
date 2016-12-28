@@ -279,3 +279,10 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 .field.dynamicCheckboxes .h5p-selectall {
   font-size: 0.75em;
 }
+
+.field.dragQuestion {
+  border: 1px solid #d0d0d1;
+  border-top: none;
+  background-color: #fff;
+  padding: 20px;
+}
