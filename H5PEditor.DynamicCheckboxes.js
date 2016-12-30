@@ -45,7 +45,7 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
    * @returns {undefined}
    */
   C.prototype.appendTo = function ($wrapper) {
-    this.$item = $(H5PEditor.createItem(this.field.widget, '')).appendTo($wrapper);
+    this.$item = $(H5PEditor.createFieldMarkup(this.field)).appendTo($wrapper);
     this.$errors = this.$item.children('.h5p-errors');
   };
 

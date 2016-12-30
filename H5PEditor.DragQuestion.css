@@ -280,7 +280,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   font-size: 0.75em;
 }
 
-.field.dragQuestion {
+.h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
   border: 1px solid #d0d0d1;
   border-top: none;
   background-color: #fff;

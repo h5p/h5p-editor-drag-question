@@ -134,7 +134,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       html += '<div class="h5peditor-field-description">' + this.field.description + '</div>';
     }
 
-    return H5PEditor.createItem(this.field.widget, html);
+    // removes the description field, so it's not re-rendered on top
+    var field = this.removeAttribute(this.field, 'description');
+
+    return H5PEditor.createFieldMarkup(field, html);
+  };
+
+  /**
+   * Clones an object, and removes an attribute
+   *
+   * @param {object} obj
+   * @param {string} attributeName
+   *
+   * @return {object}
+   */
+  C.prototype.removeAttribute = function (obj, attributeName) {
+    var result = H5P.cloneObject(obj);
+    result[attributeName] = undefined;
+    return result;
   };
 
   /**
