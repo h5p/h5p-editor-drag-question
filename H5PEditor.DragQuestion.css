@@ -287,3 +287,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   background-color: #fff;
   padding: 20px;
 }
+
+.h5p-dragquestion-editor .h5p-dragnbar-li:hover:before {
+  top: 44px;
+}
