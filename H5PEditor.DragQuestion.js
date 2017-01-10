@@ -1332,6 +1332,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @returns {undefined}
    */
   C.prototype.remove = function () {
+    this.dnb.remove();
     this.$item.remove();
   };
 
