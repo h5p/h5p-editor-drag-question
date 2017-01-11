@@ -25,8 +25,12 @@
   float: left;
   margin: 0;
   padding: 0;
-  background: transparent;
+  background: none;
   border: none;
+}
+
+.dragQuestion .h5p-dragnbar-li:hover {
+  background: none;
 }
 
 .dragQuestion .h5p-dragnbar-a {
@@ -274,4 +278,11 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 .field.dynamicCheckboxes .h5p-selectall {
   font-size: 0.75em;
+}
+
+.h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
+  border: 1px solid #d0d0d1;
+  border-top: none;
+  background-color: #fff;
+  padding: 20px;
 }
