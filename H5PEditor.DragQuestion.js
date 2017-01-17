@@ -410,10 +410,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.getButtons = function () {
     var that = this;
-
+    var id = 'dropzone';
     var buttons = [{
-      id: 'dropzone',
-      title: 'Drop Zone',
+      id: id,
+      title: C.t('insertElement', {':type': C.t(id)}),
       createElement: function () {
         that.params.dropZones.push({
           x: 0,
@@ -469,7 +469,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var id = C.getLibraryID(library);
     return {
       id: id,
-      title: C.t('insertElement', {':type': id}),
+      title: C.t('insertElement', {':type': C.t(id)}),
       createElement: function () {
         var elementParams = C.getDefaultElementParams(id);
         elementParams.type = {
@@ -1375,6 +1375,10 @@ H5PEditor.language['H5PEditor.DragQuestion'] = {
     text: 'Text',
     noTaskSize: 'Please specify task size first.',
     confirmRemoval: 'Are you sure you wish to remove this element?',
-    backgroundOpacityOverridden: 'The background opacity is overridden'
+    backgroundOpacityOverridden: 'The background opacity is overridden',
+    advancedtext: 'Advanced text',
+    dropzone: 'Drop zone',
+    selectAll: 'Select all',
+    deselectAll: 'Deselect all'
   }
 };
