@@ -469,7 +469,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var id = C.getLibraryID(library);
     return {
       id: id,
-      title: C.t('insertElement', {':type': C.t(id)}),
+      title: id,
       createElement: function () {
         var elementParams = C.getDefaultElementParams(id);
         elementParams.type = {
