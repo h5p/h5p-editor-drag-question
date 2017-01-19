@@ -134,7 +134,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       html += '<div class="h5peditor-field-description">' + this.field.description + '</div>';
     }
 
-    return H5PEditor.createItem(this.field.widget, html);
+    // removes the description field, so it's not re-rendered on top
+    var field = this.removeAttribute(this.field, 'description');
+
+    return H5PEditor.createFieldMarkup(field, html);
+  };
+
+  /**
+   * Clones an object, and removes an attribute
+   *
+   * @param {object} obj
+   * @param {string} attributeName
+   *
+   * @return {object}
+   */
+  C.prototype.removeAttribute = function (obj, attributeName) {
+    var result = H5P.cloneObject(obj);
+    result[attributeName] = undefined;
+    return result;
   };
 
   /**
@@ -540,74 +557,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.editElement(element);
         that.dnb.blurAll();
       });
-
-      dnbElement.contextMenu.on('contextMenuRemove', function () {
-        if (!confirm(C.t('confirmRemoval'))) {
-          return;
-        }
-        var i, j, ce;
-        var id = element.$element.data('id');
-
-        // Remove element form
-        H5PEditor.removeChildren(element.children);
-
-        // Remove element
-        element.$element.remove();
-        that.elements.splice(id, 1);
-        that.params.elements.splice(id, 1);
-
-        // Remove from options
-        that.elementOptions.splice(id, 1);
-
-        // Update drop zone params
-        for (i = 0; i < that.params.dropZones.length; i++) {
-          ce = that.params.dropZones[i].correctElements;
-          for (j = 0; j < ce.length; j++) {
-            if (ce[j] === '' + id) {
-              // Remove from correct answers
-              ce.splice(j, 1);
-            }
-            else if (ce[j] > id) {
-              // Adjust index for others
-              ce[j] = '' + (ce[j] - 1);
-            }
-          }
-        }
-
-        that.updateInternalElementIDs(id);
-        that.dnb.blurAll();
-      });
-
-      dnbElement.contextMenu.on('contextMenuBringToFront', function () {
-        // Find element ID
-        var id = element.$element.data('id');
-
-        // Update visuals
-        element.$element.appendTo(that.$editor);
-
-        // Give new ID
-        that.elements.push(that.elements.splice(id, 1)[0]);
-        that.params.elements.push(that.params.elements.splice(id, 1)[0]);
-        that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
-        var newID = (that.elements.length - 1);
-
-        // Update drop zone params
-        for (i = 0; i < that.params.dropZones.length; i++) {
-          ce = that.params.dropZones[i].correctElements;
-          for (j = 0; j < ce.length; j++) {
-            if (ce[j] === '' + id) {
-              // Update ID in correct answers
-              ce[j] = newID;
-            }
-            else if (ce[j] > id) {
-              // Adjust index for others
-              ce[j] = '' + (ce[j] - 1);
-            }
-          }
-        }
-
-        that.updateInternalElementIDs(id);
-      });
+      dnbElement.contextMenu.on('contextMenuRemove', that.elementRemove.bind(that, element));
+      dnbElement.contextMenu.on('contextMenuBringToFront', that.elementBringToFront.bind(that, element));
       that.dnb.focus(element.$element);
     }, 0);
 
@@ -619,11 +570,133 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   };
 
   /**
+   * Removes an element
+   *
+   * @param {object} element
+   */
+  C.prototype.elementRemove = function (element) {
+    var that = this;
+
+    // confirm remove
+    if (!confirm(C.t('confirmRemoval'))) {
+      return;
+    }
+
+    var id = element.$element.data('id');
+    var value = id.toString();
+
+    // Remove element form
+    H5PEditor.removeChildren(element.children);
+
+    // Remove element
+    element.$element.remove();
+    that.elements.splice(id, 1);
+    that.params.elements.splice(id, 1);
+
+    // Remove from options
+    that.elementOptions.splice(id, 1);
+
+    // Update drop zone params
+
+    that.params.dropZones.forEach(function(dropZone){
+      var elements = dropZone.correctElements;
+
+      elements = that.arrayRemoveByValue(elements, value);
+      elements = that.decrementIdsLargerThen(elements, id);
+
+      // update correct elements
+      dropZone.correctElements = elements;
+    });
+
+    that.updateInternalElementIDs(id);
+    that.dnb.blurAll();
+  };
+
+  /**
+   * Brings an element to the front
+   *
+   * @param {object} element
+   */
+  C.prototype.elementBringToFront = function (element) {
+    var that = this;
+
+    // Find element ID
+    var id = element.$element.data('id');
+    var oldId = id.toString();
+
+    // Update visuals
+    element.$element.appendTo(that.$editor);
+
+    // Give new ID
+    that.elements.push(that.elements.splice(id, 1)[0]);
+    that.params.elements.push(that.params.elements.splice(id, 1)[0]);
+    that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
+
+    var newId = (that.elements.length - 1).toString();
+
+    // Update drop zone params
+    that.params.dropZones.forEach(function(dropZone) {
+      // update correct elements
+      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+        // Update ID in correct answers
+        if (entry === oldId) {
+          return newId;
+        }
+        // Adjust index for others
+        else if (parseInt(entry) > id) {
+          return (parseInt(entry) - 1).toString();
+        }
+        // if not current, and not with larger id
+        else {
+          return entry;
+        }
+      });
+    });
+
+    that.updateInternalElementIDs(id);
+  };
+
+  /**
+   * Removes a value from an array
+   *
+   * @param {object[]} arr
+   * @param {object} value
+   *
+   * @return {object[]}
+   */
+  C.prototype.arrayRemoveByValue = function (arr, value) {
+    var ax;
+
+    while ((ax = arr.indexOf(value)) !== -1) {
+      arr.splice(ax, 1);
+    }
+
+    return arr;
+  };
+
+  /**
+   * Takes an array of numbers (as strings), and decrements those larger
+   * then a threshold
+   *
+   * @param {String[]} arr
+   * @param {number} threshold
+   *
+   * @private
+   * @return {string[]}
+   */
+  C.prototype.decrementIdsLargerThen = function (arr, threshold) {
+    return arr.map(function(id){
+      var value = parseInt(id);
+      return (id < threshold) ? id : (value - 1).toString();
+    });
+  };
+
+  /**
    * Sync the internal ID of each element.
    * @param {number} start
    */
   C.prototype.updateInternalElementIDs = function (start) {
-    for (i = start; i < this.elements.length; i++) {
+    for (var i = start; i < this.elements.length; i++) {
       this.elements[i].$element.data('id', i);
       this.elementOptions[i].value = '' + i;
     }
@@ -1259,6 +1332,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @returns {undefined}
    */
   C.prototype.remove = function () {
+    if (this.dnb !== undefined) {
+      this.dnb.remove();
+    }
     this.$item.remove();
   };
 
