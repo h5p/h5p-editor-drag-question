@@ -26,6 +26,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   function C(parent, field, params, setValue) {
     var that = this;
 
+    this.parent = parent;
+
     // Set params
     this.params = $.extend({
       elements: [],
@@ -74,6 +76,32 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     H5P.$window.on('resize', function () {
       if (that.size !== undefined && that.size.width !== undefined) {
         that.resize();
+      }
+    });
+
+    // When wizard changes step
+    parent.on('stepChanged', function (event) {
+      that.currentTabIndex = event.data.id;
+
+      var $prevButton = $('.nav-button-prev');
+      var $nextButton = $('.nav-button-next');
+
+      if (that.currentTabIndex > 0) {
+        $prevButton.attr('data-id', that.currentTabIndex - 1);
+        $prevButton.find('span:last').text($('.h5peditor-tab-li a[data-id=' + (that.currentTabIndex - 1) + '] .field-name').text())
+        $prevButton.show();
+      }
+      else {
+        $prevButton.hide();
+      }
+
+      if (that.currentTabIndex < $('.h5peditor-tabs').children().length - 1) {
+        $nextButton.attr('data-id', that.currentTabIndex + 1);
+        $nextButton.find('span:last').text($('.h5peditor-tab-li a[data-id=' + (that.currentTabIndex + 1) + '] .field-name').text())
+        $nextButton.show();
+      }
+      else {
+        $nextButton.hide();
       }
     });
   }

@@ -293,8 +293,32 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
-  border: 1px solid #d0d0d1;
-  border-top: none;
   background-color: #fff;
   padding: 20px;
+}
+
+.h5p-dragquestion-editor .h5peditor-form {
+  border-radius: 0;
+  padding: 0;
+  background: #fff;
+}
+
+.h5p-dragquestion-editor .field.wizard > .h5peditor-panes > .group > .content {
+  border: 0;
+}
+
+.h5p-dragquestion-editor .field.wizard .h5peditor-tab-settings:before {
+  content: '\f013';
+}
+.h5p-dragquestion-editor .field.wizard .h5peditor-tab-task:before {
+}
+
+.h5p-dragquestion-editor .common {
+  margin: 20px;
+  background-color: #FAFBFC;
+}
+
+.h5p-dragquestion-editor .field-name-backgroundOpacity,
+.h5p-dragquestion-editor .field-name-behaviour {
+  margin: 20px;
 }
