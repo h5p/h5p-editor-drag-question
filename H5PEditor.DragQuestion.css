@@ -8,25 +8,41 @@
 
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
-  overflow: hidden;
   background: #f5f5f5;
   border: 1px solid #ccc;
   border-bottom: none;
 }
 
 .dragQuestion .h5p-dragnbar-ul {
-  float: left;
+  float: none;
   padding: 0;
   margin: 0;
   list-style: none;
+}
+
+.dragQuestion .h5p-dragnbar-ul:after {
+  visibility: hidden;
+  display: block;
+  content: "";
+  clear: both;
 }
 
 .dragQuestion .h5p-dragnbar-li {
   float: left;
   margin: 0;
   padding: 0;
-  background: transparent;
+  background: none;
   border: none;
+  position: relative;
+}
+
+.dragQuestion .h5p-dragnbar-li:hover {
+  background: none;
+}
+
+.dragQuestion .h5p-dragnbar-li:before {
+  top: 44px;
+  font-size: 0.88em;
 }
 
 .dragQuestion .h5p-dragnbar-a {
@@ -274,4 +290,11 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 .field.dynamicCheckboxes .h5p-selectall {
   font-size: 0.75em;
+}
+
+.h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
+  border: 1px solid #d0d0d1;
+  border-top: none;
+  background-color: #fff;
+  padding: 20px;
 }
