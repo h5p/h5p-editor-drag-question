@@ -308,9 +308,10 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .field.wizard .h5peditor-tab-settings:before {
-  content: '\f013';
+  content: '\e916';
 }
 .h5p-dragquestion-editor .field.wizard .h5peditor-tab-task:before {
+  content: '\e991';
 }
 
 .h5p-dragquestion-editor .common {
