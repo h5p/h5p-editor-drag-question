@@ -81,23 +81,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // When wizard changes step
     parent.on('stepChanged', function (event) {
-      that.currentTabIndex = event.data.id;
+      var currentTabIndex = event.data.id;
+      var $prevButton = this.$item.find('.nav-button-prev');
+      var $nextButton = this.$item.find('.nav-button-next');
 
-      var $prevButton = $('.nav-button-prev');
-      var $nextButton = $('.nav-button-next');
-
-      if (that.currentTabIndex > 0) {
-        $prevButton.attr('data-id', that.currentTabIndex - 1);
-        $prevButton.find('span.nav-button-label').text($('.h5peditor-tab-li a[data-id=' + (that.currentTabIndex - 1) + '] .field-name').text())
+      if (currentTabIndex > 0) {
+        $prevButton.attr('data-id', currentTabIndex - 1);
         $prevButton.show();
       }
       else {
         $prevButton.hide();
       }
 
-      if (that.currentTabIndex < $('.h5peditor-tabs').children().length - 1) {
-        $nextButton.attr('data-id', that.currentTabIndex + 1);
-        $nextButton.find('span.nav-button-label').text($('.h5peditor-tab-li a[data-id=' + (that.currentTabIndex + 1) + '] .field-name').text())
+      if (currentTabIndex < this.$item.find('.h5peditor-tabs').children().length - 1) {
+        $nextButton.attr('data-id', currentTabIndex + 1);
         $nextButton.show();
       }
       else {
