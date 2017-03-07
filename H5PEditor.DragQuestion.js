@@ -81,25 +81,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // When wizard changes step
     parent.on('stepChanged', function (event) {
-      var currentTabIndex = event.data.id;
-      var $prevButton = this.$item.find('.nav-button-prev');
-      var $nextButton = this.$item.find('.nav-button-next');
-
-      if (currentTabIndex > 0) {
-        $prevButton.attr('data-id', currentTabIndex - 1);
-        $prevButton.show();
-      }
-      else {
-        $prevButton.hide();
-      }
-
-      if (currentTabIndex < this.$item.find('.h5peditor-tabs').children().length - 1) {
-        $nextButton.attr('data-id', currentTabIndex + 1);
-        $nextButton.show();
-      }
-      else {
-        $nextButton.hide();
-      }
+      this.updateWizardIconsText(event.data.id);
     });
   }
 
