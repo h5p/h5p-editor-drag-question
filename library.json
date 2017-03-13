@@ -2,9 +2,9 @@
   "title": "Drag Question Editor",
   "majorVersion": 1,
   "minorVersion": 7,
-  "patchVersion": 0,
+  "patchVersion": 1,
   "runnable": 0,
-  "author": "Joubel AS",
+  "author": "Joubel",
   "coreApi": {
     "majorVersion": 1,
     "minorVersion": 12
