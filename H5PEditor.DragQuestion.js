@@ -78,11 +78,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.resize();
       }
     });
-
-    // When wizard changes step
-    parent.on('stepChanged', function (event) {
-      this.updateWizardIconsText(event.data.id);
-    });
   }
 
   /**
