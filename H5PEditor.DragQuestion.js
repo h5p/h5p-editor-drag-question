@@ -562,6 +562,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
       dnbElement.contextMenu.on('contextMenuRemove', that.elementRemove.bind(that, element));
       dnbElement.contextMenu.on('contextMenuBringToFront', that.elementBringToFront.bind(that, element));
+      dnbElement.contextMenu.on('contextMenuSendToBack', that.elementSendToBack.bind(that, element));
       that.dnb.focus(element.$element);
     }, 0);
 
@@ -634,6 +635,50 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     that.elements.push(that.elements.splice(id, 1)[0]);
     that.params.elements.push(that.params.elements.splice(id, 1)[0]);
     that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
+
+    var newId = (that.elements.length - 1).toString();
+
+    // Update drop zone params
+    that.params.dropZones.forEach(function(dropZone) {
+      // update correct elements
+      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+        // Update ID in correct answers
+        if (entry === oldId) {
+          return newId;
+        }
+        // Adjust index for others
+        else if (parseInt(entry) > id) {
+          return (parseInt(entry) - 1).toString();
+        }
+        // if not current, and not with larger id
+        else {
+          return entry;
+        }
+      });
+    });
+
+    that.updateInternalElementIDs(id);
+  };
+
+  /**
+   * Sends an element to the back
+   *
+   * @param {object} element
+   */
+  C.prototype.elementSendToBack = function (element) {
+    var that = this;
+
+    // Find element ID
+    var id = element.$element.data('id');
+    var oldId = id.toString();
+
+    // Update visuals
+    element.$element.prependTo(that.$editor);
+
+    // Give new ID
+    that.elements.unshift(that.elements.splice(id, 1)[0]);
+    that.params.elements.unshift(that.params.elements.splice(id, 1)[0]);
+    that.elementOptions.unshift(that.elementOptions.splice(id, 1)[0]);
 
     var newId = (that.elements.length - 1).toString();
 
@@ -992,6 +1037,37 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.params.dropZones.push(that.params.dropZones.splice(id, 1)[0]);
         var options = that.elementFields[that.elementDropZoneFieldWeight].options;
         options.push(options.splice(id, 1)[0]);
+        var newID = (that.dropZones.length - 1);
+
+        // Update dropZone IDs in element params
+        for (i = 0; i < that.params.elements.length; i++) {
+          var dropZones = that.params.elements[i].dropZones;
+          for (j = 0; j < dropZones.length; j++) {
+            if (parseInt(dropZones[j]) === id) {
+              // Update ID
+              dropZones[j] = newID;
+            }
+            else if (dropZones[j] > id) {
+              // Re-index other drop zones
+              dropZones[j] = '' + (dropZones[j] - 1);
+            }
+          }
+        }
+
+        that.updateInternalDropZoneIDs(id);
+      });
+
+      dropzoneDnBElement.contextMenu.on('contextMenuSendToBack', function () {
+        var id = dropZone.$dropZone.data('id');
+
+        // Update visuals
+        dropZone.$dropZone.prependTo(that.$editor);
+
+        // Get new ID
+        that.dropZones.unshift(that.dropZones.splice(id, 1)[0]);
+        that.params.dropZones.unshift(that.params.dropZones.splice(id, 1)[0]);
+        var options = that.elementFields[that.elementDropZoneFieldWeight].options;
+        options.unshift(options.splice(id, 1)[0]);
         var newID = (that.dropZones.length - 1);
 
         // Update dropZone IDs in element params
