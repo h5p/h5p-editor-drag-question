@@ -196,8 +196,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     if (this.dnb === undefined) {
+      this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>');
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
-        that.activateEditor(libraries);
+        // Prevents duplicate loading
+        if (this.dnb === undefined) {
+          that.activateEditor(libraries);
+        }
       });
     }
 
