@@ -190,12 +190,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @returns {undefined}
    */
   C.prototype.setActive = function () {
+    var that = this;
     if (this.size === undefined || this.size.width === undefined) {
       return;
     }
 
     if (this.dnb === undefined) {
-      this.activateEditor();
+      H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
+        that.activateEditor(libraries);
+      });
     }
 
     this.resize();
@@ -249,12 +252,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    *
    * @returns {undefined}
    */
-  C.prototype.activateEditor = function () {
+  C.prototype.activateEditor = function (libraries) {
     var that = this;
     this.$editor.html('').addClass('h5p-ready');
 
     // Create new bar
-    this.dnb = new DragNBar(this.getButtons(), this.$editor, this.$item);
+    this.dnb = new DragNBar(this.getButtons(libraries), this.$editor, this.$item);
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -410,10 +413,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    *
    * @returns {Array} Buttons
    */
-  C.prototype.getButtons = function () {
+  C.prototype.getButtons = function (libraries) {
     var that = this;
     var id = 'dropzone';
-
     var buttons = [{
       id: id,
       title: C.t('insertElement', {':type': C.t(id)}),
@@ -430,8 +432,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
     }];
 
-    for (var i = 0; i < this.elementLibraryOptions.length; i++) {
-      buttons.push(this.getButton(this.elementLibraryOptions[i]));
+    for (var i = 0; i < libraries.length; i++) {
+      if (libraries[i].restricted !== true) {
+        buttons.push(this.getButton(libraries[i]));
+      }
     }
 
     return buttons;
@@ -469,14 +473,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.getButton = function (library) {
     var that = this;
-    var id = C.getLibraryID(library);
+    var id = C.getLibraryID(library.uberName);
     return {
       id: id,
-      title: C.t(id),
+      title: library.title,
       createElement: function () {
         var elementParams = C.getDefaultElementParams(id);
         elementParams.type = {
-          library: library,
+          library: library.uberName,
           params: {}
         };
         that.params.elements.push(elementParams);
