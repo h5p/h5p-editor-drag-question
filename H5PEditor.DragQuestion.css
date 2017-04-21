@@ -36,6 +36,10 @@
   position: relative;
 }
 
+.h5p-dragquestion-editor .h5peditor-dragnbar .h5p-dragnbar-li .h5p-dragnbar-tooltip {
+  font-size: 0.9em;
+}
+
 .dragQuestion .h5p-dragnbar-li:hover {
   background: none;
 }
