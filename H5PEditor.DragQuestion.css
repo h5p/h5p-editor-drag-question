@@ -36,6 +36,10 @@
   position: relative;
 }
 
+.h5p-dragquestion-editor .h5peditor-dragnbar .h5p-dragnbar-li .h5p-dragnbar-tooltip {
+  font-size: 0.9em;
+}
+
 .dragQuestion .h5p-dragnbar-li:hover {
   background: none;
 }
@@ -196,7 +200,7 @@
 }
 .h5p-dq-dz .joubel-tip-container {
   position: absolute;
-  right: 0.15em;
+  right: 0.5em;
   bottom: 0;
   font-size: 0.8em;
 }
@@ -293,8 +297,33 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
-  border: 1px solid #d0d0d1;
-  border-top: none;
   background-color: #fff;
   padding: 20px;
+}
+
+.h5p-dragquestion-editor .h5peditor-form {
+  border-radius: 0;
+  padding: 0;
+  background: #fff;
+}
+
+.h5p-dragquestion-editor .field.wizard > .h5peditor-panes > .group > .content {
+  border: 0;
+}
+
+.h5p-dragquestion-editor .field.wizard .h5peditor-tab-settings:before {
+  content: '\e916';
+}
+.h5p-dragquestion-editor .field.wizard .h5peditor-tab-task:before {
+  content: '\e991';
+}
+
+.h5p-dragquestion-editor .common {
+  margin: 20px;
+  background-color: #FAFBFC;
+}
+
+.h5p-dragquestion-editor .field-name-backgroundOpacity,
+.h5p-dragquestion-editor .field-name-behaviour {
+  margin: 20px;
 }

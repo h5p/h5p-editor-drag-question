@@ -1,6 +1,6 @@
 {
   "libraryStrings": {
-    "englishInsertElement": "Insert :type",
+    "englishInsertElement": "Add :type",
     "insertElement": "Insérer :type",
     "englishDone": "Done",
     "done": "OK",
@@ -16,10 +16,10 @@
     "confirmRemoval": "Êtes-vous certain de vouloir supprimer cet élément ?",
     "englishBackgroundOpacityOverridden": "The background opacity is overridden",
     "backgroundOpacityOverridden": "L'opacité de l'arrière-plan est écrasée",
-    "englishAdvancedtext": "Advanced text",
-    "advancedtext": "Texte avancé",
-    "englishDropzone": "Drop zone",
-    "dropzone": "Zone de dépôt",
+    "englishAdvancedtext": "Text",
+    "advancedtext": "Texte",
+    "englishDropzone": "Drop Zone",
+    "dropzone": "Zone De Dépôt",
     "englishSelectAll": "Select all",
     "selectAll": "Sélectionner tout ",
     "englishDeselectAll": "Deselect all",
