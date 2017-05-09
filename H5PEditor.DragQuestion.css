@@ -323,7 +323,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   background-color: #FAFBFC;
 }
 
-.h5p-dragquestion-editor .field-name-backgroundOpacity,
+.h5p-dragquestion-editor .tree > .field-name-backgroundOpacity,
 .h5p-dragquestion-editor .field-name-behaviour {
   margin: 20px;
 }
