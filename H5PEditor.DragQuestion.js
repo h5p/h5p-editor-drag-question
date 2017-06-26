@@ -974,11 +974,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.dnb.blurAll();
       });
 
-    // Add tip if any
-    if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
-      dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
-    }
-
     // Add label
     this.updateDropZone(dropZone, index);
 
@@ -1097,14 +1092,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
       that.dnb.focus(dropZone.$dropZone);
     }, 0);
-
-    // Add tip if any
-    if (dropZoneParams.tip !== undefined && dropZoneParams.tip.trim().length > 0) {
-      dropZone.$dropZone.append(H5P.JoubelUI.createTip(dropZoneParams.tip, {showSpeechBubble: false}));
-    }
-
-    // Add label
-    this.updateDropZone(dropZone, index);
 
     this.dropZones[index] = dropZone;
     return dropZone.$dropZone;
@@ -1233,10 +1220,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       dropZone.$dropZone.removeClass('h5p-has-label');
     }
 
-    // Update Tip:
+    // Create/update Tip:
     dropZone.$dropZone.children('.joubel-tip-container').remove();
-    if (params.tip !== undefined && params.tip.trim().length > 0) {
-      dropZone.$dropZone.append(H5P.JoubelUI.createTip(params.tip, {showSpeechBubble: false}));
+    if (params.tipsAndFeedback !== undefined && params.tipsAndFeedback.tip !== undefined && params.tipsAndFeedback.tip.trim().length !== 0) {
+      dropZone.$dropZone.append(H5P.JoubelUI.createTip(params.tipsAndFeedback.tip, {showSpeechBubble: false}));
     }
 
     this.elementFields[this.elementDropZoneFieldWeight].options[id] = {
