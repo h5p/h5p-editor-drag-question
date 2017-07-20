@@ -327,3 +327,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 .h5p-dragquestion-editor .field-name-behaviour {
   margin: 20px;
 }
+
+.field-name-backgroundOpacity .h5peditor-text {
+  width: 75px;
+}

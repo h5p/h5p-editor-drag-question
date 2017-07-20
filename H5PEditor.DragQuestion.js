@@ -49,7 +49,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Update opacity for all dropzones/draggables when global background opacity is changed
     parent.ready(function () {
-      H5PEditor.findField('../backgroundOpacity', parent).$item.find('input').on('change', function () {
+      H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val().trim();
         that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
