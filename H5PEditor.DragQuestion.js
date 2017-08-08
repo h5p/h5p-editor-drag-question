@@ -204,8 +204,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         }
       });
     }
-
-    this.resize();
   };
 
   /**
@@ -369,6 +367,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     for (var j = 0; j < this.params.dropZones.length; j++) {
       this.insertDropZone(j);
     }
+
+    this.resize();
   };
 
   /**
