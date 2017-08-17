@@ -196,7 +196,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     if (this.dnb === undefined) {
-      this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>');
+      this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>')
+        .addClass('h5p-ready');
+      this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
         // Prevents duplicate loading
         if (this.dnb === undefined) {
@@ -219,7 +221,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     var maxWidth = this.$item.width();
-    var editorCSS;
+    var editorCss;
     if (this.size.width < maxWidth) {
       editorCss = {
         width: this.size.width,
