@@ -196,7 +196,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     if (this.dnb === undefined) {
-      this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>');
+      this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>')
+        .addClass('h5p-ready');
+      this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
         // Prevents duplicate loading
         if (this.dnb === undefined) {
@@ -219,7 +221,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     var maxWidth = this.$item.width();
-    var editorCSS;
+    var editorCss;
     if (this.size.width < maxWidth) {
       editorCss = {
         width: this.size.width,
@@ -562,12 +564,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }).appendTo(element.$element);
 
     setTimeout(function () {
-      var dnbElement = that.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'));
+      var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
+
+      var dnbElement = that.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'), {
+        cornerLock: (type === 'H5P.Image')
+      });
 
       dnbElement.contextMenu.on('contextMenuEdit', function () {
         that.editElement(element);
         that.dnb.blurAll();
       });
+
       dnbElement.contextMenu.on('contextMenuRemove', that.elementRemove.bind(that, element));
       dnbElement.contextMenu.on('contextMenuBringToFront', that.elementBringToFront.bind(that, element));
       dnbElement.contextMenu.on('contextMenuSendToBack', that.elementSendToBack.bind(that, element));
