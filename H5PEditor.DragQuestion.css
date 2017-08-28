@@ -324,8 +324,8 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .tree > .field-name-backgroundOpacity,
-.h5p-dragquestion-editor .field-name-behaviour,
-.h5p-dragquestion-editor .field-name-overallFeedback {
+.h5p-dragquestion-editor .tree > .field-name-behaviour,
+.h5p-dragquestion-editor .tree > .field-name-overallFeedback {
   margin: 20px;
 }
 
