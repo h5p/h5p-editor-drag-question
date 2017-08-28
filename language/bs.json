@@ -2,14 +2,14 @@
   "libraryStrings":{
     "insertElement":"Add :type",
     "done":"Done",
-    "remove":"Remove",
-    "image":"Image",
-    "text":"Text",
+    "remove":"Ukloniti",
+    "image":"Slika",
+    "text":"Tekst",
     "noTaskSize":"Please specify task size first.",
     "confirmRemoval":"Are you sure you wish to remove this element?",
     "backgroundOpacityOverridden":"The background opacity is overridden",
-    "advancedtext":"Text",
-    "dropzone":"Drop Zone",
+    "advancedtext":"Tekst",
+    "dropzone":"Zona za spustanje",
     "selectAll":"Select all",
     "deselectAll":"Deselect all"
   }
