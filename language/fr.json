@@ -1,28 +1,16 @@
 {
-  "libraryStrings": {
-    "englishInsertElement": "Add :type",
-    "insertElement": "Insérer :type",
-    "englishDone": "Done",
-    "done": "OK",
-    "englishRemove": "Remove",
-    "remove": "Supprimer",
-    "englishImage": "Image",
-    "image": "Image",
-    "englishText": "Text",
-    "text": "Texte",
-    "englishNoTaskSize": "Please specify task size first.",
-    "noTaskSize": "Veuillez commencer par indiquer les dimensions de la zone d'activité.",
-    "englishConfirmRemoval": "Are you sure you wish to remove this element?",
-    "confirmRemoval": "Êtes-vous certain de vouloir supprimer cet élément ?",
-    "englishBackgroundOpacityOverridden": "The background opacity is overridden",
-    "backgroundOpacityOverridden": "L'opacité de l'arrière-plan est écrasée",
-    "englishAdvancedtext": "Text",
-    "advancedtext": "Texte",
-    "englishDropzone": "Drop Zone",
-    "dropzone": "Zone De Dépôt",
-    "englishSelectAll": "Select all",
-    "selectAll": "Sélectionner tout ",
-    "englishDeselectAll": "Deselect all",
-    "deselectAll": "Désélectionner tout"
+  "libraryStrings":{
+    "insertElement":"Insérer :type",
+    "done":"OK",
+    "remove":"Supprimer",
+    "image":"Image",
+    "text":"Texte",
+    "noTaskSize":"Veuillez commencer par indiquer les dimensions de la zone d'activité.",
+    "confirmRemoval":"Êtes-vous certain de vouloir supprimer cet élément ?",
+    "backgroundOpacityOverridden":"L'opacité de l'arrière-plan est écrasée",
+    "advancedtext":"Texte",
+    "dropzone":"Zone De Dépôt",
+    "selectAll":"Sélectionner tout ",
+    "deselectAll":"Désélectionner tout"
   }
 }
