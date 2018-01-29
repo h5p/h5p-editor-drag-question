@@ -267,12 +267,18 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   margin-bottom: 0.1em;
   line-height: 1.25em;
   padding-left: 0.5em;
+  padding-right: 0.5em;
   position: absolute;
   bottom: 100%;
   left: -0.1em;
   right: -0.1em;
   white-space: nowrap;
   border-radius: 0.5em 0.5em 0 0;
+}
+
+.h5p-dq-dz-label > div {
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .h5peditor-dynamiccheckboxes-select, .h5peditor-dynamiccheckboxes-select > li {
