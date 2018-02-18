@@ -43,16 +43,48 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       that.setSize(params);
     });
 
-    // Need the override background opacity
-    this.backgroundOpacity = parent.parent.params.backgroundOpacity;
-    this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
+    // Are we creating a new D&D content or editing a content (isSetBehaviour is true);
+    var isSetBehaviour = parent.parent.params.behaviour;
 
-    // Update opacity for all dropzones/draggables when global background opacity is changed
+    // Need the override background opacity for draggables
+    this.backgroundOpacity = (isSetBehaviour === undefined) ? undefined : parent.parent.params.behaviour.backgroundOpacity;
+
+    // Need the override background opacity for dropZones
+    this.backgroundOpacityDropZones = (isSetBehaviour === undefined) ? undefined : parent.parent.params.behaviour.backgroundOpacityDropZones;
+
+    // Need the override bordercolor for dropZones
+    this.overrideBorderColor = (isSetBehaviour === undefined) ? 'rgba(0, 0, 0, 0)' : parent.parent.params.behaviour.overrideBorderColor;
+
+    // Get the SAVED task backgroundColor to use it in the Task editor.
+    this.backgroundColor = parent.parent.params.question.settings.backgroundColor;
+
+    // Update opacity for all draggables & dropzones when global background opacity is changed
     parent.ready(function () {
+      // Update opacity for all draggables
       H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val().trim();
         that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
+      });
+
+      // Update opacity for all dropzones
+      H5PEditor.findField('../behaviour/backgroundOpacityDropZones', parent).$item.find('input').on('change', function () {
+        that.backgroundOpacityDropZones = $(this).val().trim();
+        that.backgroundOpacityDropZones = (that.backgroundOpacityDropZones === '') ? undefined : that.backgroundOpacityDropZones;
+        that.updateAllElementsOpacity(that.dropZones, that.params.dropZones, 'dropZone');
+      });
+
+      // Update bordercolor for all dropzones
+      H5PEditor.findField('../behaviour/overrideBorderColor', parent).$item.find('input').on('change', function () {
+        that.overrideBorderColor = $(this).val().trim();
+        that.overrideBorderColor = (that.overrideBorderColor === '') ? undefined : that.overrideBorderColor;
+        that.updateAllDropZonesBorderColor(that.dropZones, that.params.dropZones, 'dropZone');
+      });
+
+      // Update the task backgroundColor to display it in the Task editor.
+      H5PEditor.findField('settings/backgroundColor', parent).$item.find('input').on('change', function () {
+        that.backgroundColor = $(this).val().trim();
+        that.setBackgroundColor(that.backgroundColor);
       });
     });
 
@@ -174,6 +206,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     });
   };
 
+  C.prototype.setBackgroundColor = function (param) {
+    this.$editor.css({
+      backgroundColor: param
+    });
+  };
+
   /**
    * Set current dimensions.
    *
@@ -191,6 +229,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.setActive = function () {
     var that = this;
+
+    this.$editor.css({
+      backgroundColor: this.backgroundColor
+    });
+
     if (this.size === undefined || this.size.width === undefined) {
       return;
     }
@@ -971,8 +1014,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var that = this,
       dropZoneParams = this.params.dropZones[index],
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
-
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+    bordercolor = dropZoneParams.bordercolor;
+    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:'+ dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%; color:'+bordercolor+';"></div>')
       .appendTo(this.$editor)
       .data('id', index)
       .dblclick(function () {
@@ -1198,6 +1241,36 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
     }
 
+    // Disable background opacity input for dropzones if overriden globally
+    var disableOpacityField = !!(that.params.dropZones[id].correctElements.length !== 0 && this.backgroundOpacityDropZones);
+    var $previous = H5PEditor.findField('backgroundOpacity', dropZone).$item.find('input').prev();
+    var $hasWarning = $previous.hasClass( 'h5peditor-warning' )
+    if ($hasWarning) {
+      $previous.remove();
+    }
+    H5PEditor.findField('backgroundOpacity', dropZone).$item.find('input').prop({
+      disabled: disableOpacityField
+    });
+    if (disableOpacityField) {
+      H5PEditor.findField('backgroundOpacity', dropZone).$item.find('input').before('<div class="h5p-dragquestion-editor h5peditor-warning">' + C.t('backgroundOpacityOverridden') + '</div>');
+    }
+
+    // Disable borderColor input for dropzones if overriden globally
+    var disableBorderColorField = !!(that.params.dropZones[id].correctElements.length !== 0 && (this.overrideBorderColor !== 'rgba(0, 0, 0, 0)'));
+
+    // Get class of previous DOM element to check if it's a warning and remove it if true, to avoid an accumulation of warnings.
+    var $previous = H5PEditor.findField('bordercolor', dropZone).$item.find('input').prev();
+    var $hasWarning = $previous.hasClass( 'h5peditor-warning' )
+    if ($hasWarning) {
+      $previous.remove();
+    }
+    if (disableBorderColorField) {
+      H5PEditor.findField('bordercolor', dropZone).$item.find('input').spectrum("disable");
+      H5PEditor.findField('bordercolor', dropZone).$item.find('input').before('<div class="h5p-dragquestion-editor h5peditor-warning">' + C.t('dropZonesBorderColorOverridden') + '</div>');
+    } else {
+      H5PEditor.findField('bordercolor', dropZone).$item.find('input').spectrum("enable");
+    }
+
     dropZone.children[this.dropZoneElementFieldWeight].setActive();
     this.showDialog(dropZone.$form);
 
@@ -1238,7 +1311,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', params.backgroundOpacity);
+    $element = dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label'));
+    // JR TODO simplify this
+    if (this.backgroundOpacityDropZones === undefined) {
+      C.setElementOpacity($element, params.backgroundOpacity);
+    } else {
+      C.setElementOpacity($element, this.backgroundOpacityDropZones);
+    }
+
+    if (this.overrideBorderColor == undefined || this.overrideBorderColor == 'rgba(0, 0, 0, 0)') {
+      $element.css('color', params.bordercolor);
+    } else {
+      $element.css('color', this.overrideBorderColor);
+    }
   };
 
   /**
@@ -1298,9 +1383,44 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (domElements === undefined) {
       return;
     }
-
     for (var i = 0; i < domElements.length; i++) {
-      C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
+      switch (type) {
+        case 'element':
+          C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
+        case 'dropZone':
+          C.setElementOpacity(domElements[i]['$'+type], this.getDropZoneOpacitySetting(elements[i]));
+      }
+    }
+  };
+
+  /**
+   * Update all dropzones' bordercolor
+   *
+   * @param {Array} domElements
+   * @param {Array} elements
+   * @param {String} type
+   */
+  C.prototype.updateAllDropZonesBorderColor = function (domElements, elements, type) {
+    if (domElements === undefined) {
+      return;
+    }
+    for (var i = 0; i < domElements.length; i++) {
+      var dropzone = elements[i];
+      var $dropzone = domElements[i]['$'+type];
+      var $label = $dropzone.find('.h5p-dq-dz-label');
+
+      // Override dropzones bordercolor is not set or set?
+      if (this.overrideBorderColor !== 'rgba(0, 0, 0, 0)') {
+        $dropzone.css('color', this.overrideBorderColor);
+        $label.css('color', this.overrideBorderColor);
+      } else {
+        var currentBorderColor = dropzone.bordercolor;
+        if (currentBorderColor == 'rgba(0, 0, 0, 0)') { // If no border color has been set then use default value (grey).
+          currentBorderColor = '#666';
+        }
+        $dropzone.css('color', currentBorderColor);
+        $label.css('color', currentBorderColor);
+      }
     }
   };
 
@@ -1317,6 +1437,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     return this.backgroundOpacity;
+  };
+
+  /**
+   * Get the opacity setting for a given dropZone
+   *
+   * @param {Object} dropZone
+   * @returns {String} opacity
+   */
+  C.prototype.getDropZoneOpacitySetting = function (dropZone) {
+    if ((dropZone.dropZones !== undefined && dropZone.dropZones.length === 0) ||
+       (this.backgroundOpacityDropZones === undefined)) {
+      return dropZone.backgroundOpacity;
+    }
+    return this.backgroundOpacityDropZones;
   };
 
   /**
@@ -1462,6 +1596,7 @@ H5PEditor.language['H5PEditor.DragQuestion'] = {
     advancedtext: 'Advanced text',
     dropzone: 'Drop zone',
     selectAll: 'Select all',
-    deselectAll: 'Deselect all'
+    deselectAll: 'Deselect all',
+    dropZonesBorderColorOverridden: 'The dropzone border color is overridden'
   }
 };

@@ -95,7 +95,6 @@
 .h5peditor-dragquestion.h5p-ready {
   padding: 0;
   background-size: 100% 100%;
-  background-color: #FFFFFF;
   position: relative;
   border: 1px solid #ccc;
   border-radius: 0;
@@ -188,7 +187,9 @@
   content: " ";
   display: block;
   position: absolute;
-  border: 2px dashed rgba(0, 0, 0, 0.7);
+  // border color now done in edit
+  // border: 2px dashed rgba(0, 0, 0, 0.7);
+  border: 2px dashed;
   width: 100%;
   height: 100%;
   top: -2px;
@@ -337,4 +338,11 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 
 .field-name-backgroundOpacity .h5peditor-text {
   width: 75px;
+}
+
+.h5p-dragquestion-editor .h5peditor-warning:before {
+  font-family: 'H5PFontAwesome4';
+  content: '\f071';
+  color: #0779bf;
+  padding: 3px 5px;
 }
