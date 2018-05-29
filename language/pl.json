@@ -1,16 +1,16 @@
 {
   "libraryStrings":{
-    "insertElement":"Add :type",
-    "done":"Done",
-    "remove":"Remove",
-    "image":"Image",
-    "text":"Text",
-    "noTaskSize":"Please specify task size first.",
-    "confirmRemoval":"Are you sure you wish to remove this element?",
-    "backgroundOpacityOverridden":"The background opacity is overridden",
-    "advancedtext":"Text",
-    "dropzone":"Drop Zone",
-    "selectAll":"Select all",
-    "deselectAll":"Deselect all"
+    "insertElement":"Dodaj :type",
+    "done":"Wykonano",
+    "remove":"Usuń",
+    "image":"Zdjęcie",
+    "text":"Tekst",
+    "noTaskSize":"Najpierw podaj rozmiar obszaru zadania.",
+    "confirmRemoval":"Czy na pewno chcesz usunąć ten element?",
+    "backgroundOpacityOverridden":"Parametr nieprzezroczystości tła jest nadpisany",
+    "advancedtext":"Tekst",
+    "dropzone":"Obszar przeciągania",
+    "selectAll":"Zaznacz wszystko",
+    "deselectAll":"Odznacz wszystko"
   }
 }
