@@ -340,24 +340,24 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 /* style metadata widgets */
-.tree > .field-name-title.text {
+.h5p-dragquestion-editor .tree > .field-name-title.text {
   padding: 20px;
   margin-top: 0;
 }
 
-.toggle-metadata {
+.h5p-dragquestion-editor .toggle-metadata {
   top: 1.2em;
 }
 
-.h5p-editor-dialog.h5p-metadata-wrapper {
+.h5p-dragquestion-editor .h5p-editor-dialog.h5p-metadata-wrapper {
   left: 3%;
 }
 
-.h5peditor-tabs {
+.h5p-dragquestion-editor .h5peditor-tabs {
   border-top: solid 1px #e3e3e3;
   border-bottom: solid 1px #e3e3e3;
 }
 
-.h5peditor-panes {
+.h5p-dragquestion-editor .h5peditor-panes {
   border-top: solid 1px #e3e3e3;
 }
