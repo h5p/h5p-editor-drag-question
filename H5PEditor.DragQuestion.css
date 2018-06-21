@@ -6,6 +6,10 @@
   position: relative;
 }
 
+.field-name-question > .h5p-editor-flex-wrapper {
+   display: none;
+ }
+
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
   background: #f5f5f5;
@@ -341,7 +345,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 
 /* style metadata widgets */
 .h5p-dragquestion-editor .tree > .field-name-title.text {
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   margin-top: 0;
 }
 
