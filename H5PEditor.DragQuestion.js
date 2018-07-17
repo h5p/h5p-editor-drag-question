@@ -78,6 +78,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.resize();
       }
     });
+
+    // Update paste button
+    H5P.externalDispatcher.on('datainclipboard', function (event) {
+      if (!that.libraries) {
+        return;
+      }
+      var canPaste = !event.data.reset;
+      if (canPaste) {
+        // Check if content type is supported here
+        canPaste = that.canPaste(H5P.getClipboard());
+      }
+      that.dnb.setCanPaste(canPaste);
+    });
   }
 
   /**
@@ -108,6 +121,21 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         that.hideDialog();
       }
       return false;
+    });
+  };
+
+  /**
+   * Check if the clipboard can be pasted into DnD.
+   *
+   * @param {Object} [clipboard] Clipboard data.
+   * @return {boolean} True, if clipboard can be pasted.
+   */
+  C.prototype.canPaste = function (clipboard) {
+    if (!clipboard || !clipboard.generic) {
+      return false;
+    }
+    return this.libraries.some(function (element) {
+      return element.uberName === clipboard.generic.library;
     });
   };
 
@@ -200,6 +228,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         .addClass('h5p-ready');
       this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
+        that.libraries = libraries;
         // Prevents duplicate loading
         if (this.dnb === undefined) {
           that.activateEditor(libraries);
@@ -283,6 +312,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     };
     this.dnb.attach(this.$dnbWrapper);
 
+    // Set paste button
+    this.dnb.setCanPaste(this.canPaste(H5P.getClipboard()));
+
     this.dnb.on('paste', function (event) {
       var pasted = event.data;
       var $element;
@@ -318,8 +350,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           var id = C.getLibraryID(pasted.generic.library);
           var elementParams = C.getDefaultElementParams(id);
           elementParams.type = pasted.generic;
-          elementParams.width = pasted.width * that.pToEm;
-          elementParams.height = pasted.height * that.pToEm;
+          elementParams.width = (pasted.width || elementParams.width / that.pToEm) * that.pToEm;
+          elementParams.height = (pasted.height || elementParams.height / that.pToEm) * that.pToEm;
 
           that.center(elementParams);
           that.params.elements.push(elementParams);
