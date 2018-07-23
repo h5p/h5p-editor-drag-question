@@ -60,6 +60,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.elementFields = H5P.cloneObject(field.fields[0].field.fields, true);
     this.dropZoneFields = H5P.cloneObject(field.fields[1].field.fields, true);
     this.elementLibraryOptions = this.elementFields[0].options;
+    if (typeof this.elementLibraryOptions[0] === 'object') {
+      this.elementLibraryOptions = this.elementLibraryOptions.map(function (option) {
+        return option.name;
+      });
+    }
+
     this.elementDropZoneFieldWeight = 5;
     this.elementFields[this.elementDropZoneFieldWeight].options = [];
     this.dropZoneElementFieldWeight = 6;
