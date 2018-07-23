@@ -26,6 +26,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   function C(parent, field, params, setValue) {
     var that = this;
 
+    this.fakeDropzoneLibrary = 'H5P.DragQuestionDropzone 0.1';
+
     this.parent = parent;
 
     // Set params
@@ -238,11 +240,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         // Add fake library for copy&paste (Dropzones are no libraries)
         libraries.push({
-          uberName: 'H5P.DragQuestionDropzone 0.1',
-          name: 'H5P.DragQuestionDropzone',
-          title: 'Dropzone',
-          majorVersion: 0,
-          minorVersion: 1,
+          uberName: that.fakeDropzoneLibrary,
+          name: that.fakeDropzoneLibrary.split(' ')[0],
+          title: that.fakeDropzoneLibrary.split(' ')[0].split('.')[1],
+          majorVersion: that.fakeDropzoneLibrary.split(' ')[1].split('.')[0],
+          minorVersion: that.fakeDropzoneLibrary.split(' ')[1].split('.')[1],
           restricted: false,
           runnable: 0
         });
@@ -307,8 +309,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var that = this;
     this.$editor.html('').addClass('h5p-ready');
 
+    // Ignore fake libraries
+    const buttonLibraries = libraries.filter(function(library) {
+      return (library.uberName !== that.fakeDropzoneLibrary);
+    });
+
     // Create new bar
-    this.dnb = new DragNBar(this.getButtons(libraries), this.$editor, this.$item, {libraries: libraries});
+    this.dnb = new DragNBar(this.getButtons(buttonLibraries), this.$editor, this.$item, {libraries: libraries});
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -341,7 +348,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         // Pasted content comes from the same version of DQ
 
         if (pasted.generic) {
-          if (pasted.generic.library === 'H5P.DragQuestionDropzone 0.1') {
+          if (pasted.generic.library === that.fakeDropzoneLibrary) {
             // Non generic part, must be a drop zone
             that.center(pasted.specific);
             that.params.dropZones.push(pasted.specific);
@@ -1025,7 +1032,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
     // Fake libraryName for copy&paste
-    dropZoneParams.type = dropZoneParams.type || {library: 'H5P.DragQuestionDropzone 0.1'};
+    dropZoneParams.type = dropZoneParams.type || {library: that.fakeDropzoneLibrary};
 
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
       .appendTo(this.$editor)
