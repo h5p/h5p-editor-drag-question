@@ -235,6 +235,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
         that.libraries = libraries;
+
+        // Add fake library for copy&paste (Dropzones are no libraries)
+        libraries.push({
+          uberName: 'H5P.DragQuestionDropzone 0.1',
+          name: 'H5P.DragQuestionDropzone',
+          title: 'Dropzone',
+          majorVersion: 0,
+          minorVersion: 1,
+          restricted: false,
+          runnable: 0
+        });
+
         // Prevents duplicate loading
         if (this.dnb === undefined) {
           that.activateEditor(libraries);
@@ -328,23 +340,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       if (pasted.from === clipboardKey) {
         // Pasted content comes from the same version of DQ
 
-        if (!pasted.generic) {
-          // Non generic part, must be a drop zone
-          that.center(pasted.specific);
-          that.params.dropZones.push(pasted.specific);
-          $element = that.insertDropZone(that.params.dropZones.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
-        }
-        else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-          // Has generic part and the generic libray is supported
-          that.center(pasted.specific);
-          that.params.elements.push(pasted.specific);
-          $element = that.insertElement(that.params.elements.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
+        if (pasted.generic) {
+          if (pasted.generic.library === 'H5P.DragQuestionDropzone 0.1') {
+            // Non generic part, must be a drop zone
+            that.center(pasted.specific);
+            that.params.dropZones.push(pasted.specific);
+            $element = that.insertDropZone(that.params.dropZones.length - 1);
+            setTimeout(function () {
+              that.dnb.focus($element);
+            });
+          }
+          else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
+            // Has generic part and the generic libray is supported
+            that.center(pasted.specific);
+            that.params.elements.push(pasted.specific);
+            $element = that.insertElement(that.params.elements.length - 1);
+            setTimeout(function () {
+              that.dnb.focus($element);
+            });
+          }
         }
         else {
           alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
@@ -1010,6 +1024,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       dropZoneParams = this.params.dropZones[index],
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
+    // Fake libraryName for copy&paste
+    dropZoneParams.type = dropZoneParams.type || {library: 'H5P.DragQuestionDropzone 0.1'};
+
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
       .appendTo(this.$editor)
       .data('id', index)
@@ -1024,8 +1041,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Add to dnb after element has been attached
     setTimeout(function () {
-
-      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
+      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams, 'type'));
 
       // Register listeners for context menu buttons
       dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
