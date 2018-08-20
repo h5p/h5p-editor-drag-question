@@ -89,6 +89,10 @@
   font-size: 0.88em;
 }
 
+.dragQuestion .h5p-dragnbar-li.paste-button {
+  background: none;
+}
+
 .dragQuestion .h5p-dragnbar-a {
   width: 1em;
   line-height: 1.5em;
