@@ -462,6 +462,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.generateForm = function (semantics, params) {
     var $form = $('<div></div>');
     H5PEditor.processSemanticsChunk(semantics, params, $form, this);
+
+    // Remove library selector and copy button and paste button
+    var pos = semantics.map(function(field) {return field.type;}).indexOf('library');
+    if (pos > -1) {
+      this.children[pos].removeLibrarySelector();
+      this.children[pos].removeCopyPaste();
+    }
+
     var $lib = $form.children('.library:first');
     if ($lib.length !== 0) {
       $lib.children('label, select, .h5peditor-field-description').hide().end().children('.libwrap').css('margin-top', '0');
