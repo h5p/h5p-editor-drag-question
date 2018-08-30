@@ -464,10 +464,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     H5PEditor.processSemanticsChunk(semantics, params, $form, this);
 
     // Remove library selector and copy button and paste button
-    var pos = semantics.map(function(field) {return field.type;}).indexOf('library');
+    var pos = semantics.map(function (field) {
+      return field.type;
+    }).indexOf('library');
     if (pos > -1) {
-      this.children[pos].removeLibrarySelector();
-      this.children[pos].removeCopyPaste();
+      this.children[pos].hide();
     }
 
     var $lib = $form.children('.library:first');
