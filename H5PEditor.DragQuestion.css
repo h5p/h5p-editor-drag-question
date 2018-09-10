@@ -6,7 +6,7 @@
   position: relative;
 }
 
-.field-name-question > .h5p-editor-flex-wrapper {
+.h5p-dragquestion-editor .field-name-question > .h5p-editor-flex-wrapper {
    display: none;
  }
 
