@@ -310,7 +310,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.$editor.html('').addClass('h5p-ready');
 
     // Ignore fake libraries
-    const buttonLibraries = libraries.filter(function(library) {
+    const buttonLibraries = libraries.filter(function (library) {
       return (library.uberName !== that.fakeDropzoneLibrary);
     });
 
@@ -685,7 +685,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Update drop zone params
 
-    that.params.dropZones.forEach(function(dropZone){
+    that.params.dropZones.forEach(function (dropZone) {
       var elements = dropZone.correctElements;
 
       elements = that.arrayRemoveByValue(elements, value);
@@ -722,9 +722,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var newId = (that.elements.length - 1).toString();
 
     // Update drop zone params
-    that.params.dropZones.forEach(function(dropZone) {
+    that.params.dropZones.forEach(function (dropZone) {
       // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
         // Update ID in correct answers
         if (entry === oldId) {
           return newId;
@@ -766,9 +766,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var newId = (that.elements.length - 1).toString();
 
     // Update drop zone params
-    that.params.dropZones.forEach(function(dropZone) {
+    that.params.dropZones.forEach(function (dropZone) {
       // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
         // Update ID in correct answers
         if (entry === oldId) {
           return newId;
@@ -816,7 +816,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @return {string[]}
    */
   C.prototype.decrementIdsLargerThen = function (arr, threshold) {
-    return arr.map(function(id){
+    return arr.map(function (id) {
       var value = parseInt(id);
       return (id < threshold) ? id : (value - 1).toString();
     });
@@ -1120,9 +1120,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         var newID = (that.dropZones.length - 1);
 
         // Update dropZone IDs in element params
-        for (i = 0; i < that.params.elements.length; i++) {
+        for (var i = 0; i < that.params.elements.length; i++) {
           var dropZones = that.params.elements[i].dropZones;
-          for (j = 0; j < dropZones.length; j++) {
+          for (var j = 0; j < dropZones.length; j++) {
             if (parseInt(dropZones[j]) === id) {
               // Update ID
               dropZones[j] = newID;
@@ -1151,9 +1151,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         var newID = (that.dropZones.length - 1);
 
         // Update dropZone IDs in element params
-        for (i = 0; i < that.params.elements.length; i++) {
+        for (var i = 0; i < that.params.elements.length; i++) {
           var dropZones = that.params.elements[i].dropZones;
-          for (j = 0; j < dropZones.length; j++) {
+          for (var j = 0; j < dropZones.length; j++) {
             if (parseInt(dropZones[j]) === id) {
               // Update ID
               dropZones[j] = newID;
@@ -1179,7 +1179,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @param {number} start
    */
   C.prototype.updateInternalDropZoneIDs = function (start) {
-    for (i = start; i < this.dropZones.length; i++) {
+    for (var i = start; i < this.dropZones.length; i++) {
       this.dropZones[i].$dropZone.data('id', i);
       this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
     }
