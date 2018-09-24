@@ -389,7 +389,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 /* style metadata widgets */
-.h5p-dragquestion-editor .tree > .field-name-title.text {
+.h5p-dragquestion-editor .tree > .field-name-extraTitle.text {
   padding: 20px 20px 0 20px;
   margin-top: 0;
 }
