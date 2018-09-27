@@ -46,7 +46,7 @@
 
 /* Paste button overrides */
 .dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button {
-  padding: 0.25em 0.95em 0.25em 0.55em;
+  padding: 0.2em 0.95em 0.2em 0.55em;
 }
 .dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button:before {
   font-size: 1.5em;
