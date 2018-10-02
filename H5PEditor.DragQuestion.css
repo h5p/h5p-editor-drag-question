@@ -321,7 +321,19 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   display: inline-block;
 }
 .field.dynamicCheckboxes .h5p-selectall {
-  font-size: 0.75em;
+  font-size: 0.9em;
+  color: #105ace;
+}
+.field.dynamicCheckboxes .h5p-selectall:before {
+  font-family: 'H5PFontAwesome4';
+  content: '\f096';
+  margin-right: 0.5em;
+}
+.field.dynamicCheckboxes .h5p-deselectall:before {
+  content: '\f046';
+}
+.field.dynamicCheckboxes .h5p-selectall:hover {
+  border-bottom: 1px solid #105ace;
 }
 
 .h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
