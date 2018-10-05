@@ -1525,21 +1525,3 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
   return C;
 })(H5P.jQuery, H5P.DragNBar);
-
-// Default english translations
-H5PEditor.language['H5PEditor.DragQuestion'] = {
-  libraryStrings: {
-    insertElement: 'Insert :type',
-    done: 'Done',
-    remove: 'Remove',
-    image: 'Image',
-    text: 'Text',
-    noTaskSize: 'Please specify task size first.',
-    confirmRemoval: 'Are you sure you wish to remove this element?',
-    backgroundOpacityOverridden: 'The background opacity is overridden',
-    advancedtext: 'Advanced text',
-    dropzone: 'Drop zone',
-    selectAll: 'Select all',
-    deselectAll: 'Deselect all'
-  }
-};
