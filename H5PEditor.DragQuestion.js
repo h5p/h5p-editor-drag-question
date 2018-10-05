@@ -139,12 +139,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @return {boolean} True, if clipboard can be pasted.
    */
   C.prototype.canPaste = function (clipboard) {
-    if (!clipboard || !clipboard.generic) {
-      return false;
+    if (clipboard) {
+      if (clipboard.from === clipboardKey &&
+          (!clipboard.generic || this.elementLibraryOptions.indexOf(clipboard.generic.library) !== -1)) {
+        // Content comes from the same version of DQ
+        // Non generic part = must be content like gotoslide or similar
+        return true;
+      }
+      else if (clipboard.generic && this.elementLibraryOptions.indexOf(clipboard.generic.library) !== -1) {
+        // Supported library from another content type
+        return true;
+      }
     }
-    return this.libraries.some(function (element) {
-      return element.uberName === clipboard.generic.library;
-    });
+
+    return false;
   };
 
   /**
