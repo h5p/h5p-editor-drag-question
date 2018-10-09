@@ -141,14 +141,31 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.canPaste = function (clipboard) {
     if (clipboard) {
       if (clipboard.from === clipboardKey &&
-          (!clipboard.generic || this.elementLibraryOptions.indexOf(clipboard.generic.library) !== -1)) {
+          (!clipboard.generic || this.supported(clipboard.generic.library))) {
         // Content comes from the same version of DQ
         // Non generic part = must be content like gotoslide or similar
         return true;
       }
-      else if (clipboard.generic && this.elementLibraryOptions.indexOf(clipboard.generic.library) !== -1) {
+      else if (clipboard.generic && this.supported(clipboard.generic.library)) {
         // Supported library from another content type
         return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
+   * Check if library is supported by Drag Question
+   *
+   * @private
+   * @param {string} lib uber name
+   * @returns {boolean}
+   */
+  C.prototype.supported = function (lib) {
+    for (var i = 0; i < this.libraries.length; i++) {
+      if (this.libraries[i].restricted !== true && this.libraries[i].uberName === lib) {
+        return true; // Library is supported and allowed
       }
     }
 
@@ -352,52 +369,44 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       var pasted = event.data;
       var $element;
 
+      if (!pasted.generic || !that.supported(pasted.generic.library)) {
+        return alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
+      }
+
       if (pasted.from === clipboardKey) {
         // Pasted content comes from the same version of DQ
+        var isDropZone = pasted.generic.library === that.fakeDropzoneLibrary;
 
-        if (pasted.generic) {
-          if (pasted.generic.library === that.fakeDropzoneLibrary) {
-            // Non generic part, must be a drop zone
-            that.center(pasted.specific);
-            that.params.dropZones.push(pasted.specific);
-            $element = that.insertDropZone(that.params.dropZones.length - 1);
-            setTimeout(function () {
-              that.dnb.focus($element);
-            });
-          }
-          else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-            // Has generic part and the generic libray is supported
-            that.center(pasted.specific);
-            that.params.elements.push(pasted.specific);
-            $element = that.insertElement(that.params.elements.length - 1);
-            setTimeout(function () {
-              that.dnb.focus($element);
-            });
-          }
+        that.center(pasted.specific);
+
+        if (isDropZone) {
+          that.params.dropZones.push(pasted.specific);
+          $element = that.insertDropZone(that.params.dropZones.length - 1);
         }
         else {
-          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
-        }
-      }
-      else if (pasted.generic) {
-        if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-          // Supported library from another content type
-          var id = C.getLibraryID(pasted.generic.library);
-          var elementParams = C.getDefaultElementParams(id);
-          elementParams.type = pasted.generic;
-          elementParams.width = (pasted.width || elementParams.width / that.pToEm) * that.pToEm;
-          elementParams.height = (pasted.height || elementParams.height / that.pToEm) * that.pToEm;
-
-          that.center(elementParams);
-          that.params.elements.push(elementParams);
+          that.params.elements.push(pasted.specific);
           $element = that.insertElement(that.params.elements.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
         }
-        else {
-          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
-        }
+
+        setTimeout(function () {
+          that.dnb.focus($element);
+        });
+
+      }
+      else {
+        // Supported library from another content type
+        var id = C.getLibraryID(pasted.generic.library);
+        var elementParams = C.getDefaultElementParams(id);
+        elementParams.type = pasted.generic;
+        elementParams.width = (pasted.width || elementParams.width / that.pToEm) * that.pToEm;
+        elementParams.height = (pasted.height || elementParams.height / that.pToEm) * that.pToEm;
+
+        that.center(elementParams);
+        that.params.elements.push(elementParams);
+        $element = that.insertElement(that.params.elements.length - 1);
+        setTimeout(function () {
+          that.dnb.focus($element);
+        });
       }
     });
 
