@@ -117,6 +117,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.$dialogInner = this.$dialog.children('.h5peditor-fd-inner');
     this.$errors = this.$item.children('.h5p-errors');
 
+    this.$editor.attr('tabindex', -1);
+
     // Handle click events for dialog buttons.
     this.$dialog.find('.h5peditor-done').click(function () {
       if (that.doneCallback() !== false) {
