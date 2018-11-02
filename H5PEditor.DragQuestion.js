@@ -26,6 +26,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   function C(parent, field, params, setValue) {
     var that = this;
 
+    this.fakeDropzoneLibrary = 'H5P.DragQuestionDropzone 0.1';
+
     this.parent = parent;
 
     // Set params
@@ -60,6 +62,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.elementFields = H5P.cloneObject(field.fields[0].field.fields, true);
     this.dropZoneFields = H5P.cloneObject(field.fields[1].field.fields, true);
     this.elementLibraryOptions = this.elementFields[0].options;
+    if (typeof this.elementLibraryOptions[0] === 'object') {
+      this.elementLibraryOptions = this.elementLibraryOptions.map(function (option) {
+        return option.name;
+      });
+    }
+
     this.elementDropZoneFieldWeight = 5;
     this.elementFields[this.elementDropZoneFieldWeight].options = [];
     this.dropZoneElementFieldWeight = 6;
@@ -77,6 +85,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       if (that.size !== undefined && that.size.width !== undefined) {
         that.resize();
       }
+    });
+
+    // Update paste button
+    H5P.externalDispatcher.on('datainclipboard', function (event) {
+      if (!that.libraries) {
+        return;
+      }
+      var canPaste = !event.data.reset;
+      if (canPaste) {
+        // Check if content type is supported here
+        canPaste = that.canPaste(H5P.getClipboard());
+      }
+      that.dnb.setCanPaste(canPaste);
     });
   }
 
@@ -96,6 +117,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.$dialogInner = this.$dialog.children('.h5peditor-fd-inner');
     this.$errors = this.$item.children('.h5p-errors');
 
+    this.$editor.attr('tabindex', -1);
+
     // Handle click events for dialog buttons.
     this.$dialog.find('.h5peditor-done').click(function () {
       if (that.doneCallback() !== false) {
@@ -109,6 +132,46 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
       return false;
     });
+  };
+
+  /**
+   * Check if the clipboard can be pasted into DnD.
+   *
+   * @param {Object} [clipboard] Clipboard data.
+   * @return {boolean} True, if clipboard can be pasted.
+   */
+  C.prototype.canPaste = function (clipboard) {
+    if (clipboard) {
+      if (clipboard.from === clipboardKey &&
+          (!clipboard.generic || this.supported(clipboard.generic.library))) {
+        // Content comes from the same version of DQ
+        // Non generic part = must be content like gotoslide or similar
+        return true;
+      }
+      else if (clipboard.generic && this.supported(clipboard.generic.library)) {
+        // Supported library from another content type
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
+   * Check if library is supported by Drag Question
+   *
+   * @private
+   * @param {string} lib uber name
+   * @returns {boolean}
+   */
+  C.prototype.supported = function (lib) {
+    for (var i = 0; i < this.libraries.length; i++) {
+      if (this.libraries[i].restricted !== true && this.libraries[i].uberName === lib) {
+        return true; // Library is supported and allowed
+      }
+    }
+
+    return false;
   };
 
   /**
@@ -200,6 +263,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         .addClass('h5p-ready');
       this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
+        that.libraries = libraries;
+
+        // Add fake library for copy&paste (Dropzones are no libraries)
+        libraries.push({
+          uberName: that.fakeDropzoneLibrary,
+          name: that.fakeDropzoneLibrary.split(' ')[0],
+          title: that.fakeDropzoneLibrary.split(' ')[0].split('.')[1],
+          majorVersion: that.fakeDropzoneLibrary.split(' ')[1].split('.')[0],
+          minorVersion: that.fakeDropzoneLibrary.split(' ')[1].split('.')[1],
+          restricted: false,
+          runnable: 0
+        });
+
         // Prevents duplicate loading
         if (this.dnb === undefined) {
           that.activateEditor(libraries);
@@ -260,8 +336,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var that = this;
     this.$editor.html('').addClass('h5p-ready');
 
+    // Ignore fake libraries
+    const buttonLibraries = libraries.filter(function (library) {
+      return (library.uberName !== that.fakeDropzoneLibrary);
+    });
+
     // Create new bar
-    this.dnb = new DragNBar(this.getButtons(libraries), this.$editor, this.$item);
+    this.dnb = new DragNBar(this.getButtons(buttonLibraries), this.$editor, this.$item, {libraries: libraries});
     that.dnb.dnr.snap = 10;
 
     // Add event handling
@@ -283,54 +364,51 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     };
     this.dnb.attach(this.$dnbWrapper);
 
+    // Set paste button
+    this.dnb.setCanPaste(this.canPaste(H5P.getClipboard()));
+
     this.dnb.on('paste', function (event) {
       var pasted = event.data;
       var $element;
 
+      if (!pasted.generic || !that.supported(pasted.generic.library)) {
+        return alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
+      }
+
       if (pasted.from === clipboardKey) {
         // Pasted content comes from the same version of DQ
+        var isDropZone = pasted.generic.library === that.fakeDropzoneLibrary;
 
-        if (!pasted.generic) {
-          // Non generic part, must be a drop zone
-          that.center(pasted.specific);
+        that.center(pasted.specific);
+
+        if (isDropZone) {
           that.params.dropZones.push(pasted.specific);
           $element = that.insertDropZone(that.params.dropZones.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
         }
-        else if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-          // Has generic part and the generic libray is supported
-          that.center(pasted.specific);
+        else {
           that.params.elements.push(pasted.specific);
           $element = that.insertElement(that.params.elements.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
         }
-        else {
-          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
-        }
-      }
-      else if (pasted.generic) {
-        if (that.elementLibraryOptions.indexOf(pasted.generic.library) !== -1) {
-          // Supported library from another content type
-          var id = C.getLibraryID(pasted.generic.library);
-          var elementParams = C.getDefaultElementParams(id);
-          elementParams.type = pasted.generic;
-          elementParams.width = pasted.width * that.pToEm;
-          elementParams.height = pasted.height * that.pToEm;
 
-          that.center(elementParams);
-          that.params.elements.push(elementParams);
-          $element = that.insertElement(that.params.elements.length - 1);
-          setTimeout(function () {
-            that.dnb.focus($element);
-          });
-        }
-        else {
-          alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
-        }
+        setTimeout(function () {
+          that.dnb.focus($element);
+        });
+
+      }
+      else {
+        // Supported library from another content type
+        var id = C.getLibraryID(pasted.generic.library);
+        var elementParams = C.getDefaultElementParams(id);
+        elementParams.type = pasted.generic;
+        elementParams.width = (pasted.width || elementParams.width / that.pToEm) * that.pToEm;
+        elementParams.height = (pasted.height || elementParams.height / that.pToEm) * that.pToEm;
+
+        that.center(elementParams);
+        that.params.elements.push(elementParams);
+        $element = that.insertElement(that.params.elements.length - 1);
+        setTimeout(function () {
+          that.dnb.focus($element);
+        });
       }
     });
 
@@ -403,6 +481,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.generateForm = function (semantics, params) {
     var $form = $('<div></div>');
     H5PEditor.processSemanticsChunk(semantics, params, $form, this);
+
+    // Remove library selector and copy button and paste button
+    var pos = semantics.map(function (field) {
+      return field.type;
+    }).indexOf('library');
+    if (pos > -1) {
+      this.children[pos].hide();
+    }
+
     var $lib = $form.children('.library:first');
     if ($lib.length !== 0) {
       $lib.children('label, select, .h5peditor-field-description').hide().end().children('.libwrap').css('margin-top', '0');
@@ -617,7 +704,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Update drop zone params
 
-    that.params.dropZones.forEach(function(dropZone){
+    that.params.dropZones.forEach(function (dropZone) {
       var elements = dropZone.correctElements;
 
       elements = that.arrayRemoveByValue(elements, value);
@@ -654,9 +741,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var newId = (that.elements.length - 1).toString();
 
     // Update drop zone params
-    that.params.dropZones.forEach(function(dropZone) {
+    that.params.dropZones.forEach(function (dropZone) {
       // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
         // Update ID in correct answers
         if (entry === oldId) {
           return newId;
@@ -698,9 +785,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var newId = (that.elements.length - 1).toString();
 
     // Update drop zone params
-    that.params.dropZones.forEach(function(dropZone) {
+    that.params.dropZones.forEach(function (dropZone) {
       // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function(entry){
+      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
         // Update ID in correct answers
         if (entry === oldId) {
           return newId;
@@ -748,7 +835,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @return {string[]}
    */
   C.prototype.decrementIdsLargerThen = function (arr, threshold) {
-    return arr.map(function(id){
+    return arr.map(function (id) {
       var value = parseInt(id);
       return (id < threshold) ? id : (value - 1).toString();
     });
@@ -972,6 +1059,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       dropZoneParams = this.params.dropZones[index],
       dropZone = this.generateForm(this.dropZoneFields, dropZoneParams);
 
+    // Fake libraryName for copy&paste
+    dropZoneParams.type = dropZoneParams.type || {library: that.fakeDropzoneLibrary};
+
     dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
       .appendTo(this.$editor)
       .data('id', index)
@@ -986,8 +1076,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Add to dnb after element has been attached
     setTimeout(function () {
-
-      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams));
+      var dropzoneDnBElement = that.dnb.add(dropZone.$dropZone, DragNBar.clipboardify(clipboardKey, dropZoneParams, 'type'));
 
       // Register listeners for context menu buttons
       dropzoneDnBElement.contextMenu.on('contextMenuEdit', function () {
@@ -1050,9 +1139,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         var newID = (that.dropZones.length - 1);
 
         // Update dropZone IDs in element params
-        for (i = 0; i < that.params.elements.length; i++) {
+        for (var i = 0; i < that.params.elements.length; i++) {
           var dropZones = that.params.elements[i].dropZones;
-          for (j = 0; j < dropZones.length; j++) {
+          for (var j = 0; j < dropZones.length; j++) {
             if (parseInt(dropZones[j]) === id) {
               // Update ID
               dropZones[j] = newID;
@@ -1081,9 +1170,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         var newID = (that.dropZones.length - 1);
 
         // Update dropZone IDs in element params
-        for (i = 0; i < that.params.elements.length; i++) {
+        for (var i = 0; i < that.params.elements.length; i++) {
           var dropZones = that.params.elements[i].dropZones;
-          for (j = 0; j < dropZones.length; j++) {
+          for (var j = 0; j < dropZones.length; j++) {
             if (parseInt(dropZones[j]) === id) {
               // Update ID
               dropZones[j] = newID;
@@ -1109,7 +1198,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @param {number} start
    */
   C.prototype.updateInternalDropZoneIDs = function (start) {
-    for (i = start; i < this.dropZones.length; i++) {
+    for (var i = start; i < this.dropZones.length; i++) {
       this.dropZones[i].$dropZone.data('id', i);
       this.elementFields[this.elementDropZoneFieldWeight].options[i].value = i + '';
     }
@@ -1447,21 +1536,3 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
   return C;
 })(H5P.jQuery, H5P.DragNBar);
-
-// Default english translations
-H5PEditor.language['H5PEditor.DragQuestion'] = {
-  libraryStrings: {
-    insertElement: 'Insert :type',
-    done: 'Done',
-    remove: 'Remove',
-    image: 'Image',
-    text: 'Text',
-    noTaskSize: 'Please specify task size first.',
-    confirmRemoval: 'Are you sure you wish to remove this element?',
-    backgroundOpacityOverridden: 'The background opacity is overridden',
-    advancedtext: 'Advanced text',
-    dropzone: 'Drop zone',
-    selectAll: 'Select all',
-    deselectAll: 'Deselect all'
-  }
-};

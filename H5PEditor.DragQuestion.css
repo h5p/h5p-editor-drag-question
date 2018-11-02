@@ -6,6 +6,10 @@
   position: relative;
 }
 
+.h5p-dragquestion-editor .field-name-question > .h5p-editor-flex-wrapper {
+   display: none;
+ }
+
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
   background: #f5f5f5;
@@ -36,6 +40,23 @@
   position: relative;
 }
 
+.dragQuestion .h5p-dragnbar-li:last-child {
+  float:right;
+}
+
+/* Paste button overrides */
+.dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button {
+  padding: 0.2em 0.95em 0.2em 0.55em;
+}
+.dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button:before {
+  font-size: 1.5em;
+}
+
+.dragQuestion .h5p-dragnbar-li.disabled {
+  opacity: 0.3;
+  cursor: auto;
+}
+
 .h5p-dragquestion-editor .h5peditor-dragnbar .h5p-dragnbar-li .h5p-dragnbar-tooltip {
   font-size: 0.9em;
 }
@@ -60,6 +81,7 @@
   display: block;
   padding: 0.25em 0.75em;
   color: #333;
+  height: 1.5em;
 }
 
 .dragQuestion .h5p-dragnbar-a:hover {
@@ -91,6 +113,9 @@
 
 .h5peditor-dragquestion {
   padding: 0.5em 1em;
+}
+.h5peditor-dragquestion:focus {
+  outline: none;
 }
 .h5peditor-dragquestion.h5p-ready {
   padding: 0;
@@ -297,9 +322,26 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 .h5peditor-dynamiccheckboxes-select .h5p-label-text {
   vertical-align: middle;
   display: inline-block;
+  padding-left: 0.2em;
 }
 .field.dynamicCheckboxes .h5p-selectall {
-  font-size: 0.75em;
+  margin-left: 1em;
+  font-size: 1em;
+  color: #105ace;
+  padding-left: 1.3em;
+  position: relative;
+}
+.field.dynamicCheckboxes .h5p-selectall:before {
+  font-family: 'H5PFontAwesome4';
+  content: '\f096';
+  margin-right: 0.5em;
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  top: 0.2em;
+}
+.field.dynamicCheckboxes .h5p-deselectall:before {
+  content: '\f046';
 }
 
 .h5p-dragquestion-editor .h5peditor-panes > .field.dragQuestion {
@@ -337,4 +379,27 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 
 .field-name-backgroundOpacity .h5peditor-text {
   width: 75px;
+}
+
+/* style metadata widgets */
+.h5p-dragquestion-editor .tree > .field-name-extraTitle.text {
+  padding: 20px 20px 0 20px;
+  margin-top: 0;
+}
+
+.h5p-dragquestion-editor .toggle-metadata {
+  top: 1.2em;
+}
+
+.h5p-dragquestion-editor .h5p-editor-dialog.h5p-metadata-wrapper {
+  left: 3%;
+}
+
+.h5p-dragquestion-editor .h5peditor-tabs {
+  border-top: solid 1px #e3e3e3;
+  border-bottom: solid 1px #e3e3e3;
+}
+
+.h5p-dragquestion-editor .h5peditor-panes {
+  border-top: solid 1px #e3e3e3;
 }
