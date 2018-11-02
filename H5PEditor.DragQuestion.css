@@ -114,6 +114,9 @@
 .h5peditor-dragquestion {
   padding: 0.5em 1em;
 }
+.h5peditor-dragquestion:focus {
+  outline: none;
+}
 .h5peditor-dragquestion.h5p-ready {
   padding: 0;
   background-size: 100% 100%;
