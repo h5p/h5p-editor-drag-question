@@ -973,6 +973,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (type === 'text') {
       element.$element.addClass('h5p-dq-text');
     }
+    else if (type === 'image') {
+      // Override image hover and use user defined hover text or none
+      element.$innerElement.find('img').attr('title', params.type.params.title || '');
+    }
 
     // Find label text without html
     var label = (type === 'text' ? $('<div>' + params.type.params.text + '</div>').text() : params.type.params.alt + '');
