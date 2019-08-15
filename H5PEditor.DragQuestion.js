@@ -261,7 +261,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     if (this.dnb === undefined) {
       this.$editor.html('<div class="h5p-throbber">' + H5PEditor.t('core', 'loading') + '</div>')
         .addClass('h5p-ready');
-      this.resize();
       H5PEditor.LibraryListCache.getLibraries(this.elementLibraryOptions, function (libraries) {
         that.libraries = libraries;
 
@@ -282,6 +281,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         }
       });
     }
+
+    this.resize();
   };
 
   /**

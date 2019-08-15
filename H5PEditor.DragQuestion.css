@@ -371,20 +371,8 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   background-color: #FAFBFC;
 }
 
-.h5p-dragquestion-editor .tree > .field-name-backgroundOpacity,
-.h5p-dragquestion-editor .tree > .field-name-behaviour,
-.h5p-dragquestion-editor .tree > .field-name-overallFeedback {
-  margin: 20px;
-}
-
 .field-name-backgroundOpacity .h5peditor-text {
   width: 75px;
-}
-
-/* style metadata widgets */
-.h5p-dragquestion-editor .tree > .field-name-extraTitle.text {
-  padding: 20px 20px 0 20px;
-  margin-top: 0;
 }
 
 .h5p-dragquestion-editor .toggle-metadata {
@@ -393,13 +381,4 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 
 .h5p-dragquestion-editor .h5p-editor-dialog.h5p-metadata-wrapper {
   left: 3%;
-}
-
-.h5p-dragquestion-editor .h5peditor-tabs {
-  border-top: solid 1px #e3e3e3;
-  border-bottom: solid 1px #e3e3e3;
-}
-
-.h5p-dragquestion-editor .h5peditor-panes {
-  border-top: solid 1px #e3e3e3;
 }
