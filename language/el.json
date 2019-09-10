@@ -1,16 +1,16 @@
 {
   "libraryStrings":{
-    "insertElement":"Add :type",
-    "done":"Done",
-    "remove":"Remove",
-    "image":"Image",
-    "text":"Text",
-    "noTaskSize":"Please specify task size first.",
-    "confirmRemoval":"Are you sure you wish to remove this element?",
-    "backgroundOpacityOverridden":"The background opacity is overridden",
-    "advancedtext":"Text",
-    "dropzone":"Drop Zone",
-    "selectAll":"Select all",
-    "deselectAll":"Deselect all"
+    "insertElement":"Προσθήκη :type",
+    "done":"ΟΚ",
+    "remove":"Αφαίρεση",
+    "image":"Εικόνα",
+    "text":"Κείμενο",
+    "noTaskSize":"Όρισε πρώτα το μέγεθος της δραστηριότητας.",
+    "confirmRemoval":"Είσαι σίγουρος πως θέλεις να αφαιρέσεις αυτό το στοιχείο;",
+    "backgroundOpacityOverridden":"Θα αντικατασταθούν οι προκαθορισμένες ρυθμίσεις για τη διαφάνεια φόντου",
+    "advancedtext":"Κείμενο",
+    "dropzone":"Περιοχή απόθεσης",
+    "selectAll":"Επιλογή όλων",
+    "deselectAll":"Αποεπιλογή όλων"
   }
 }
