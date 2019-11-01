@@ -45,8 +45,10 @@
 }
 
 /* Paste button overrides */
-.dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button {
+.dragQuestion .h5peditor-dragnbar .h5p-dragnbar-ul .h5p-dragnbar-li .h5p-dragnbar-a.h5p-dragnbar-paste-button {
   padding: 0.2em 0.95em 0.2em 0.55em;
+  border-radius: 0.25em;
+  border-width: 1px;
 }
 .dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button:before {
   font-size: 1.5em;
