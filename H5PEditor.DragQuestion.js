@@ -704,15 +704,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     that.elementOptions.splice(id, 1);
 
     // Update drop zone params
-
     that.params.dropZones.forEach(function (dropZone) {
-      var elements = dropZone.correctElements;
-
-      elements = that.arrayRemoveByValue(elements, value);
-      elements = that.decrementIdsLargerThen(elements, id);
-
-      // update correct elements
-      dropZone.correctElements = elements;
+      // Update correct elements for drop zone
+      for (let i = 0; i < dropZone.correctElements.length; i++) {
+        if (dropZone.correctElements[i] === value) {
+          dropZone.correctElements.splice(i, 1);
+          i--;
+        }
+        else if (parseInt(dropZone.correctElements[i]) > id) {
+          dropZone.correctElements[i] = '' + (parseInt(dropZone.correctElements[i]) - 1);
+        }
+      }
     });
 
     that.updateInternalElementIDs(id);
@@ -740,24 +742,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     that.elementOptions.push(that.elementOptions.splice(id, 1)[0]);
 
     var newId = (that.elements.length - 1).toString();
-
-    // Update drop zone params
     that.params.dropZones.forEach(function (dropZone) {
-      // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
-        // Update ID in correct answers
-        if (entry === oldId) {
-          return newId;
+      // Update correct elements for drop zone
+      for (let i = 0; i < dropZone.correctElements.length; i++) {
+        if (dropZone.correctElements[i] === oldId) {
+          dropZone.correctElements[i] = newId;
         }
-        // Adjust index for others
-        else if (parseInt(entry) > id) {
-          return (parseInt(entry) - 1).toString();
+        else if (parseInt(dropZone.correctElements[i]) > id) {
+          dropZone.correctElements[i] = (parseInt(dropZone.correctElements[i]) - 1).toString();
         }
-        // if not current, and not with larger id
-        else {
-          return entry;
-        }
-      });
+      }
     });
 
     that.updateInternalElementIDs(id);
@@ -783,63 +777,19 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     that.params.elements.unshift(that.params.elements.splice(id, 1)[0]);
     that.elementOptions.unshift(that.elementOptions.splice(id, 1)[0]);
 
-    var newId = (that.elements.length - 1).toString();
-
-    // Update drop zone params
+    var newId = '0';
     that.params.dropZones.forEach(function (dropZone) {
-      // update correct elements
-      dropZone.correctElements = dropZone.correctElements.map(function (entry) {
-        // Update ID in correct answers
-        if (entry === oldId) {
-          return newId;
+      // Update correct elements for drop zone
+      for (let i = 0; i < dropZone.correctElements.length; i++) {
+        if (dropZone.correctElements[i] === oldId) {
+          dropZone.correctElements[i] = newId;
         }
-        // Adjust index for others
-        else if (parseInt(entry) > id) {
-          return (parseInt(entry) - 1).toString();
+        else if (parseInt(dropZone.correctElements[i]) < id) {
+          dropZone.correctElements[i] = (parseInt(dropZone.correctElements[i]) + 1).toString();
         }
-        // if not current, and not with larger id
-        else {
-          return entry;
-        }
-      });
+      }
     });
-
-    that.updateInternalElementIDs(id);
-  };
-
-  /**
-   * Removes a value from an array
-   *
-   * @param {object[]} arr
-   * @param {object} value
-   *
-   * @return {object[]}
-   */
-  C.prototype.arrayRemoveByValue = function (arr, value) {
-    var ax;
-
-    while ((ax = arr.indexOf(value)) !== -1) {
-      arr.splice(ax, 1);
-    }
-
-    return arr;
-  };
-
-  /**
-   * Takes an array of numbers (as strings), and decrements those larger
-   * then a threshold
-   *
-   * @param {String[]} arr
-   * @param {number} threshold
-   *
-   * @private
-   * @return {string[]}
-   */
-  C.prototype.decrementIdsLargerThen = function (arr, threshold) {
-    return arr.map(function (id) {
-      var value = parseInt(id);
-      return (id < threshold) ? id : (value - 1).toString();
-    });
+    that.updateInternalElementIDs(0);
   };
 
   /**

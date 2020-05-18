@@ -23,7 +23,6 @@ H5PEditor.widgets.dynamicCheckboxes = H5PEditor.DynamicCheckboxes = (function ($
     this.parent = parent;
     this.field = field;
     this.setValue = setValue;
-
     if (params === undefined) {
       if (this.field.multiple) {
         this.params = [];
