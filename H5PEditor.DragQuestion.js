@@ -1128,9 +1128,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
               // Update ID
               dropZones[j] = newID;
             }
-            else if (dropZones[j] > id) {
+            else if (dropZones[j] < id) {
               // Re-index other drop zones
-              dropZones[j] = '' + (dropZones[j] - 1);
+              dropZones[j] = '' + (dropZones[j] + 1);
             }
           }
         }
