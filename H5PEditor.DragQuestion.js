@@ -956,6 +956,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     else {
       toggleDraggable(false, element.$element);
 
+      // remove draggable as correct element from all dropzones
+      self.params.dropZones.forEach(function (dropZone) {
+        dropZone.correctElements = dropZone.correctElements.filter(function(correctElement) {
+          return parseInt(correctElement) !== id;
+        });
+      });
+
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
         this.hideDialogCallback = function () {
