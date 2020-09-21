@@ -1,16 +1,16 @@
 {
   "libraryStrings":{
-    "insertElement":"Add :type",
-    "done":"Done",
-    "remove":"Remove",
-    "image":"Image",
-    "text":"Text",
-    "noTaskSize":"Please specify task size first.",
-    "confirmRemoval":"Are you sure you wish to remove this element?",
-    "backgroundOpacityOverridden":"The background opacity is overridden",
-    "advancedtext":"Text",
-    "dropzone":"Drop Zone",
-    "selectAll":"Select all",
-    "deselectAll":"Deselect all"
+    "insertElement":"Adicionar :type",
+    "done":"Concluído",
+    "remove":"Apagar",
+    "image":"Imagem",
+    "text":"Texto",
+    "noTaskSize":"Especifique as dimensões da zona da atividade.",
+    "confirmRemoval":"Tem a certeza de que pretende apagar este elemento?",
+    "backgroundOpacityOverridden":"A opacidade do plano de fundo foi substituída",
+    "advancedtext":"Texto",
+    "dropzone":"Área para largar",
+    "selectAll":"Selecionar tudo",
+    "deselectAll":"Desmarcar tudo"
   }
 }
