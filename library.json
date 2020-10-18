@@ -50,6 +50,11 @@
       "minorVersion": 1
     },
     {
+      "machineName": "H5P.Audio",
+      "majorVersion": 1,
+      "minorVersion": 4
+    },
+    {
       "machineName": "jQuery.ui",
       "majorVersion": 1,
       "minorVersion": 10
