@@ -420,7 +420,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         const instance = that.elements[that.dnb.$element.data('id')].instance;
         const libraryName = instance.libraryInfo.machineName;
         if (libraryName === 'H5P.Audio') {
-          instance.resize();
+          if (that.audioResizing) {
+            clearTimeout(that.audioResizing);
+          }
+          that.audioResizing = setTimeout(function () {
+            instance.resize();
+          }, 0);
         }
       });
     }
