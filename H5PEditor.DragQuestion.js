@@ -417,15 +417,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     const triggersResize = ['moveResizing', 'stoppedResizing'];
     for (let i = 0; i < triggersResize.length; i++) {
       that.dnb.dnr.on(triggersResize[i], function () {
-        const instance = that.elements[that.dnb.$element.data('id')].instance;
-        const libraryName = instance.libraryInfo.machineName;
-        if (libraryName === 'H5P.Audio') {
-          if (that.audioResizing) {
-            clearTimeout(that.audioResizing);
+        const currentElement = that.elements[that.dnb.$element.data('id')];
+        if (currentElement && currentElement.instance) {
+          const libraryName = currentElement.instance.libraryInfo.machineName;
+          if (libraryName === 'H5P.Audio') {
+            if (that.audioResizing) {
+              clearTimeout(that.audioResizing);
+            }
+            that.audioResizing = setTimeout(function () {
+              currentElement.instance.resize();
+            }, 0);
           }
-          that.audioResizing = setTimeout(function () {
-            instance.resize();
-          }, 0);
         }
       });
     }
