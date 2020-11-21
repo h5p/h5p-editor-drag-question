@@ -659,6 +659,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           }
         });
       }
+      else if (library.children[0].field.type === 'audio') {
+        // Hide editor fields for audio
+        const elementAudio = H5PEditor.findField('type', element) || {};
+        fieldsToRemove = ['playerMode', 'fitToWrapper', 'controls'];
+        fieldsToRemove.forEach(function (fieldName) {
+          const field = H5PEditor.findField(fieldName, elementAudio);
+          if (field.$item) {
+            field.$item.remove();
+          }
+          else if (field.$group) {
+            field.$group.remove();
+          }
+        });
+      }
     };
 
     if (library.children === undefined) {
@@ -926,16 +940,15 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     if (element.instance.libraryInfo.machineName === 'H5P.Audio') {
       // Hide editor fields for draggables
-      let fieldsToRemove = ['dropZones', 'backgroundOpacity', 'multiple'];
+      let fieldsToRemove = ['dropZones', 'backgroundOpacity', 'multiple', 'audio'];
       fieldsToRemove.forEach(function (fieldName) {
-        H5PEditor.findField(fieldName, element).$item.remove();
-      });
-
-      // Hide editor fields for audio
-      const elementAudio = H5PEditor.findField('type', element) || {};
-      fieldsToRemove = ['playerMode', 'fitToWrapper', 'controls'];
-      fieldsToRemove.forEach(function (fieldName) {
-        H5PEditor.findField(fieldName, elementAudio).$item.remove();
+        const field = H5PEditor.findField(fieldName, element);
+        if (field.$item) {
+          field.$item.remove();
+        }
+        else if (field.$group) {
+          field.$group.remove();
+        }
       });
     }
 
