@@ -1,16 +1,16 @@
 {
-  "libraryStrings":{
-    "insertElement":"Add :type",
-    "done":"Done",
-    "remove":"Remove",
-    "image":"Image",
-    "text":"Text",
-    "noTaskSize":"Please specify task size first.",
-    "confirmRemoval":"Are you sure you wish to remove this element?",
-    "backgroundOpacityOverridden":"The background opacity is overridden",
-    "advancedtext":"Text",
-    "dropzone":"Drop Zone",
-    "selectAll":"Select all",
-    "deselectAll":"Deselect all"
+  "libraryStrings": {
+    "insertElement": "Afegeix :type",
+    "done": "Fet",
+    "remove": "Elimina",
+    "image": "Imatge",
+    "text": "Text",
+    "noTaskSize": "Primer especifiqueu la mida de la tasca.",
+    "confirmRemoval": "Segur que voleu eliminar aquest element?",
+    "backgroundOpacityOverridden": "La opacitat del fons s’ha substituït",
+    "advancedtext": "Text",
+    "dropzone": "Zona on deixar anar",
+    "selectAll": "Selecciona-ho tot",
+    "deselectAll": "Desmarca-ho tot"
   }
 }
