@@ -68,9 +68,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
     }
 
-    this.elementDropZoneFieldWeight = 5;
+    this.elementDropZoneFieldWeight = 6;
     this.elementFields[this.elementDropZoneFieldWeight].options = [];
-    this.dropZoneElementFieldWeight = 6;
+    this.dropZoneElementFieldWeight = 7;
     this.elementOptions = [];
 
     this.parent = parent;
@@ -354,6 +354,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       params.x = x;
       params.y = y;
     };
+
+    this.dnb.stopResizeCallback = function (width, height, transform, $element) {
+      const id = that.dnb.$element.data('id');
+      const params = that.dnb.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
+      const containerStyle = window.getComputedStyle(that.$editor[0]);
+      const widthInEm = (parseFloat(width) / 100 * parseFloat(containerStyle.width)) / 16;
+      const heightInEm = (parseFloat(height) /100 * parseFloat(containerStyle.height)) / 16;
+      params.width = widthInEm;
+      params.height = heightInEm;
+      params.transform = transform;
+    }
+
+    this.dnb.stopRotationCallback = function (transform, $element) {
+      const id = that.dnb.$element.data('id');
+      const params = that.dnb.$element.hasClass('h5p-dq-dz') ? that.params.dropZones[id] : that.params.elements[id];
+      params.transform = transform;
+    }
+
     this.dnb.dnd.releaseCallback = function () {
       // Edit element when it is dropped.
       if (that.dnb.newElement) {
@@ -633,7 +651,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       libraryChange();
     }
 
-    element.$element = $('<div class="h5p-dq-element" style="width:' + elementParams.width + 'em;height:' + elementParams.height + 'em;top:' + elementParams.y + '%;left:' + elementParams.x + '%"></div>')
+    element.$element = $(`<div
+    class="h5p-dq-element"
+    style="width:${elementParams.width}em;height:${elementParams.height}em;top:${elementParams.y}%;
+    left:${elementParams.x}%;transform:${elementParams.transform}"
+  ></div>`)
       .data('id', index)
       .appendTo(this.$editor)
       .dblclick(function () {
@@ -880,7 +902,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       disabled: disableOpacityField,
       title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
     });
-
+    
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
 
@@ -971,6 +993,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
               y: params.y + ((pos.top - 2) / pHeight),
               width: ($span.width() / self.fontSize) + 0.5,
               height: ($span.height() / self.fontSize) + 0.3,
+              transform: params.transform,
               backgroundOpacity: 0,
               correctElements: [],
               label: C.getLabel($span.text()),
@@ -1013,7 +1036,11 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Fake libraryName for copy&paste
     dropZoneParams.type = dropZoneParams.type || {library: that.fakeDropzoneLibrary};
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+    dropZone.$dropZone = $(`<div
+    class="h5p-dq-dz"
+    style="width:${dropZoneParams.width}em;height:${dropZoneParams.height}em;top:${dropZoneParams.y}%;
+    left:${dropZoneParams.x}%;transform:${dropZoneParams.transform}"
+  ></div>`)
       .appendTo(this.$editor)
       .data('id', index)
       .dblclick(function () {
