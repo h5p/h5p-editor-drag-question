@@ -112,7 +112,9 @@
 .dragQuestion .h5p-dragnbar-dropzone-button:before {
   content: "\f140";
 }
-
+.dragQuestion .h5p-dragnbar-audio-button:before {
+  content: "\f028";
+}
 .h5peditor-dragquestion {
   padding: 0.5em 1em;
 }
@@ -180,6 +182,14 @@
 .h5p-dq-element-inner.h5p-image {
   width: 100%;
   height: 100%;
+}
+.h5p-dq-element-inner.h5p-audio-wrapper {
+  height: 100%;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 .h5p-draggable > ul {
   text-align: left;

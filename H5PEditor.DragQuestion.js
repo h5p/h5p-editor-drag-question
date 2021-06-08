@@ -413,6 +413,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
     });
 
+    // Resize audio button on element resize
+    const triggersResize = ['moveResizing', 'stoppedResizing'];
+    for (let i = 0; i < triggersResize.length; i++) {
+      that.dnb.dnr.on(triggersResize[i], function () {
+        const currentElement = that.elements[that.dnb.$element.data('id')];
+        if (currentElement && currentElement.instance) {
+          const libraryName = currentElement.instance.libraryInfo.machineName;
+          if (libraryName === 'H5P.Audio') {
+            if (that.audioResizing) {
+              clearTimeout(that.audioResizing);
+            }
+            that.audioResizing = setTimeout(function () {
+              currentElement.instance.resize();
+            }, 0);
+          }
+        }
+      });
+    }
+
     /**
      * Update params on end of resize
      * Dimensions contains a data object where each dimensions is optional.
@@ -540,13 +559,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @returns {object}
    */
   C.getDefaultElementParams = function (id) {
-    return {
+    const params = {
       x: 0,
       y: 0,
       width: 5,
-      height: id === 'text' ? 1.25 : 5,
+      height: 5,
       dropZones: []
-    };
+    }
+
+    if (id === 'text') {
+      params.height = 1.25;
+    }
+    else if (id === 'audio') {
+      params.width = 3;
+      params.height = 3;
+    }
+
+    return params;
   };
 
   /**
@@ -592,6 +621,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.insertElement = function (index) {
     var that = this;
     var elementParams = this.params.elements[index];
+
+    // Set audio defaults
+    const machineName = elementParams.type.library.split(' ')[0];
+    if (machineName === 'H5P.Audio') {
+      elementParams.backgroundOpacity = 0;
+      elementParams.type.params.fitToWrapper = true;
+    }
+
     var element = this.generateForm(this.elementFields, elementParams);
 
     var library = this.children[0];
@@ -621,6 +658,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
               width: elementParams.width + 'em',
               height: elementParams.height + 'em'
             });
+          }
+        });
+      }
+      else if (library.children[0].field.type === 'audio') {
+        // Hide editor fields for audio
+        const elementAudio = H5PEditor.findField('type', element) || {};
+        fieldsToRemove = ['playerMode', 'fitToWrapper', 'controls'];
+        fieldsToRemove.forEach(function (fieldName) {
+          const field = H5PEditor.findField(fieldName, elementAudio);
+          if (field.$item) {
+            field.$item.remove();
+          }
+          else if (field.$group) {
+            field.$group.remove();
           }
         });
       }
@@ -655,7 +706,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
 
       var dnbElement = that.dnb.add(element.$element, DragNBar.clipboardify(clipboardKey, elementParams, 'type'), {
-        cornerLock: (type === 'H5P.Image')
+        cornerLock: (type === 'H5P.Image' || type === 'H5P.Audio')
       });
 
       dnbElement.contextMenu.on('contextMenuEdit', function () {
@@ -836,6 +887,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       that.updateElement(element, id);
       that.dnb.focus(element.$element);
       that.dnb.pressed = undefined;
+
+      // Resize audio
+      setTimeout(function () {
+        const libraryName = element.instance.libraryInfo.machineName;
+        if (libraryName === 'H5P.Audio') {
+          element.instance.resize();
+        }
+      }, 0);
     };
 
     this.removeCallback = function () {
@@ -881,6 +940,20 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
     });
 
+    if (element.instance.libraryInfo.machineName === 'H5P.Audio') {
+      // Hide editor fields for draggables
+      let fieldsToRemove = ['dropZones', 'backgroundOpacity', 'multiple', 'audio'];
+      fieldsToRemove.forEach(function (fieldName) {
+        const field = H5PEditor.findField(fieldName, element);
+        if (field.$item) {
+          field.$item.remove();
+        }
+        else if (field.$group) {
+          field.$group.remove();
+        }
+      });
+    }
+
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
 
@@ -901,7 +974,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var self = this;
     var params = this.params.elements[id];
 
-    var type = (params.type.library.split(' ')[0] === 'H5P.AdvancedText' ? 'text' : 'image');
+    const libraryName = params.type.library.split(' ')[0];
+    let type;
+    if (libraryName === 'H5P.AdvancedText') {
+      type = 'text';
+    }
+    else if (libraryName === 'H5P.Image') {
+      type = 'image';
+    }
+    else if (libraryName === 'H5P.Audio') {
+      type = 'audio';
+    }
+
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
@@ -915,6 +999,23 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
       element.children[0].children[0].ckeditor.setData(params.type.params.text);
+    }
+    else if (type === 'audio') {
+      // Audio doesn't have its own container, but modifies element.$innerElement
+      element.$innerElement.find('.h5p-audio-inner').remove();
+
+      // Prevent autoplay when adding to editor
+      const autoplay = params.type.params.autoplay;
+      params.type.params.autoplay = false;
+
+      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$innerElement);
+
+      params.type.params.autoplay = autoplay;
+
+      // Disable button in editor
+      if (element.instance.$audioButton) {
+        element.instance.$audioButton.off('click');
+      }
     }
     else {
       // Create new instance
