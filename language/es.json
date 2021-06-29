@@ -2,7 +2,7 @@
   "libraryStrings": {
     "insertElement": "Añadir :tipo",
     "done": "Hecho",
-    "remove": "Eliminar",
+    "remove": "Quitar",
     "image": "Imagen",
     "text": "Texto",
     "noTaskSize": "Por favor especifique el tamaño del trabajo primeramente.",

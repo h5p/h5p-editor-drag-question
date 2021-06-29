@@ -2,7 +2,7 @@
   "libraryStrings": {
     "insertElement": "Add :type",
     "done": "Färdig",
-    "remove": "Remove",
+    "remove": "Ta bort",
     "image": "Image",
     "text": "Text",
     "noTaskSize": "Please specify task size first.",
