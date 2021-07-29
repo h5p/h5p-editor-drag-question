@@ -11,6 +11,11 @@
     "advancedtext":"Tekst",
     "dropzone":"Obszar przeciągania",
     "selectAll":"Zaznacz wszystko",
-    "deselectAll":"Odznacz wszystko"
+    "deselectAll":"Odznacz wszystko",
+    "deleteDropzoneTitle": "Deleting dropzone",
+    "deleteTaskTitle": "Deleting task",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }

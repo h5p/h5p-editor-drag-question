@@ -11,6 +11,11 @@
     "advancedtext": "文字",
     "dropzone": "拖曳區",
     "selectAll": "全選",
-    "deselectAll": "取消全選"
+    "deselectAll": "取消全選",
+    "deleteDropzoneTitle": "Deleting dropzone",
+    "deleteTaskTitle": "Deleting task",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }

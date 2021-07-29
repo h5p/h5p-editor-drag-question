@@ -11,6 +11,11 @@
     "advancedtext": "Texto",
     "dropzone": "Zona de Caída",
     "selectAll": "Seleccionar todo",
-    "deselectAll": "Des-seleccionar todo"
+    "deselectAll": "Des-seleccionar todo",
+    "deleteDropzoneTitle": "Deleting dropzone",
+    "deleteTaskTitle": "Deleting task",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }

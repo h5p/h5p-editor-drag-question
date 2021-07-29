@@ -11,6 +11,11 @@
     "advancedtext":"Tekst",
     "dropzone":"Zona ostavljanja",
     "selectAll":"Označi sve",
-    "deselectAll":"Poništi označavanje"
+    "deselectAll":"Poništi označavanje",
+    "deleteDropzoneTitle": "Deleting dropzone",
+    "deleteTaskTitle": "Deleting task",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }
