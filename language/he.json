@@ -11,11 +11,6 @@
     "advancedtext": "מלל",
     "dropzone": "אזור יעד",
     "selectAll": "בחירת הכל",
-    "deselectAll": "איפוס בחירה",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll": "איפוס בחירה"
   }
 }

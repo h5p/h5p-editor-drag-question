@@ -11,11 +11,6 @@
     "advancedtext":"Tekst",
     "dropzone":"Sihtkoht",
     "selectAll":"Vali kõik",
-    "deselectAll":"Tühista kõigi valik",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll":"Tühista kõigi valik"
   }
 }

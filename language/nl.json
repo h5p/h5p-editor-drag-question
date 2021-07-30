@@ -11,11 +11,6 @@
     "advancedtext":"Tekst",
     "dropzone":"Neerzetgebied",
     "selectAll":"Selecteer alles",
-    "deselectAll":"Deselecteer alles",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll":"Deselecteer alles"
   }
 }

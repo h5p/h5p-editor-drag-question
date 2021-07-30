@@ -11,11 +11,6 @@
     "advancedtext": "متن",
     "dropzone": "Drop Zone",
     "selectAll": "انتخاب همه",
-    "deselectAll": "عدم انتخاب همه",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll": "عدم انتخاب همه"
   }
 }

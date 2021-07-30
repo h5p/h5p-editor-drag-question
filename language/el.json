@@ -11,11 +11,6 @@
     "advancedtext":"Κείμενο",
     "dropzone":"Περιοχή απόθεσης",
     "selectAll":"Επιλογή όλων",
-    "deselectAll":"Αποεπιλογή όλων",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll":"Αποεπιλογή όλων"
   }
 }

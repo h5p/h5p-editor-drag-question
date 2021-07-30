@@ -11,11 +11,6 @@
     "advancedtext": "Texto",
     "dropzone": "Zona de largada",
     "selectAll": "Selecionar todos",
-    "deselectAll": "Desmarcar todos",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll": "Desmarcar todos"
   }
 }

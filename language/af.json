@@ -11,11 +11,6 @@
     "advancedtext": "Teks",
     "dropzone": "Valsone",
     "selectAll": "Kies Alles",
-    "deselectAll": "Ontkies alles",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll": "Ontkies alles"
   }
 }

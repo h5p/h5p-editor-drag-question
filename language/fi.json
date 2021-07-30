@@ -11,11 +11,6 @@
     "advancedtext":"Teksti",
     "dropzone":"Pudotusalue",
     "selectAll":"Valitse kaikki",
-    "deselectAll":"Poista valinta kaikista",
-    "deleteDropzoneTitle": "Deleting dropzone",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deselectAll":"Poista valinta kaikista"
   }
 }

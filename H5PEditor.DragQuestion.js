@@ -126,25 +126,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
       return false;
     }).end().find('.h5peditor-remove').click(function () {
-      that.showConfirmationDialog({
-        headerText: C.t('deleteInteractionTitle'),
-        dialogText: C.t('confirmRemoval'),
-        cancelText: C.t('cancel'),
-        confirmText: C.t('confirm'),
-      }, handleFormDiaologActions);
-    });
-
-    /**
-     * Callback confirm/cancel action
-     * @param {boolean} [confirmFlag] Which button is clicked
-     */
-    const handleFormDiaologActions = function (confirmFlag) {
-      if (!confirmFlag) {
-        return false;
+      if (confirm(C.t('confirmRemoval'))) {
+        that.removeCallback();
+        that.hideDialog();
       }
-      that.removeCallback();
-      that.hideDialog();
-    };
+      return false;
+    });
   };
 
   /**
@@ -386,12 +373,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       var $element;
 
       if (!pasted.generic || !that.supported(pasted.generic.library)) {
-        return that.showConfirmationDialog({
-          headerText: H5PEditor.t('core', 'pasteError'),
-          dialogText: H5PEditor.t('H5P.DragNBar', 'unableToPaste'),
-          cancelText: ' ',
-          confirmText: C.t('ok')
-        });
+        return alert(H5PEditor.t('H5P.DragNBar', 'unableToPaste'));
       }
 
       if (pasted.from === clipboardKey) {
@@ -702,54 +684,41 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.elementRemove = function (element) {
     var that = this;
 
-    /**
-     * Callback confirm/cancel action
-     * @param {boolean} [confirmFlag] Which button is clicked
-     */
-    const handleTaskDiaologActions = function (confirmFlag) {
-      if (!confirmFlag) {
-        return false;
-      }
-
-      var id = element.$element.data('id');
-      var value = id.toString();
-
-      // Remove element form
-      H5PEditor.removeChildren(element.children);
-
-      // Remove element
-      element.$element.remove();
-      that.elements.splice(id, 1);
-      that.params.elements.splice(id, 1);
-
-      // Remove from options
-      that.elementOptions.splice(id, 1);
-
-      // Update drop zone params
-      that.params.dropZones.forEach(function (dropZone) {
-        // Update correct elements for drop zone
-        for (let i = 0; i < dropZone.correctElements.length; i++) {
-          if (dropZone.correctElements[i] === value) {
-            dropZone.correctElements.splice(i, 1);
-            i--;
-          }
-          else if (parseInt(dropZone.correctElements[i]) > id) {
-            dropZone.correctElements[i] = '' + (parseInt(dropZone.correctElements[i]) - 1);
-          }
-        }
-      });
-
-      that.updateInternalElementIDs(id);
-      that.dnb.blurAll();
-    };
-
     // confirm remove
-    that.showConfirmationDialog({
-      headerText: C.t('deleteTaskTitle'),
-      dialogText: C.t('confirmRemoval'),
-      cancelText: C.t('cancel'),
-      confirmText: C.t('confirm'),
-    }, handleTaskDiaologActions);
+    if (!confirm(C.t('confirmRemoval'))) {
+      return;
+    }
+
+    var id = element.$element.data('id');
+    var value = id.toString();
+
+    // Remove element form
+    H5PEditor.removeChildren(element.children);
+
+    // Remove element
+    element.$element.remove();
+    that.elements.splice(id, 1);
+    that.params.elements.splice(id, 1);
+
+    // Remove from options
+    that.elementOptions.splice(id, 1);
+
+    // Update drop zone params
+    that.params.dropZones.forEach(function (dropZone) {
+      // Update correct elements for drop zone
+      for (let i = 0; i < dropZone.correctElements.length; i++) {
+        if (dropZone.correctElements[i] === value) {
+          dropZone.correctElements.splice(i, 1);
+          i--;
+        }
+        else if (parseInt(dropZone.correctElements[i]) > id) {
+          dropZone.correctElements[i] = '' + (parseInt(dropZone.correctElements[i]) - 1);
+        }
+      }
+    });
+
+    that.updateInternalElementIDs(id);
+    that.dnb.blurAll();
   };
 
   /**
@@ -1067,22 +1036,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
 
       dropzoneDnBElement.contextMenu.on('contextMenuRemove', function () {
-        that.showConfirmationDialog({
-          headerText: C.t('deleteInteractionTitle'),
-          dialogText: C.t('confirmRemoval'),
-          cancelText: C.t('cancel'),
-          confirmText: C.t('confirm'),
-        }, removeDropzoneDiaologActions);
-      });
-
-      /**
-       * Callback confirm/cancel action
-       * @param {boolean} [confirmFlag] Which button is clicked
-       */
-      const removeDropzoneDiaologActions = function (confirmFlag) {
-        if (!confirmFlag) {
+        if (!confirm(C.t('confirmRemoval'))) {
           return;
         }
+
         // Remove element form
         H5PEditor.removeChildren(dropZone.children);
         var i;
@@ -1117,7 +1074,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         that.updateInternalDropZoneIDs(id);
         that.dnb.blurAll();
-      };
+      });
 
       dropzoneDnBElement.contextMenu.on('contextMenuBringToFront', function () {
         var id = dropZone.$dropZone.data('id');
@@ -1515,30 +1472,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     else {
       this.readies.push(ready);
     }
-  };
-
-  /**
-   * Add confirmation dialog to button.
-   * @param {object} dialogOptions Dialog options.
-   * @param {function} handleActions Handle both actions Confirmed and Canceled.
-   */
-  C.prototype.showConfirmationDialog = function (dialogOptions, handleActions) {
-    const confirmationDialog = new H5P.ConfirmationDialog(dialogOptions)
-    .appendTo(document.body);
-
-    confirmationDialog.on('confirmed', () => {
-      if (handleActions) {
-        handleActions(true);
-      }
-    });
-
-    confirmationDialog.on('canceled', () => {
-      if (handleActions) {
-        handleActions(false);
-      }
-    });
-
-    confirmationDialog.show();
   };
 
   /**
