@@ -131,14 +131,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         dialogText: C.t('confirmRemoval'),
         cancelText: C.t('cancel'),
         confirmText: C.t('confirm'),
-      }, handleFormDiaologActions);
+      }, handleFormDialogActions);
     });
 
     /**
      * Callback confirm/cancel action
      * @param {boolean} [confirmFlag] Which button is clicked
      */
-    const handleFormDiaologActions = function (confirmFlag) {
+    const handleFormDialogActions = function (confirmFlag) {
       if (!confirmFlag) {
         return false;
       }
@@ -706,7 +706,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
      * Callback confirm/cancel action
      * @param {boolean} [confirmFlag] Which button is clicked
      */
-    const handleTaskDiaologActions = function (confirmFlag) {
+    const handleTaskDialogActions = function (confirmFlag) {
       if (!confirmFlag) {
         return false;
       }
@@ -749,7 +749,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       dialogText: C.t('confirmRemoval'),
       cancelText: C.t('cancel'),
       confirmText: C.t('confirm'),
-    }, handleTaskDiaologActions);
+    }, handleTaskDialogActions);
   };  
 
   /**
@@ -1072,14 +1072,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           dialogText: C.t('confirmRemoval'),
           cancelText: C.t('cancel'),
           confirmText: C.t('confirm'),
-        }, removeDropzoneDiaologActions);
+        }, removeDropzoneDialogActions);
       });
 
       /**
        * Callback confirm/cancel action
        * @param {boolean} [confirmFlag] Which button is clicked
        */
-      const removeDropzoneDiaologActions = function (confirmFlag) {
+      const removeDropzoneDialogActions = function (confirmFlag) {
         if (!confirmFlag) {
           return;
         }
