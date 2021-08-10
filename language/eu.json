@@ -11,6 +11,10 @@
     "advancedtext": "Testua",
     "dropzone": "Jaregiteko zona",
     "selectAll": "Hautatu dena",
-    "deselectAll": "Desautatu dena"
+    "deselectAll": "Desautatu dena",
+    "deleteTaskTitle": "Deleting task",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }
