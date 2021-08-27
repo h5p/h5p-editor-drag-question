@@ -7,7 +7,7 @@ var H5PEditor = H5PEditor || {};
 
  * @param {jQuery} $
  */
-H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar) {
+H5PEditor.widgets.NDLADragQuestion = H5PEditor.NDLADragQuestion = (function ($, DragNBar) {
   /**
    * Must be changed if the semantics for the elements changes.
    * @πvate
