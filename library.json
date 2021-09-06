@@ -1,5 +1,5 @@
 {
-  "title": "Drag Question Editor",
+  "title": "NDLA Drag Question Editor",
   "majorVersion": 1,
   "minorVersion": 10,
   "patchVersion": 14,
@@ -9,7 +9,7 @@
     "majorVersion": 1,
     "minorVersion": 24
   },
-  "machineName": "H5PEditor.DragQuestion",
+  "machineName": "H5PEditor.NDLADragQuestion",
   "preloadedJs": [
     {
       "path": "H5PEditor.DragQuestion.js"
@@ -35,7 +35,7 @@
       "minorVersion": 5
     },
     {
-      "machineName": "H5P.DragNBar",
+      "machineName": "H5P.NDLADragNBar",
       "majorVersion": 1,
       "minorVersion": 6
     },
