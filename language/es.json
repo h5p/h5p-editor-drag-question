@@ -12,9 +12,9 @@
     "dropzone": "Zona de Caída",
     "selectAll": "Seleccionar todo",
     "deselectAll": "Des-seleccionar todo",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
+    "deleteTaskTitle": "Eliminando trabajo",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
     "ok": "Ok"
   }
 }
