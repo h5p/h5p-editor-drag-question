@@ -845,6 +845,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     var id = element.$element.data('id');
 
     this.doneCallback = function () {
+      // Remove as correct draggable for dropzone if dropzone no longer
+      // can be dropped in a dropzone.
+      const params = this.params.elements[id];
+      this.params.dropZones.forEach((dropzone) => {
+        dropzone.correctElements = dropzone.correctElements.filter((dropZoneId) => {
+          // Skip draggables that are not our id, and filter out draggables
+          // that can no longer be dropped in the dropzone
+          return dropZoneId !== id.toString() || params.dropZones.includes(dropZoneId);
+        });
+      });
+
       // Validate form
       var valid = true;
       for (var i = 0; i < element.children.length; i++) {
@@ -856,7 +867,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       if (!valid) {
         return false;
       }
-
 
       // Must be removed before dnb changes focus!
       if (H5PEditor.Html) {
