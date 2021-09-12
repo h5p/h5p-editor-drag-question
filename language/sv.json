@@ -12,9 +12,9 @@
     "dropzone": "Målområde",
     "selectAll": "Välj alla",
     "deselectAll": "Välj bort alla",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deleteTaskTitle": "Raderar uppgift",
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta",
+    "ok": "OK"
   }
 }
