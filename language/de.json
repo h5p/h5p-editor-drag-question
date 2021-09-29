@@ -12,9 +12,9 @@
     "dropzone": "Ablagezone",
     "selectAll": "Alles auswählen",
     "deselectAll": "Auswahl aufheben",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
+    "deleteTaskTitle": "Lösche Aufgabe",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
     "ok": "Ok"
   }
 }
