@@ -1,7 +1,7 @@
 {
   "libraryStrings": {
     "insertElement": "Gehitu :type",
-    "done": "Egina",
+    "done": "Eginda",
     "remove": "Kendu",
     "image": "Irudia",
     "text": "Testua",
@@ -12,9 +12,9 @@
     "dropzone": "Jaregiteko zona",
     "selectAll": "Hautatu dena",
     "deselectAll": "Desautatu dena",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deleteTaskTitle": "Ataza ezabatzen",
+    "cancel": "Utzi",
+    "confirm": "Baieztatu",
+    "ok": "Ados"
   }
 }
