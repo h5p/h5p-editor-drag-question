@@ -750,7 +750,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       cancelText: C.t('cancel'),
       confirmText: C.t('confirm'),
     }, handleTaskDialogActions);
-  };  
+  };
 
   /**
    * Brings an element to the front
@@ -1549,7 +1549,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
     });
 
-    confirmationDialog.show();
+    confirmationDialog.show(this.$item.offset().top);
   };
 
   /**
