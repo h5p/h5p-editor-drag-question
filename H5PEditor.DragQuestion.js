@@ -849,11 +849,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       // can be dropped in a dropzone.
       const params = this.params.elements[id];
       this.params.dropZones.forEach((dropzone) => {
-        dropzone.correctElements = dropzone.correctElements.filter((dropZoneId) => {
+        let correctElements = dropzone.correctElements;
+        for (let i = correctElements.length - 1; i >= 0; i--) {
           // Skip draggables that are not our id, and filter out draggables
           // that can no longer be dropped in the dropzone
-          return dropZoneId !== id.toString() || params.dropZones.includes(dropZoneId);
-        });
+          if (correctElements[i] === id.toString() && !params.dropZones.includes(correctElements[i])) {
+            correctElements.splice(i, 1);
+          }
+        }
       });
 
       // Validate form
