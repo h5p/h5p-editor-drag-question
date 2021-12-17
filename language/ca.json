@@ -13,8 +13,8 @@
     "selectAll": "Selecciona-ho tot",
     "deselectAll": "Desmarca-ho tot",
     "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "cancel": "Cancel·la",
+    "confirm": "Confirma",
+    "ok": "D'acord"
   }
 }
