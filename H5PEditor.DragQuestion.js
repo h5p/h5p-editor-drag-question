@@ -843,21 +843,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.editElement = function (element) {
     var that = this;
     var id = element.$element.data('id');
-
+    
     this.doneCallback = function () {
-      // Remove as correct draggable for dropzone if dropzone no longer
-      // can be dropped in a dropzone.
-      const params = this.params.elements[id];
-      this.params.dropZones.forEach((dropzone) => {
-        let correctElements = dropzone.correctElements;
-        for (let i = correctElements.length - 1; i >= 0; i--) {
-          // Skip draggables that are not our id, and filter out draggables
-          // that can no longer be dropped in the dropzone
-          if (correctElements[i] === id.toString() && !params.dropZones.includes(correctElements[i])) {
-            correctElements.splice(i, 1);
-          }
+      // Remove as correct draggable for dropzone if dropzone no longer can be dropped in a dropzone.
+      const elementParams = that.params.elements[id];
+
+      // Go through all drop zones
+      for (let dzIndex = 0; dzIndex < that.params.dropZones.length; dzIndex++) {
+        if (elementParams.dropZones.indexOf(dzIndex.toString()) !== -1) {
+          continue; // E can still be dropped in this DZ, skip.
         }
-      });
+
+        const correctElements = that.params.dropZones[dzIndex].correctElements;
+        const isCorrect = correctElements.indexOf(id.toString());
+        if (isCorrect) {
+          // Element can no longer be dropped here so must be removed from correct elements for this DZ
+          correctElements.splice(isCorrect, 1);
+        }
+      }
 
       // Validate form
       var valid = true;
