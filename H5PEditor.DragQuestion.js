@@ -843,7 +843,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.editElement = function (element) {
     var that = this;
     var id = element.$element.data('id');
-    
+
     this.doneCallback = function () {
       // Remove as correct draggable for dropzone if dropzone no longer can be dropped in a dropzone.
       const elementParams = that.params.elements[id];
@@ -856,7 +856,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
         const correctElements = that.params.dropZones[dzIndex].correctElements;
         const isCorrect = correctElements.indexOf(id.toString());
-        if (isCorrect) {
+        if (isCorrect !== -1) {
           // Element can no longer be dropped here so must be removed from correct elements for this DZ
           correctElements.splice(isCorrect, 1);
         }
