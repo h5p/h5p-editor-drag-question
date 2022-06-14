@@ -1,7 +1,7 @@
 {
   "libraryStrings": {
     "insertElement": "Adicionar :type",
-    "done": "Concluído",
+    "done": "Done",
     "remove": "Apagar",
     "image": "Imagem",
     "text": "Texto",
@@ -13,8 +13,8 @@
     "selectAll": "Selecionar tudo",
     "deselectAll": "Desmarcar tudo",
     "deleteTaskTitle": "A apagar a atividade",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "ok": "OK"
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok"
   }
 }
