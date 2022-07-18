@@ -1,20 +1,20 @@
 {
   "libraryStrings": {
     "insertElement": "Adicionar :type",
-    "done": "Concluir",
+    "done": "Concluído",
     "remove": "Remover",
     "image": "Imagem",
     "text": "Texto",
-    "noTaskSize": "Por favor, especifique o tamanho da tarefa primeiro.",
+    "noTaskSize": "Por favor, especifique primeiro o tamanho da tarefa.",
     "confirmRemoval": "Você tem certeza que deseja remover este elemento?",
     "backgroundOpacityOverridden": "A opacidade do plano de fundo foi sobreposta",
     "advancedtext": "Texto",
-    "dropzone": "Zona de largada",
+    "dropzone": "Zona de Soltura",
     "selectAll": "Selecionar todos",
     "deselectAll": "Desmarcar todos",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
+    "deleteTaskTitle": "Excluir tarefa",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
     "ok": "Ok"
   }
 }
