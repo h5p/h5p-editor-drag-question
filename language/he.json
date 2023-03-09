@@ -2,7 +2,7 @@
   "libraryStrings": {
     "insertElement": "הוספת :type",
     "done": "הסתיים",
-    "remove": "להסיר",
+    "remove": "הסרה",
     "image": "תמונה",
     "text": "מלל",
     "noTaskSize": "אנא ציינו את גודל המשימה תחילה.",
@@ -12,9 +12,9 @@
     "dropzone": "אזור יעד",
     "selectAll": "בחירת הכל",
     "deselectAll": "איפוס בחירה",
-    "deleteTaskTitle": "Deleting task",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "ok": "Ok"
+    "deleteTaskTitle": "מחיקת משימה",
+    "cancel": "ביטול",
+    "confirm": "אישור",
+    "ok": "תקין"
   }
 }
