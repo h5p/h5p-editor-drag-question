@@ -610,6 +610,16 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   C.prototype.insertElement = function (index) {
     var that = this;
     var elementParams = this.params.elements[index];
+
+    // Ensure that newly created elements have a text field with centered text
+    if (elementParams.type?.library.startsWith('H5P.AdvancedText ')) {
+      elementParams.type.params === elementParams.type.params ?? {};
+      if (typeof elementParams.type.params.text !== 'string') {
+        elementParams.type.params.text =
+          '<p style="text-align: center;"></p>';
+      }
+    }
+
     var element = this.generateForm(this.elementFields, elementParams);
 
     var library = this.children[0];
