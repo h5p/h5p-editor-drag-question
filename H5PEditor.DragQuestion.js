@@ -14,7 +14,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @type {string}
    */
   var clipboardKey = 'H5PEditor.DragQuestion';
-
+  console.log('DragQuestion');
   /**
    * Initialize interactive video editor.
    *
@@ -29,7 +29,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.fakeDropzoneLibrary = 'H5P.DragQuestionDropzone 0.1';
 
     this.parent = parent;
-
+    console.log('params: ', params, field, parent);
     // Set params
     this.params = $.extend({
       elements: [],
@@ -562,7 +562,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       x: 0,
       y: 0,
       width: 5,
-      height: id === 'text' ? 1.25 : 5,
+      height: id === 'advancedtext' ? 2.25 : 5,
       dropZones: []
     };
   };
@@ -665,9 +665,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         }, 1);
       });
 
-    element.$innerElement = $('<div>', {
-      'class': 'h5p-dq-element-inner'
-    }).appendTo(element.$element);
+    const noop = () => {};
+    element.$innerElement = $(H5P.Components.Draggable({
+      label: 'test',
+      handleRevert: noop,
+      handleDragStartEvent: noop,
+      handleDragEvent: noop,
+      handleDragStopEvent: noop,
+    })).appendTo(element.$element);
 
     setTimeout(function () {
       var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
@@ -983,17 +988,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Retain size after toggling class
     var toggleDraggable = function (addClass, $element) {
-      var toggleClass = addClass !== $element.hasClass('h5p-draggable');
-      if (!toggleClass) {
-        return;
-      }
+      // var toggleClass = addClass !== $element.hasClass('h5p-draggable');
+      // if (!toggleClass) {
+      //   return;
+      // }
 
-      if (addClass) {
-        $element.addClass('h5p-draggable');
-      }
-      else {
-        $element.removeClass('h5p-draggable');
-      }
+      // if (addClass) {
+      //   $element.addClass('h5p-draggable');
+      // }
+      // else {
+      //   $element.removeClass('h5p-draggable');
+      // }
     };
 
     if (params.dropZones !== undefined && params.dropZones.length) {
