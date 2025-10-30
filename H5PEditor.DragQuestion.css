@@ -397,3 +397,35 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 .h5p-dragquestion-editor .h5p-editor-dialog.h5p-metadata-wrapper {
   left: 3%;
 }
+
+.h5p-dragquestion-editor .h5p-draggable {
+  --padding: 0.3em;
+  line-height: 1.25em;
+  padding-block: var(--padding);
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.h5p-dragquestion-editor .h5p-draggable:not(.h5p-draggable--has-handle) {
+  padding-inline: var(--padding);
+}
+
+.h5p-dragquestion-editor .h5p-draggable .h5p-advanced-text {
+  margin-inline: auto;
+}
+
+.h5p-dragquestion-editor .h5p-draggable .h5p-image {
+  height: 100%;
+  width: 100%;
+}
+
+.h5p-dragquestion-editor .h5p-draggable p {
+  display: inline-block;
+  align-content: center;
+  width: fit-content;
+  margin: auto;
+  color: var(--h5p-theme-text-primary);
+  padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-xs);
+  line-height: 1;
+  font-size: var(--h5p-theme-font-size-m);
+}

@@ -14,7 +14,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @type {string}
    */
   var clipboardKey = 'H5PEditor.DragQuestion';
-  console.log('DragQuestion');
+
   /**
    * Initialize interactive video editor.
    *
@@ -29,7 +29,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.fakeDropzoneLibrary = 'H5P.DragQuestionDropzone 0.1';
 
     this.parent = parent;
-    console.log('params: ', params, field, parent);
     // Set params
     this.params = $.extend({
       elements: [],
@@ -666,13 +665,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       });
 
     const noop = () => {};
-    element.$innerElement = $(H5P.Components.Draggable({
-      label: 'test',
+    element.draggable = H5P.Components.Draggable({
+      label: '',
       handleRevert: noop,
       handleDragStartEvent: noop,
       handleDragEvent: noop,
       handleDragStopEvent: noop,
-    })).appendTo(element.$element);
+    });
+    element.$innerElement = $(element.draggable).appendTo(element.$element);
 
     setTimeout(function () {
       var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
@@ -955,6 +955,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     var type = (params.type.library.split(' ')[0] === 'H5P.AdvancedText' ? 'text' : 'image');
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
+
+    const instanceHolderDOM = document.createElement('div');
+
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
       element.instance = H5P.newRunnable({
@@ -962,16 +965,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         params: {
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
-      }, H5PEditor.contentId, element.$innerElement);
-
+      }, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
+      
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
       element.children[0].children[0].ckeditor.setData(params.type.params.text);
     }
     else {
       // Create new instance
-      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$innerElement);
+      H5P.newRunnable(params.type, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
     }
+
+    element.draggable.setContent({dom: instanceHolderDOM});
 
     if (type === 'text') {
       element.$element.addClass('h5p-dq-text');
@@ -988,25 +993,24 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Retain size after toggling class
     var toggleDraggable = function (addClass, $element) {
-      // var toggleClass = addClass !== $element.hasClass('h5p-draggable');
-      // if (!toggleClass) {
-      //   return;
-      // }
+      var toggleClass = addClass !== $element.hasClass('h5p-draggable');
+      if (!toggleClass) {
+        return;
+      }
 
-      // if (addClass) {
-      //   $element.addClass('h5p-draggable');
-      // }
-      // else {
-      //   $element.removeClass('h5p-draggable');
-      // }
+      if (addClass) {
+        $element.addClass('h5p-draggable');
+      }
+      else {
+        $element.removeClass('h5p-draggable');
+      }
     };
 
     if (params.dropZones !== undefined && params.dropZones.length) {
-
-      toggleDraggable(true, element.$element);
+      toggleDraggable(true, element.$innerElement);
     }
     else {
-      toggleDraggable(false, element.$element);
+      toggleDraggable(false, element.$innerElement);
 
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
@@ -1127,7 +1131,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
               // Remove from element drop zones
               dropZones.splice(j, 1);
               if (!dropZones.length) {
-                that.elements[i].$element.removeClass('h5p-draggable');
+                that.elements[i].$innerElement.removeClass('h5p-draggable');
               }
             }
             else if (dropZones[j] > id) {
