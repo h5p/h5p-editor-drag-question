@@ -151,25 +151,7 @@
 .h5p-dragnbar-element.focused > .h5p-dragnresize-handle {
   z-index: 5;
 }
-/* .h5p-dq-element.h5p-draggable {
-  border-radius: 0.5em;
-  border: 0.1em solid #c6c6c6;
-  cursor: pointer;
-  position: absolute;
-  text-align: center;
-  background: #ddd;
-  box-shadow: 0 0 0.3em rgba(0,0,0,0.2);
-  z-index: 3;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  padding: 0.3em 0.3em;
-  line-height: 1.25em;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-} */
 .h5p-dq-element.h5p-draggable .h5p-dq-element-inner {
   padding: 0;
   overflow: hidden;
@@ -185,11 +167,6 @@
   width: 100%;
 }
 
-/* .h5p-dq-element.h5p-draggable:hover {
-  border: 0.1em solid rgb(212,190,216);
-  color: #663366;
-  background: #edd6e9;
-} */
 
 .h5p-dq-element-inner.h5p-image {
   width: 100%;

@@ -40,11 +40,6 @@
       "minorVersion": 5
     },
     {
-      "machineName": "H5P.DragQuestion",
-      "majorVersion": 1,
-      "minorVersion": 15
-    },
-    {
       "machineName": "H5P.AdvancedText",
       "majorVersion": 1,
       "minorVersion": 1
