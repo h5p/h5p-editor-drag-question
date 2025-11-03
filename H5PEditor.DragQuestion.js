@@ -1,4 +1,4 @@
-/*global H5P*/
+// eslint-disable-next-line no-redeclare
 var H5PEditor = H5PEditor || {};
 
 /**
@@ -1460,7 +1460,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     for (var i = 0; i < domElements.length; i++) {
-      C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
+      C.setElementOpacity(domElements[i]['$' + type], this.getElementOpacitySetting(elements[i]));
     }
   };
 
@@ -1601,7 +1601,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.showConfirmationDialog = function (dialogOptions, handleActions) {
     const confirmationDialog = new H5P.ConfirmationDialog(dialogOptions)
-    .appendTo(document.body);
+      .appendTo(document.body);
 
     confirmationDialog.on('confirmed', () => {
       if (handleActions) {
