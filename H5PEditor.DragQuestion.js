@@ -1,4 +1,4 @@
-/*global H5P*/
+// eslint-disable-next-line no-redeclare
 var H5PEditor = H5PEditor || {};
 
 /**
@@ -29,7 +29,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     this.fakeDropzoneLibrary = 'H5P.DragQuestionDropzone 0.1';
 
     this.parent = parent;
-
     // Set params
     this.params = $.extend({
       elements: [],
@@ -37,23 +36,30 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }, params);
     setValue(field, this.params);
 
+    this.showDragHandles = parent?.parent?.params?.behaviour?.dragHandleVisibility ?? false;
+
     // Get updates for fields
-    H5PEditor.followField(parent, 'settings/background', function (params) {
-      that.setBackground(params);
+    H5PEditor.followField(parent, 'settings/background', (params) => {
+      this.setBackground(params);
     });
-    H5PEditor.followField(parent, 'settings/size', function (params) {
-      that.setSize(params);
+    H5PEditor.followField(parent, 'settings/size', (params) => {
+      this.setSize(params);
     });
+    H5PEditor.followField(parent.parent, 'behaviour/dragHandleVisibility', () => {
+      this.showDragHandles = parent?.parent?.params?.behaviour.dragHandleVisibility ?? false;
+      this.setDragHandleVisibility(this.showDragHandles);
+    }, 'value');
 
     // Need the override background opacity
-    this.backgroundOpacity = parent.parent.params.backgroundOpacity;
+    this.backgroundOpacity = parent?.parent?.params?.behaviour?.backgroundOpacity;
     this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
 
     // Update opacity for all dropzones/draggables when global background opacity is changed
-    parent.ready(function () {
+    parent.ready(() => {
       H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val().trim();
         that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
+        that.updateDraggableOpacity();
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
       });
     });
@@ -258,6 +264,17 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.setSize = function (params) {
     this.size = params;
+  };
+
+  /**
+   * Set handles for draggables.
+   * @param {boolean} value if the drag handle should be visible or not
+   * @returns {undefined}
+   */
+  C.prototype.setDragHandleVisibility = function (value) {
+    this.elements?.forEach((element) => {
+      element.draggable.setDragHandleVisibility(value);
+    });
   };
 
   /**
@@ -562,7 +579,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       x: 0,
       y: 0,
       width: 5,
-      height: id === 'text' ? 1.25 : 5,
+      height: id === 'advancedtext' ? 2.25 : 5,
       dropZones: []
     };
   };
@@ -665,9 +682,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         }, 1);
       });
 
-    element.$innerElement = $('<div>', {
-      'class': 'h5p-dq-element-inner'
-    }).appendTo(element.$element);
+    const noop = () => {};
+    element.draggable = H5P.Components.Draggable({
+      label: '',
+      hasHandle: this.showDragHandles,
+      handleRevert: noop,
+      handleDragStartEvent: noop,
+      handleDragEvent: noop,
+      handleDragStopEvent: noop,
+    });
+    element.$innerElement = $(element.draggable).appendTo(element.$element);
+
+    element.draggable.setContentOpacity(Number(this.backgroundOpacity));
 
     setTimeout(function () {
       var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
@@ -950,6 +976,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     var type = (params.type.library.split(' ')[0] === 'H5P.AdvancedText' ? 'text' : 'image');
     var hasCk = (element.children[0].children !== undefined && element.children[0].children[0].ckeditor !== undefined);
+
+    const instanceHolderDOM = document.createElement('div');
+
     if (type === 'text' && hasCk) {
       // Create new text instance. Replace asterisk with spans
       element.instance = H5P.newRunnable({
@@ -957,7 +986,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
         params: {
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
-      }, H5PEditor.contentId, element.$innerElement);
+      }, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
 
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
@@ -965,8 +994,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
     else {
       // Create new instance
-      element.instance = H5P.newRunnable(params.type, H5PEditor.contentId, element.$innerElement);
+      H5P.newRunnable(params.type, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
     }
+
+    element.draggable.setContent({dom: instanceHolderDOM});
 
     if (type === 'text') {
       element.$element.addClass('h5p-dq-text');
@@ -997,11 +1028,10 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     };
 
     if (params.dropZones !== undefined && params.dropZones.length) {
-
-      toggleDraggable(true, element.$element);
+      toggleDraggable(true, element.$innerElement);
     }
     else {
-      toggleDraggable(false, element.$element);
+      toggleDraggable(false, element.$innerElement);
 
       if (type === 'text' && hasCk) {
         // When dialog closes, replace spans with drop zones
@@ -1060,8 +1090,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Fake libraryName for copy&paste
     dropZoneParams.type = dropZoneParams.type || {library: that.fakeDropzoneLibrary};
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+    const noop = () => {};
+    const dropzone = H5P.Components.Dropzone({
+      variant: 'area',
+      classes: 'h5p-inner',
+      containerClasses: 'h5p-dq-dz',
+      handleAcceptEvent: noop,
+      handleDropEvent: noop,
+      handleDropOutEvent: noop,
+      handleDropOverEvent: noop,
+    });
+
+    dropZone.$dropZone = $(dropzone)
       .appendTo(this.$editor)
+      .css({
+        width: `${dropZoneParams.width}em`,
+        height: `${dropZoneParams.height}em`,
+        left: `${dropZoneParams.x}%`,
+        top: `${dropZoneParams.y}%`,
+      })
       .data('id', index)
       .dblclick(function () {
         // Edit
@@ -1122,7 +1169,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
               // Remove from element drop zones
               dropZones.splice(j, 1);
               if (!dropZones.length) {
-                that.elements[i].$element.removeClass('h5p-draggable');
+                that.elements[i].$innerElement.removeClass('h5p-draggable');
               }
             }
             else if (dropZones[j] > id) {
@@ -1338,7 +1385,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', params.backgroundOpacity);
+    C.setOpacity(dropZone.$dropZone.children('.h5p-inner'), 'background', params.backgroundOpacity);
+    C.setOpacity(dropZone.$dropZone.children('.h5p-dq-dz-label'), 'background', params.backgroundOpacity);
   };
 
   /**
@@ -1376,6 +1424,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   };
 
   /**
+   * Update the opacity of the draggables (H5P.Components.Draggable).
+   * @returns {undefined}
+   */
+  C.prototype.updateDraggableOpacity = function () {
+    if (this.backgroundOpacity && this.elements) {
+      this.elements.forEach(element => {
+        element.draggable.setContentOpacity(Number(this.backgroundOpacity));
+      });
+    }
+  };
+
+  /**
    * Update transparency for background.
    *
    * @param {jQuery} $element
@@ -1400,7 +1460,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     for (var i = 0; i < domElements.length; i++) {
-      C.setElementOpacity(domElements[i]['$'+type], this.getElementOpacitySetting(elements[i]));
+      C.setElementOpacity(domElements[i]['$' + type], this.getElementOpacitySetting(elements[i]));
     }
   };
 
@@ -1541,7 +1601,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.showConfirmationDialog = function (dialogOptions, handleActions) {
     const confirmationDialog = new H5P.ConfirmationDialog(dialogOptions)
-    .appendTo(document.body);
+      .appendTo(document.body);
 
     confirmationDialog.on('confirmed', () => {
       if (handleActions) {
