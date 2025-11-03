@@ -982,7 +982,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
           text: params.type.params.text.replace(/\*([^*]+)\*/g, '<span class="h5p-dragquestion-placeholder">$1</span>')
         }
       }, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
-      
+
       // Remove asterisk from params and input field
       params.type.params.text = params.type.params.text.replace(/\*([^*]+)\*/g, '$1');
       element.children[0].children[0].ckeditor.setData(params.type.params.text);
