@@ -45,12 +45,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     H5PEditor.followField(parent, 'settings/size', (params) => {
       this.setSize(params);
     });
-    H5PEditor.followField(parent.parent, 'behaviour/dragHandleVisibility', (value) => {
-      this.setDragHandleVisibility(value);
+    H5PEditor.followField(parent.parent, 'behaviour/dragHandleVisibility', () => {
+      this.showDragHandles = parent?.parent?.params?.behaviour.dragHandleVisibility ?? false;
+      this.setDragHandleVisibility(this.showDragHandles);
     }, 'value');
 
     // Need the override background opacity
-    this.backgroundOpacity = parent.parent.params.backgroundOpacity;
+    this.backgroundOpacity = parent.parent.params.behaviour.backgroundOpacity;
     this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
 
     // Update opacity for all dropzones/draggables when global background opacity is changed
@@ -58,6 +59,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input').on('change', function () {
         that.backgroundOpacity = $(this).val().trim();
         that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
+        that.updateDraggableOpacity();
         that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
       });
     });
@@ -685,6 +687,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       handleDragStopEvent: noop,
     });
     element.$innerElement = $(element.draggable).appendTo(element.$element);
+
+    element.draggable.setContentOpacity(Number(this.backgroundOpacity));
 
     setTimeout(function () {
       var type = (elementParams.type ? elementParams.type.library.split(' ')[0] : null);
@@ -1413,6 +1417,14 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
     this.dnb.dnr.toggleModifiers(true);
   };
+
+  C.prototype.updateDraggableOpacity = function () {
+    if (this.backgroundOpacity && this.elements) {
+      this.elements.forEach(element => {
+        element.draggable.setContentOpacity(Number(this.backgroundOpacity))
+      });
+    }
+  }
 
   /**
    * Update transparency for background.
