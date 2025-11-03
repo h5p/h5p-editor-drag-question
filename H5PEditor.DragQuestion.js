@@ -36,13 +36,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }, params);
     setValue(field, this.params);
 
+    this.showDragHandles = parent?.parent?.params?.behaviour.dragHandleVisibility ?? false;
+
     // Get updates for fields
-    H5PEditor.followField(parent, 'settings/background', function (params) {
-      that.setBackground(params);
+    H5PEditor.followField(parent, 'settings/background', (params) => {
+      this.setBackground(params);
     });
-    H5PEditor.followField(parent, 'settings/size', function (params) {
-      that.setSize(params);
+    H5PEditor.followField(parent, 'settings/size', (params) => {
+      this.setSize(params);
     });
+    H5PEditor.followField(parent.parent, 'behaviour/dragHandleVisibility', (value) => {
+      this.setDragHandleVisibility(value);
+    }, 'value');
 
     // Need the override background opacity
     this.backgroundOpacity = parent.parent.params.backgroundOpacity;
@@ -257,6 +262,12 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    */
   C.prototype.setSize = function (params) {
     this.size = params;
+  };
+
+  C.prototype.setDragHandleVisibility = function (value) {
+    this.elements?.forEach((element) => {
+      element.draggable.setDragHandleVisibility(value);
+    });
   };
 
   /**
@@ -667,6 +678,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     const noop = () => {};
     element.draggable = H5P.Components.Draggable({
       label: '',
+      hasHandle: this.showDragHandles,
       handleRevert: noop,
       handleDragStartEvent: noop,
       handleDragEvent: noop,
