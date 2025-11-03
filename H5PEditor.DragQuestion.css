@@ -199,7 +199,6 @@
   border-radius: 0.5em;
   z-index: 2;
   box-sizing: border-box;
-  -moz-box-sizing: border-box;
 }
 .h5p-dq-dz:before {
   content: " ";
