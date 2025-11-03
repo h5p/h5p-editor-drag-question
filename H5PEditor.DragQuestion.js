@@ -1069,8 +1069,25 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     // Fake libraryName for copy&paste
     dropZoneParams.type = dropZoneParams.type || {library: that.fakeDropzoneLibrary};
 
-    dropZone.$dropZone = $('<div class="h5p-dq-dz" style="width:' + dropZoneParams.width + 'em;height:' + dropZoneParams.height + 'em;top:' + dropZoneParams.y + '%;left:' + dropZoneParams.x + '%"></div>')
+    const noop = () => {};
+    const dropzone = H5P.Components.Dropzone({
+      variant: 'area',
+      classes: 'h5p-inner',
+      containerClasses: 'h5p-dq-dz',
+      handleAcceptEvent: noop,
+      handleDropEvent: noop,
+      handleDropOutEvent: noop,
+      handleDropOverEvent: noop,
+    });
+
+    dropZone.$dropZone = $(dropzone)
       .appendTo(this.$editor)
+      .css({
+        width: `${dropZoneParams.width}em`,
+        height: `${dropZoneParams.height}em`,
+        left: `${dropZoneParams.x}%`,
+        top: `${dropZoneParams.y}%`,
+      })
       .data('id', index)
       .dblclick(function () {
         // Edit
@@ -1347,7 +1364,8 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       label: params.label
     };
 
-    C.setOpacity(dropZone.$dropZone.add(dropZone.$dropZone.children('.h5p-dq-dz-label')), 'background', params.backgroundOpacity);
+    C.setOpacity(dropZone.$dropZone.children('.h5p-inner'), 'background', params.backgroundOpacity);
+    C.setOpacity(dropZone.$dropZone.children('.h5p-dq-dz-label'), 'background', params.backgroundOpacity);
   };
 
   /**

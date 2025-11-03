@@ -200,13 +200,13 @@
   z-index: 2;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  background: rgb(245, 245, 245);
 }
 .h5p-dq-dz:before {
   content: " ";
   display: block;
   position: absolute;
-  border: 2px dashed rgba(0, 0, 0, 0.7);
+  border: 2px dashed var(--h5p-theme-contrast-cta-white);
+  border-radius: var(--h5p-theme-border-radius-medium);
   width: 100%;
   height: 100%;
   top: -2px;
@@ -281,7 +281,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   color: #e40000;
 }
 .h5p-dq-dz-label {
-  background: none repeat scroll 0 0 #ddd;
+  background: none repeat scroll 0 0 var(--h5p-theme-alternative-dark);
   margin-bottom: 0.1em;
   line-height: 1.25em;
   padding-left: 0.5em;
