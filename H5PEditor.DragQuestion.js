@@ -56,7 +56,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
       dragHandleCheckbox.on('change', () => {
         this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
-      });;
+      });
 
       // Initialize values
       this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
