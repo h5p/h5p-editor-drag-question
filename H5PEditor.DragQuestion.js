@@ -36,8 +36,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }, params);
     setValue(field, this.params);
 
-    this.showDragHandles = parent?.parent?.params?.behaviour?.dragHandleVisibility ?? false;
-
     // Get updates for fields
     H5PEditor.followField(parent, 'settings/background', (params) => {
       this.setBackground(params);
@@ -45,10 +43,6 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     H5PEditor.followField(parent, 'settings/size', (params) => {
       this.setSize(params);
     });
-
-    // Need the override background opacity
-    this.backgroundOpacity = parent?.parent?.params?.behaviour?.backgroundOpacity;
-    this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
 
     // Update opacity and handles for all dropzones/draggables when global background opacity and handles are changed
     parent.ready(() => {
