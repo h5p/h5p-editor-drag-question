@@ -45,23 +45,28 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     H5PEditor.followField(parent, 'settings/size', (params) => {
       this.setSize(params);
     });
-    H5PEditor.followField(parent.parent, 'behaviour/dragHandleVisibility', () => {
-      this.showDragHandles = parent?.parent?.params?.behaviour.dragHandleVisibility ?? false;
-      this.setDragHandleVisibility(this.showDragHandles);
-    }, 'value');
 
     // Need the override background opacity
     this.backgroundOpacity = parent?.parent?.params?.behaviour?.backgroundOpacity;
     this.backgroundOpacity = (this.backgroundOpacity === undefined || this.backgroundOpacity.trim() === '') ? undefined : this.backgroundOpacity;
 
-    // Update opacity for all dropzones/draggables when global background opacity is changed
+    // Update opacity and handles for all dropzones/draggables when global background opacity and handles are changed
     parent.ready(() => {
-      H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input').on('change', function () {
-        that.backgroundOpacity = $(this).val().trim();
-        that.backgroundOpacity = (that.backgroundOpacity === '') ? undefined : that.backgroundOpacity;
-        that.updateDraggableOpacity();
-        that.updateAllElementsOpacity(that.elements, that.params.elements, 'element');
+      const backgroundOpacityInput = H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input');
+      const dragHandleCheckbox = H5PEditor.findField('behaviour/dragHandleVisibility', parent.parent).$item.find('input');
+
+      // Listen for changes
+      backgroundOpacityInput.on('change', () => {
+        this.setBackgroundOpacity(backgroundOpacityInput.val().trim());
       });
+
+      dragHandleCheckbox.on('change', () => {
+        this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
+      });;
+
+      // Initialize values
+      this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
+      this.setBackgroundOpacity(backgroundOpacityInput.val().trim());
     });
 
     // Get options from semantics, clone since we'll be changing values.
@@ -239,6 +244,18 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
   };
 
   /**
+   * Set the global background opacity and update all draggables/dropzones.
+   * @param {string} opacity
+   * @returns {undefined}
+   */
+  C.prototype.setBackgroundOpacity = function (opacity) {
+    this.backgroundOpacity = opacity;
+    this.backgroundOpacity = (this.backgroundOpacity === '') ? undefined : this.backgroundOpacity;
+    this.updateDraggableOpacity();
+    this.updateAllElementsOpacity(this.elements, this.params.elements, 'element');
+  };
+
+  /**
    * Set current background.
    *
    * @param {Object} params
@@ -272,6 +289,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
    * @returns {undefined}
    */
   C.prototype.setDragHandleVisibility = function (value) {
+    this.showDragHandles = value;
     this.elements?.forEach((element) => {
       element.draggable.setDragHandleVisibility(value);
     });
