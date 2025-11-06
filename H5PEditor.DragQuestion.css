@@ -138,11 +138,20 @@
 }
 
 .h5p-dq-element {
+  --padding: 0.3em;
   position: absolute;
   line-height: 1.25em;
   z-index: 1;
   background: #fff;
   cursor: pointer;
+  padding: var(--padding);
+  border: solid 2px transparent;
+  display: flex;
+  align-items: center;
+  &:not(:has(.h5p-draggable)):has(.h5p-image) {
+    padding: 0;
+    border: 0;
+  }
 }
 
 .h5p-dq-element {
@@ -378,8 +387,8 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   --padding: 0.3em;
   line-height: 1.25em;
   padding-block: var(--padding);
+  margin: calc(-1 * var(--padding));
   position: absolute;
-  box-sizing: border-box;
 }
 
 .h5p-dragquestion-editor .h5p-draggable:not(.h5p-draggable--has-handle) {
@@ -401,7 +410,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   width: fit-content;
   margin: auto;
   color: var(--h5p-theme-text-primary);
-  padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-xs);
+  padding: 0;
   line-height: 1;
   font-size: var(--h5p-theme-font-size-m);
 }
