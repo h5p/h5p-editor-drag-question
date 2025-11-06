@@ -1075,7 +1075,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       }
     }
 
-    C.setElementOpacity(element.$element, this.getElementOpacitySetting(params));
+    const opacity = this.getElementOpacitySetting(params);
+    C.setElementOpacity(element.$element, opacity);
+    element.draggable.setContentOpacity(Number(opacity));
   };
 
   /**
