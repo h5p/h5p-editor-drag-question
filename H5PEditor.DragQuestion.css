@@ -1,3 +1,7 @@
+.h5peditor-dragquestion {
+  --h5p-theme-font-size-m: 1em;
+}
+
 .h5peditor-dragquestion-wrapper {
   position: relative;
 }
