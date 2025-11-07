@@ -431,6 +431,5 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .h5p-draggable.h5p-draggable--has-handle:has(.h5p-image):not(.h5p-draggable-correct):not(.h5p-draggable-wrong) {
-  padding-left: var(--padding);
-  padding-right: var(--padding);
+  padding-inline: var(--padding);
 }
