@@ -1,3 +1,7 @@
+.h5peditor-dragquestion {
+  --h5p-theme-font-size-m: 1em;
+}
+
 .h5peditor-dragquestion-wrapper {
   position: relative;
 }
@@ -138,11 +142,18 @@
 }
 
 .h5p-dq-element {
+  --padding: 0.3em;
   position: absolute;
   line-height: 1.25em;
   z-index: 1;
   background: #fff;
   cursor: pointer;
+  padding: var(--padding);
+  border: solid 2px transparent;
+  &:not(:has(.h5p-draggable)):has(.h5p-image) {
+    padding: 0;
+    border: 0;
+  }
 }
 
 .h5p-dq-element {
@@ -378,8 +389,8 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   --padding: 0.3em;
   line-height: 1.25em;
   padding-block: var(--padding);
+  margin: calc(-1 * var(--padding));
   position: absolute;
-  box-sizing: border-box;
 }
 
 .h5p-dragquestion-editor .h5p-draggable:not(.h5p-draggable--has-handle) {
@@ -401,7 +412,24 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   width: fit-content;
   margin: auto;
   color: var(--h5p-theme-text-primary);
-  padding: var(--h5p-theme-spacing-xxs) var(--h5p-theme-spacing-xs);
+  padding: 0;
   line-height: 1;
   font-size: var(--h5p-theme-font-size-m);
+}
+
+.h5p-dragquestion-editor:not(:has(.h5p-question-evaluation-container.evaluation-mode)) .h5p-draggable:has(.h5p-image):hover.h5p-draggable--has-handle,
+.h5p-dragquestion-editor:not(:has(.h5p-question-evaluation-container.evaluation-mode)) .h5p-draggable:has(.h5p-image):focus.h5p-draggable--has-handle {
+  padding-left: calc(var(--border-width) + var(--handle-width) + var(--padding));
+  transform: translateX(calc(-1 * var(--border-width) - var(--handle-width)));
+}
+
+.h5p-dragquestion .h5p-draggable:has(.h5p-image).h5p-draggable--has-handle {
+  padding-inline: var(--padding);
+}
+.h5p-dragquestion-editor .h5p-draggable:has(.h5p-image):not(:hover):not(:focus).h5p-draggable--has-handle::before {
+  display: none;
+}
+
+.h5p-dragquestion-editor .h5p-draggable.h5p-draggable--has-handle:has(.h5p-image):not(.h5p-draggable-correct):not(.h5p-draggable-wrong) {
+  padding-inline: var(--padding);
 }
