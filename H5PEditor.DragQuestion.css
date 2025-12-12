@@ -11,8 +11,8 @@
 }
 
 .h5p-dragquestion-editor .field-name-question > .h5p-editor-flex-wrapper {
-   display: none;
- }
+  display: none;
+}
 
 .dragQuestion .h5peditor-dragnbar {
   font-size: 1em;
@@ -31,7 +31,7 @@
 .dragQuestion .h5p-dragnbar-ul:after {
   visibility: hidden;
   display: block;
-  content: "";
+  content: '';
   clear: both;
 }
 
@@ -45,15 +45,20 @@
 }
 
 .dragQuestion .h5p-dragnbar-li:last-child {
-  float:right;
+  float: right;
 }
 
 /* Paste button overrides */
-.dragQuestion .h5peditor-dragnbar .h5p-dragnbar-ul .h5p-dragnbar-li .h5p-dragnbar-a.h5p-dragnbar-paste-button {
+.dragQuestion
+  .h5peditor-dragnbar
+  .h5p-dragnbar-ul
+  .h5p-dragnbar-li
+  .h5p-dragnbar-a.h5p-dragnbar-paste-button {
   padding: 0.2em 0.95em 0.2em 0.55em;
   border-radius: 0.25em;
   border-width: 1px;
 }
+
 .dragQuestion .h5p-dragnbar-a.h5p-dragnbar-paste-button:before {
   font-size: 1.5em;
 }
@@ -63,7 +68,10 @@
   cursor: auto;
 }
 
-.h5p-dragquestion-editor .h5peditor-dragnbar .h5p-dragnbar-li .h5p-dragnbar-tooltip {
+.h5p-dragquestion-editor
+  .h5peditor-dragnbar
+  .h5p-dragnbar-li
+  .h5p-dragnbar-tooltip {
   font-size: 0.9em;
 }
 
@@ -80,7 +88,7 @@
   width: 1em;
   line-height: 1.5em;
   text-align: center;
-  background: linear-gradient(to bottom,#fff 0,#f2f2f2 100%);
+  background: linear-gradient(to bottom, #fff 0, #f2f2f2 100%);
   border: 1px solid #ccc;
   border-radius: 0.25em;
   margin: 0.25em;
@@ -95,12 +103,13 @@
   border-color: #999;
 }
 
-.dragQuestion .h5p-dragnbar-a:link, .dragQuestion .h5p-dragnbar-a:visited  {
+.dragQuestion .h5p-dragnbar-a:link,
+.dragQuestion .h5p-dragnbar-a:visited {
   color: #555;
 }
 .dragQuestion .h5p-dragnbar-a:before {
   font-family: 'H5PFontAwesome4';
-  content: "?";
+  content: '?';
 }
 .dragQuestion .h5p-dragnbar-a:hover {
   text-decoration: none;
@@ -108,13 +117,13 @@
 .dragQuestion .h5p-dragnbar-advancedtext-button:before {
   font-size: 1.125em;
   font-weight: bold;
-  content: "T";
+  content: 'T';
 }
 .dragQuestion .h5p-dragnbar-image-button:before {
-  content: "\f03e";
+  content: '\f03e';
 }
 .dragQuestion .h5p-dragnbar-dropzone-button:before {
-  content: "\f140";
+  content: '\f140';
 }
 
 .h5peditor-dragquestion {
@@ -126,7 +135,7 @@
 .h5peditor-dragquestion.h5p-ready {
   padding: 0;
   background-size: 100% 100%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   position: relative;
   border: 1px solid #ccc;
   border-radius: 0;
@@ -178,7 +187,6 @@
   width: 100%;
 }
 
-
 .h5p-dq-element-inner.h5p-image {
   width: 100%;
   height: 100%;
@@ -206,13 +214,13 @@
 .h5p-dq-dz {
   cursor: pointer;
   position: absolute;
-  border: 2px solid rgba(255,255,255,0.7);
+  border: 2px solid rgba(255, 255, 255, 0.7);
   border-radius: 0.5em;
   z-index: 2;
   box-sizing: border-box;
 }
 .h5p-dq-dz:before {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   border: 2px dashed var(--h5p-theme-contrast-cta-white);
@@ -267,19 +275,19 @@ a.h5peditor-fd-button {
   border-radius: 0.25em;
   border: 1px solid #ccc;
   color: #fff;
-  background: #3673B5;
-  background: -webkit-linear-gradient(top,#5A94D3 0,#3673B5 100%);
-  background: -moz-linear-gradient(top,#5A94D3 0,#3673B5 100%);
-  background: -ms-linear-gradient(top,#5A94D3 0,#3673B5 100%);
-  background: -o-linear-gradient(top,#5A94D3 0,#3673B5 100%);
-  border-color: #20588F;
+  background: #3673b5;
+  background: -webkit-linear-gradient(top, #5a94d3 0, #3673b5 100%);
+  background: -moz-linear-gradient(top, #5a94d3 0, #3673b5 100%);
+  background: -ms-linear-gradient(top, #5a94d3 0, #3673b5 100%);
+  background: -o-linear-gradient(top, #5a94d3 0, #3673b5 100%);
+  border-color: #20588f;
 }
 a.h5peditor-fd-button:hover {
   background: #3275bc;
-  background: -webkit-linear-gradient(top,#3275bc 0,#285585 100%);
-  background: -moz-linear-gradient(top,#3275bc 0,#285585 100%);
-  background: -ms-linear-gradient(top,#3275bc 0,#285585 100%);
-  background: -o-linear-gradient(top,#3275bc 0,#285585 100%);
+  background: -webkit-linear-gradient(top, #3275bc 0, #285585 100%);
+  background: -moz-linear-gradient(top, #3275bc 0, #285585 100%);
+  background: -ms-linear-gradient(top, #3275bc 0, #285585 100%);
+  background: -o-linear-gradient(top, #3275bc 0, #285585 100%);
 }
 a.h5peditor-fd-button.h5peditor-remove {
   background: none;
@@ -309,7 +317,8 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   overflow: hidden;
 }
 
-.h5peditor-dynamiccheckboxes-select, .h5peditor-dynamiccheckboxes-select > li {
+.h5peditor-dynamiccheckboxes-select,
+.h5peditor-dynamiccheckboxes-select > li {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -370,7 +379,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 }
 
 .h5p-dragquestion-editor .common {
-  background-color: #FAFBFC;
+  background-color: #fafbfc;
 }
 
 .field-name-backgroundOpacity .h5peditor-text {
@@ -417,19 +426,33 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   font-size: var(--h5p-theme-font-size-m);
 }
 
-.h5p-dragquestion-editor:not(:has(.h5p-question-evaluation-container.evaluation-mode)) .h5p-draggable:has(.h5p-image):hover.h5p-draggable--has-handle,
-.h5p-dragquestion-editor:not(:has(.h5p-question-evaluation-container.evaluation-mode)) .h5p-draggable:has(.h5p-image):focus.h5p-draggable--has-handle {
-  padding-left: calc(var(--border-width) + var(--handle-width) + var(--padding));
+.h5p-dragquestion-editor:not(
+    :has(.h5p-question-evaluation-container.evaluation-mode)
+  )
+  .h5p-draggable:has(.h5p-image):hover.h5p-draggable--has-handle,
+.h5p-dragquestion-editor:not(
+    :has(.h5p-question-evaluation-container.evaluation-mode)
+  )
+  .h5p-draggable:has(.h5p-image):focus.h5p-draggable--has-handle {
+  padding-left: calc(
+    var(--border-width) + var(--handle-width) + var(--padding)
+  );
   transform: translateX(calc(-1 * var(--border-width) - var(--handle-width)));
 }
 
 .h5p-dragquestion .h5p-draggable:has(.h5p-image).h5p-draggable--has-handle {
   padding-inline: var(--padding);
 }
-.h5p-dragquestion-editor .h5p-draggable:has(.h5p-image):not(:hover):not(:focus).h5p-draggable--has-handle::before {
+.h5p-dragquestion-editor
+  .h5p-draggable:has(.h5p-image):not(:hover):not(
+    :focus
+  ).h5p-draggable--has-handle::before {
   display: none;
 }
 
-.h5p-dragquestion-editor .h5p-draggable.h5p-draggable--has-handle:has(.h5p-image):not(.h5p-draggable-correct):not(.h5p-draggable-wrong) {
+.h5p-dragquestion-editor
+  .h5p-draggable.h5p-draggable--has-handle:has(.h5p-image):not(
+    .h5p-draggable-correct
+  ):not(.h5p-draggable-wrong) {
   padding-inline: var(--padding);
 }
