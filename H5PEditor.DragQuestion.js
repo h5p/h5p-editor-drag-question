@@ -204,7 +204,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
     }
 
     html += '<div class="h5peditor-dragnbar"></div>' +
-      '<div class="h5peditor-dragquestion">' + C.t('noTaskSize') + '</div>' +
+      '<div class="h5peditor-dragquestion h5p-theme">' + C.t('noTaskSize') + '</div>' +
       '<div class="h5peditor-fluid-dialog">' +
       '  <div class="h5peditor-fd-inner"></div>' +
       '  <div class="h5peditor-fd-buttons">' +

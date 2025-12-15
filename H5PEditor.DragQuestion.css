@@ -184,8 +184,8 @@
   height: 100%;
 }
 
-.h5p-dq-element .h5p-dq-element-inner .h5p-draggable {
-  width: 100%;
+.h5p-dq-element .h5p-draggable span {
+  padding: var(--h5p-theme-spacing-xxs) 0;
 }
 
 .h5p-draggable > ul {
