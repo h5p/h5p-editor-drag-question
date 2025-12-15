@@ -703,6 +703,7 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       handleDragEvent: noop,
       handleDragStopEvent: noop,
     });
+    element.draggable.removeAttribute('tabindex');
     element.$innerElement = $(element.draggable).appendTo(element.$element);
 
     element.draggable.setContentOpacity(Number(this.backgroundOpacity));
@@ -1005,6 +1006,9 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
       element.children[0].children[0].ckeditor.setData(params.type.params.text);
     }
     else {
+      // Use placeholder image if none specified
+      params.type.params.usePlaceholderImage = true;
+
       // Create new instance
       H5P.newRunnable(params.type, H5PEditor.contentId, H5P.jQuery(instanceHolderDOM));
     }
