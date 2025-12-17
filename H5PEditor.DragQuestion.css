@@ -405,6 +405,7 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
 
 .h5p-dragquestion-editor .h5p-draggable .h5p-advanced-text {
   margin-inline: auto;
+  width: 100%;
 }
 
 .h5p-dragquestion-editor .h5p-draggable .h5p-image {
@@ -412,10 +413,11 @@ a.h5peditor-fd-button.h5peditor-remove:hover {
   width: 100%;
 }
 
-.h5p-dragquestion-editor .h5p-draggable p {
+.h5p-dragquestion-editor .h5p-draggable p,
+.h5p-dragquestion-editor .h5p-draggable span {
   display: inline-block;
   align-content: center;
-  width: fit-content;
+  width: 100%;
   margin: auto;
   color: var(--h5p-theme-text-primary);
   padding: 0;
