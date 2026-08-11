@@ -46,21 +46,27 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Update opacity and handles for all dropzones/draggables when global background opacity and handles are changed
     parent.ready(() => {
-      const backgroundOpacityInput = H5PEditor.findField('../behaviour/backgroundOpacity', parent).$item.find('input');
-      const dragHandleCheckbox = H5PEditor.findField('behaviour/dragHandleVisibility', parent.parent).$item.find('input');
+      const backgroundOpacityField = H5PEditor.findField('../behaviour/backgroundOpacity', parent);
+      const dragHandleField = H5PEditor.findField('behaviour/dragHandleVisibility', parent.parent);
+      const backgroundOpacityInput = backgroundOpacityField?.$item?.find?.('input');
+      const dragHandleCheckbox = dragHandleField?.$item?.find?.('input');
 
       // Listen for changes
-      backgroundOpacityInput.on('change', () => {
+      backgroundOpacityInput?.on('change', () => {
         this.setBackgroundOpacity(backgroundOpacityInput.val().trim());
       });
 
-      dragHandleCheckbox.on('change', () => {
+      dragHandleCheckbox?.on('change', () => {
         this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
       });
 
       // Initialize values
-      this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
-      this.setBackgroundOpacity(backgroundOpacityInput.val().trim());
+      if (dragHandleCheckbox) {
+        this.setDragHandleVisibility(dragHandleCheckbox.get(0).checked);
+      }
+      if (backgroundOpacityInput) {
+        this.setBackgroundOpacity(backgroundOpacityInput.val().trim());
+      }
     });
 
     // Get options from semantics, clone since we'll be changing values.
@@ -962,10 +968,13 @@ H5PEditor.widgets.dragQuestion = H5PEditor.DragQuestion = (function ($, DragNBar
 
     // Disable background opacity input if overriden globally
     var disableOpacityField = !!(that.params.elements[id].dropZones.length !== 0 && this.backgroundOpacity);
-    H5PEditor.findField('backgroundOpacity', element).$item.find('input').prop({
-      disabled: disableOpacityField,
-      title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
-    });
+    const opacityField = H5PEditor.findField('backgroundOpacity', element);
+    if (opacityField?.$item) {
+      opacityField.$item.find('input').prop({
+        disabled: disableOpacityField,
+        title: disableOpacityField ? C.t('backgroundOpacityOverridden') : ''
+      });
+    }
 
     element.children[this.elementDropZoneFieldWeight].setActive();
     this.showDialog(element.$form);
