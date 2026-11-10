@@ -154,7 +154,8 @@
   --padding: 0.3em;
   position: absolute;
   line-height: 1.25em;
-  z-index: 1;
+  /* Same level as .h5p-dq-dz, so the DOM order ("Bring to front"/"Send to back") decides the stacking. */
+  z-index: 2;
   cursor: pointer;
   padding: var(--padding);
   border: solid 2px transparent;
